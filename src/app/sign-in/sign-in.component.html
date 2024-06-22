@@ -1,0 +1,38 @@
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <div class="text-danger" *ngIf="signInForm.invalid && (signInForm.dirty || signInForm.touched)">
+            Please fix the errors below.
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">User SignIn</h5>
+                <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Email address</label>
+                        <input formControlName="email" type="email" class="form-control" id="exampleInputEmail1"
+                            aria-describedby="emailHelp">
+                        <div *ngIf="signInForm.controls['email'].invalid && (signInForm.controls['email'].dirty || signInForm.controls['email'].touched)"
+                            class="text-danger">
+                            <div *ngIf="signInForm.controls['email'].errors['required']">Email is required.</div>
+                            <div *ngIf="signInForm.controls['email'].errors['email']">Invalid email format.</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Password</label>
+                        <input formControlName="password" type="password" class="form-control"
+                            id="exampleInputPassword1">
+                        <div *ngIf="signInForm.controls['password'].invalid && (signInForm.controls['password'].dirty || signInForm.controls['password'].touched)"
+                            class="text-danger">
+                            <div *ngIf="signInForm.controls['password'].errors['required']">Password is required.</div>
+                        </div>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input formControlName="isRemember" type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Remember Me</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" [disabled]="signInForm.invalid">Sign In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

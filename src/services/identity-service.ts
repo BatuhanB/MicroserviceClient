@@ -1,3 +1,4 @@
+import { CookieService } from 'ngx-cookie-service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -31,7 +32,7 @@ export class IdentityService {
   private clientId = 'FrontEndClientWithResource';
   private clientSecret = 'secret';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cookieService: CookieService) {}
 
   getAccessTokenByRefreshToken(): Observable<TokenResponse> {
     const refreshToken = this.getRefreshToken();
@@ -92,6 +93,8 @@ export class IdentityService {
   }
 
   logout(): void {
+    this.cookieService.delete('authToken');
+    sessionStorage.removeItem('authToken');
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('expires_in');
@@ -103,8 +106,9 @@ export class IdentityService {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
-    return this.http
-      .get<UserInfo>(`${this.identityUrl}/connect/userinfo`, { headers });
+    return this.http.get<UserInfo>(`${this.identityUrl}/connect/userinfo`, {
+      headers,
+    });
   }
 
   private getBearerToken(): string {

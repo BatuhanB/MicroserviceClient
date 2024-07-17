@@ -1,0 +1,25 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { CourseWithCategoryViewModel } from '../../models/CourseWithCategoryModel';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CourseService {
+
+  private baseUrl:string = "http://localhost:5000/services/catalog/";
+
+
+  constructor(private httpClient:HttpClient) { }
+
+  getAllByUserId(userId:string):Observable<CourseWithCategoryViewModel[]>{
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    });
+    return this.httpClient.get<CourseWithCategoryViewModel[]>(this.baseUrl + "courses/getallbyuseridwithcategory/" + userId,{
+      headers:headers
+    });
+  }
+}

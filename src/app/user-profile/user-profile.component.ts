@@ -1,6 +1,6 @@
-import { UserInfo } from './../../services/identity-service';
+import { UserInfo } from '../services/identity-service';
 import { Component, OnInit } from '@angular/core';
-import { IdentityService } from '../../services/identity-service';
+import { IdentityService } from '../services/identity-service';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({

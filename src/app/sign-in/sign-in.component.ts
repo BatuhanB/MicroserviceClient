@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IdentityService, UserInfo } from '../../services/identity-service';
+import { IdentityService, UserInfo } from '../services/identity-service';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({

@@ -7,6 +7,9 @@
             <button mat-raised-button routerLink="/sign-in">Sign In</button>
         </div>
         <ng-template #loggedIn>
+            <div>
+                <button mat-flat-button routerLink="courses"><strong>Courses</strong></button>    
+            </div>
             <button mat-button [matMenuTriggerFor]="afterSignIn"><strong>{{ userName}}</strong></button>
             <mat-menu #afterSignIn="matMenu" yPosition="below">
                 <button mat-menu-item routerLink="/profile">Profile</button>

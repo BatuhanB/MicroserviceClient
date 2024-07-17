@@ -22,6 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatTableModule} from '@angular/material/table';
+import { CoursesComponent } from './catalog/courses/courses.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import {MatTableModule} from '@angular/material/table';
     UserProfileComponent,
     HeaderComponent,
     HomeComponent,
+    CoursesComponent,
   ],
   imports: [
     BrowserAnimationsModule,

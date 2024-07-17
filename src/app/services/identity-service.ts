@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 interface TokenResponse {
   access_token: string;
@@ -32,7 +33,18 @@ export class IdentityService {
   private clientId = 'FrontEndClientWithResource';
   private clientSecret = 'secret';
 
-  constructor(private http: HttpClient, private cookieService: CookieService) {}
+  constructor(
+    private http: HttpClient,
+    private cookieService: CookieService,
+    private jwtHelper: JwtHelperService
+  ) {}
+
+  getUserId(): string | null {
+    const token = localStorage.getItem('access_token');
+    if (!token) return null;
+    const decodedToken = this.jwtHelper.decodeToken(token);
+    return decodedToken ? decodedToken.sub : null;
+  }
 
   getAccessTokenByRefreshToken(): Observable<TokenResponse> {
     const refreshToken = this.getRefreshToken();

@@ -26,6 +26,8 @@ import { CoursesComponent } from './catalog/courses/courses.component';
 import {MatChipsModule} from '@angular/material/chips';
 import { ClientCredentialTokenInterceptor } from '../interceptors/clientcredential-interceptor';
 import {MatDialogModule} from '@angular/material/dialog';
+import { MatSortModule } from '@angular/material/sort';
+
 
 @NgModule({
   declarations: [
@@ -44,6 +46,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatInputModule,
     MatGridListModule,
     MatChipsModule,
+    MatSortModule,
     MatTableModule,
     MatDialogModule,
     MatCheckboxModule,

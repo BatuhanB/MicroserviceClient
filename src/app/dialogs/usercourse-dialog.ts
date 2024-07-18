@@ -19,7 +19,6 @@ import {
     MatDialogContent,
     MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { CourseWithCategoryViewModel } from '../models/CourseWithCategoryModel';
 import { CourseService } from '../services/catalog/course.service';
 import { UserInfo } from '../services/identity-service';
 import { CommonModule } from '@angular/common';

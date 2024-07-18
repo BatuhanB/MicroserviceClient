@@ -23,7 +23,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatTableModule} from '@angular/material/table';
 import { CoursesComponent } from './catalog/courses/courses.component';
+import {MatChipsModule} from '@angular/material/chips';
 import { ClientCredentialTokenInterceptor } from '../interceptors/clientcredential-interceptor';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { ClientCredentialTokenInterceptor } from '../interceptors/clientcredenti
     MatFormFieldModule,
     MatInputModule,
     MatGridListModule,
+    MatChipsModule,
     MatTableModule,
+    MatDialogModule,
     MatCheckboxModule,
     MatCardModule,
     MatIconModule,

@@ -7,4 +7,22 @@ table {
     font-size: 14px;
     width: 100%;
   }
-  
+.grid{
+  margin:0 50px 0 0;
+}
+.card-content{
+  font-size: large;
+}
+
+.example-button-container {
+  display: flex;
+  justify-content: center;
+  width: 120px;
+  margin-bottom: 10px;
+}
+.dialog-button{
+  width: 85px;
+  height: 85px;
+  background-color: blue;
+  font-size: 20px;
+}

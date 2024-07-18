@@ -1,7 +1,10 @@
+import { IdentityService } from './../services/identity-service';
+import {
+  MatDialog,
+} from '@angular/material/dialog';
 import { UserInfo } from '../services/identity-service';
 import { Component, OnInit } from '@angular/core';
-import { IdentityService } from '../services/identity-service';
-import { MatTableDataSource } from '@angular/material/table';
+import { UserCourseDialog } from '../dialogs/usercourse-dialog';
 
 @Component({
   selector: 'app-user-profile',
@@ -9,15 +12,20 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrl: './user-profile.component.css',
 })
 export class UserProfileComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'name', 'email'];
-  dataSource = new MatTableDataSource<UserInfo>();
+  userInfo: UserInfo;
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  constructor(
+    private identityService: IdentityService,
+    private dialog: MatDialog
+  ) {}
+
+  openDialog() {
+    this.dialog.open(UserCourseDialog, {
+      data: {
+        userInfo: this.userInfo,
+      },
+    });
   }
-
-  constructor(private identityService: IdentityService) {}
 
   ngOnInit(): void {
     this.getAll();
@@ -26,7 +34,7 @@ export class UserProfileComponent implements OnInit {
   getAll() {
     this.identityService.getUserProfile().subscribe({
       next: (value: UserInfo) => {
-        this.dataSource.data.push(value);
+        this.userInfo = value;
       },
     });
   }

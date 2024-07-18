@@ -1,31 +1,22 @@
-<mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" #input>
-</mat-form-field>
+<mat-grid-list cols="3" rowHeight="2:1" class="grid">
+    <mat-grid-tile colspan="1">
+        <mat-card class="example-card" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title>{{userInfo?.name | uppercase}}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="card-content">
+                <p><strong>Id: </strong> {{userInfo?.sub}}</p>
+                <p><strong>Email: </strong> {{userInfo?.email}}</p>
+            </mat-card-content>
+        </mat-card>
+    </mat-grid-tile>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-
-    <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef> Id </th>
-        <td mat-cell *matCellDef="let element"> {{element.sub}} </td>
-    </ng-container>
-
-    <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef> Name </th>
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-    </ng-container>
-
-    <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef> Email </th>
-        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-    <!-- Row shown when there is no matching data. -->
-    <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-    </tr>
-</table>
+    <mat-grid-tile colspan="2">
+        <h2>To see the courses click the button</h2>
+        <div class="example-button-container">
+            <button mat-fab (click)="openDialog()" class="dialog-button">
+                <mat-icon>list</mat-icon>
+            </button>
+        </div>
+    </mat-grid-tile>
+</mat-grid-list>

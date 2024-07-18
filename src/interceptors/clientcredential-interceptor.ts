@@ -27,14 +27,4 @@ export class ClientCredentialTokenInterceptor implements HttpInterceptor {
         }
         return next.handle(req);
     }
-
-    private addToken(request: HttpRequest<any>, token: string): HttpRequest < any > {
-    console.log(token);
-
-    return request.clone({
-        setHeaders: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-}
 }

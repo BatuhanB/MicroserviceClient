@@ -23,20 +23,23 @@ export class AuthInterceptor implements HttpInterceptor {
         req: HttpRequest<any>,
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
-        const accessToken = this.identityService.getAccessToken();
-        if (accessToken) {
-            req = this.addToken(req, accessToken);
-        }
+        if (req.url.includes(':5004')) {
+            const accessToken = this.identityService.getAccessToken();
+            if (accessToken) {
+                req = this.addToken(req, accessToken);
+            }
 
-        return next.handle(req).pipe(
-            catchError((error) => {
-                if (error instanceof HttpErrorResponse && error.status === 401) {
-                    return this.handle401Error(req, next);
-                } else {
-                    return throwError(error);
-                }
-            })
-        );
+            return next.handle(req).pipe(
+                catchError((error) => {
+                    if (error instanceof HttpErrorResponse && error.status === 401) {
+                        return this.handle401Error(req, next);
+                    } else {
+                        return throwError(error);
+                    }
+                })
+            );
+        }
+        return next.handle(req);
     }
 
     private addToken(request: HttpRequest<any>, token: string): HttpRequest<any> {

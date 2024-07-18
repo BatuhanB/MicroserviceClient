@@ -13,12 +13,12 @@ export class CourseService {
 
   constructor(private httpClient:HttpClient) { }
 
-  getAllByUserId(userId:string):Observable<CourseWithCategoryViewModel[]>{
+  getAllByUserId(userId:string):Observable<any>{
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
     });
-    return this.httpClient.get<CourseWithCategoryViewModel[]>(this.baseUrl + "courses/getallbyuseridwithcategory/" + userId,{
+    return this.httpClient.get(this.baseUrl + "courses/getallbyuseridwithcategory/" + userId,{
       headers:headers
     });
   }

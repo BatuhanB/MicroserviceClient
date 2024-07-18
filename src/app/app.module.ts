@@ -23,6 +23,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatTableModule} from '@angular/material/table';
 import { CoursesComponent } from './catalog/courses/courses.component';
+import { ClientCredentialTokenInterceptor } from '../interceptors/clientcredential-interceptor';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { CoursesComponent } from './catalog/courses/courses.component';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ClientCredentialTokenInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })

@@ -3,6 +3,8 @@ import { FeatureViewModel } from "./FeatureViewModel";
 
 export interface CourseWithCategoryViewModel {
     id: string;
+    name:string;
+    description:string;
     createdDate: string;
     price: number;
     image: string | null;

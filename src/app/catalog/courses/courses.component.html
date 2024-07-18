@@ -13,13 +13,13 @@
                 </tr>
             </thead>
             <tbody>
-                <ng-container *ngFor="let item in courses">
+                <ng-container *ngFor="let item of courses">
                     <tr>
-                        <td>{{item.Name}}</td>
-                        <td>{{item.Price}}</td>
-                        <td>{{item.Description}}</td>
-                        <td>{{item.Feature?.Duration}}</td>
-                        <td>{{item.Category!.Name}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.price}}</td>
+                        <td>{{item.description}}</td>
+                        <td>{{item.feature?.duration}}</td>
+                        <td>{{item.category!.name}}</td>
                     </tr>
                 </ng-container>
             </tbody>

@@ -24,7 +24,7 @@ export class CoursesComponent implements OnInit {
     var userId:string =  this.identityService.getUserId();
     this.courseService.getAllByUserId(userId).subscribe({
       next:(value)=>{
-        this.courses = value;
+        this.courses = value.data;
       },
       error:(err)=>{
         console.log(err);

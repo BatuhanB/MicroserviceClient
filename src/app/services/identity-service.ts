@@ -32,6 +32,7 @@ export class IdentityService {
   private identityUrl = 'https://localhost:5004'; // replace with your identity server URL
   private clientId = 'FrontEndClientWithResource';
   private clientSecret = 'secret';
+  private clientCredentialId = 'FrontEndClient';
 
   constructor(
     private http: HttpClient,
@@ -63,6 +64,24 @@ export class IdentityService {
         })
       );
   }
+
+  getClientCredentialToken(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    });
+
+    const body = new HttpParams()
+    .set('client_id', this.clientCredentialId)
+    .set('client_secret', this.clientSecret)
+    .set('grant_type', 'client_credentials');
+
+    return this.http.post(
+      `${this.identityUrl}/connect/token`,
+      body.toString(),
+      { headers }
+    );
+  }
+  
 
   signIn(credentials: {
     email: string;

@@ -1,12 +1,11 @@
 import { IdentityService } from './../../services/identity-service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CourseService } from '../../services/catalog/course.service';
-import { CourseWithCategoryViewModel } from '../../models/CourseWithCategoryModel';
+
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-
-declare var $:any;
+import { CourseWithCategoryViewModel } from '../../models/Catalog/Course/CourseWithCategoryModel';
 
 @Component({
   selector: 'app-courses',
@@ -42,7 +41,6 @@ export class CoursesComponent implements OnInit {
     this.getAllByUserId();
   }
 
-  
   announceSortChange(sortState: Sort) {
     if (sortState.direction) {
       this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
@@ -50,7 +48,6 @@ export class CoursesComponent implements OnInit {
       this._liveAnnouncer.announce('Sorting cleared');
     }
   }
-  
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;

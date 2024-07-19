@@ -1,140 +1,144 @@
-interface UserCourseDialogData {
-    userInfo: UserInfo;
-}
-
 import {
-    MatTable,
-    MatTableDataSource,
-    MatTableModule,
+  MatTable,
+  MatTableDataSource,
+  MatTableModule,
 } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import {
-    MatFormField,
-    MatFormFieldModule,
-    MatLabel,
+  MatFormField,
+  MatFormFieldModule,
+  MatLabel,
 } from '@angular/material/form-field';
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, AfterViewInit, ViewChild } from '@angular/core';
 import {
-    MatDialogTitle,
-    MatDialogContent,
-    MAT_DIALOG_DATA,
+  MatDialogTitle,
+  MatDialogContent,
+  MAT_DIALOG_DATA,
+  MatDialogActions,
+  MatDialogClose
 } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CourseService } from '../services/catalog/course.service';
 import { UserInfo } from '../services/identity-service';
 import { CommonModule } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
+
+interface UserCourseDialogData {
+  userInfo: UserInfo;
+}
 @Component({
-    selector: 'dialog-data-example-dialog',
-    template: `
-    
-<h2 mat-dialog-title>Courses</h2>
-<mat-dialog-content>
-    <mat-form-field>
-        <mat-label>Filter</mat-label>
-        <input matInput (keyup)="applyFilter($event)" #input />
-    </mat-form-field>
+  selector: 'dialog-data-example-dialog',
+  templateUrl: 'usercourse-dialog.html',
+  styles: `
+  .dialog-title{
+    height:45px;
+    font-size:25px;
+  }
+  .dialog-top-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .title-and-button {
+      display: flex;
+      align-items: center;
+  }
+  .mat-icon-button {
+      border: none;
+      background-color: #e7e7e7;
+      border-radius: 35%;
+      width: 40px;
+      height: 40px;
+      line-height: 1px;
+      cursor: pointer;
+      margin-left: 10px; /* Adjust this margin as needed */
+  }
+  .title-and-button span {
+      font-size:18px;
+      margin-left: 10px; /* Adjust this margin as needed */
+  }
 
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-        <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Name</th>
-            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="description">
-            <th mat-header-cell *matHeaderCellDef>Description</th>
-            <td mat-cell *matCellDef="let element">{{ element.description }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="price">
-            <th mat-header-cell *matHeaderCellDef>Price</th>
-            <td mat-cell *matCellDef="let element">{{ element.price }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="image">
-            <th mat-header-cell *matHeaderCellDef>Image</th>
-            <td mat-cell *matCellDef="let element">
-                <img src="{{ element.image }}" width="75" height="75"/>
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="feature">
-            <th mat-header-cell *matHeaderCellDef>Duration</th>
-            <td mat-cell *matCellDef="let element">
-                @if (element.feature) {
-                    {{element.feature.duration}}
-                }@else{
-                    No duration has added
-                }
-                
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="category">
-            <th mat-header-cell *matHeaderCellDef>Category</th>
-            <td mat-cell *matCellDef="let element">
-                {{ element.category.name }}
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="date">
-            <th mat-header-cell *matHeaderCellDef>Date</th>
-            <td mat-cell *matCellDef="let element">{{ element.createdDate | date}}</td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-
-        <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="4">
-                No data matching the filter "{{ input.value }}"
-            </td>
-        </tr>
-    </table>
-</mat-dialog-content>
 
   `,
-    standalone: true,
-    imports: [
-        MatDialogTitle,
-        MatDialogContent,
-        MatFormField,
-        MatLabel,
-        MatTable,
-        MatTableModule,
-        MatInputModule,
-        MatFormFieldModule,
-        CommonModule
-    ],
+  standalone: true,
+  imports: [
+    MatDialogTitle,
+    MatDialogContent,
+    MatFormField,
+    MatLabel,
+    MatTable,
+    MatTableModule,
+    MatInputModule,
+    MatFormFieldModule,
+    CommonModule,
+    MatIcon,
+    MatDialogActions,
+    MatDialogClose,
+    MatSortModule
+  ],
 })
-export class UserCourseDialog implements OnInit {
-    displayedColumns: string[] = [
-        'name',
-        'description',
-        'price',
-        'image',
-        'feature',
-        'category',
-        'date',
-    ];
-    dataSource = new MatTableDataSource();
-    constructor(
-        @Inject(MAT_DIALOG_DATA) public info: UserCourseDialogData,
-        private courseService: CourseService
-    ) { }
+export class UserCourseDialog implements OnInit, AfterViewInit {
+  displayedColumns: string[] = [
+    'name',
+    'description',
+    'price',
+    'image',
+    'feature',
+    'category',
+    'date',
+    'update',
+    'delete'
+  ];
+  dataSource = new MatTableDataSource();
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public info: UserCourseDialogData,
+    private courseService: CourseService,
+    private _snackBar: MatSnackBar,
+    private _liveAnnouncer: LiveAnnouncer
+  ) { }
 
-    ngOnInit(): void {
-        this.getAllCourses();
-    }
+  @ViewChild(MatSort) sort: MatSort;
 
-    applyFilter(event: Event) {
-        const filterValue = (event.target as HTMLInputElement).value;
-        this.dataSource.filter = filterValue.trim().toLowerCase();
-    }
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+  }
 
-    getAllCourses() {
-        this.courseService.getAllByUserId(this.info.userInfo.sub).subscribe({
-            next: (value) => {
-                this.dataSource.data = value.data;
-            },
-        });
+  announceSortChange(sortState: Sort) {
+    if (sortState.direction) {
+      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    } else {
+      this._liveAnnouncer.announce('Sorting cleared');
     }
+  }
+
+  ngOnInit(): void {
+    this.getAllCourses();
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  updateCourse(name: string, id: string) {
+    this._snackBar.open(`${name} updated`, 'Okey');
+  }
+
+  createCourse() {
+    this._snackBar.open(`Created`, 'Okey');
+  }
+
+  deleteCourse(name: string, id: string) {
+    this._snackBar.open(`${name} deleted`, 'Okey');
+  }
+
+  getAllCourses() {
+    this.courseService.getAllByUserId(this.info.userInfo.sub).subscribe({
+      next: (value) => {
+        this.dataSource.data = value.data;
+      },
+    });
+  }
 }

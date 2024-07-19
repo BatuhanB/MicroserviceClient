@@ -1,0 +1,110 @@
+<div class="dialog-top-area">
+    <div class="title-and-button">
+        <h2 mat-dialog-title class="dialog-title">Courses</h2>
+        <button mat-fab class="mat-icon-button" (click)="createCourse()">
+            <mat-icon style="color:rgb(250, 21, 97);">add_circle</mat-icon>
+        </button>
+        <span>Create Course</span>
+    </div>
+    <mat-dialog-actions>
+        <button mat-fab mat-dialog-close class="mat-icon-button">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-dialog-actions>
+</div>
+
+<mat-dialog-content>
+    <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" #input />
+    </mat-form-field>
+
+    <table mat-table [dataSource]="dataSource" matSort
+        (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+                sortActionDescription="Sort by name">Name</th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+                sortActionDescription="Sort by description">Description</th>
+            <td mat-cell *matCellDef="let element">{{ element.description
+                }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+                sortActionDescription="Sort by price">Price</th>
+            <td mat-cell *matCellDef="let element">{{ element.price }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="image">
+            <th mat-header-cell *matHeaderCellDef>Image</th>
+            <td mat-cell *matCellDef="let element">
+                @if(element.image !=null){
+                <img src="{{ element.image }}" width="75" height="75" />
+                }@else{
+                <p>No image</p>
+                }
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="feature">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+                sortActionDescription="Sort by feature">Duration</th>
+            <td mat-cell *matCellDef="let element">
+                @if (element.feature) {
+                {{ element.feature.duration }}
+                }@else{ No duration has added }
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+                sortActionDescription="Sort by category.name">Category</th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.category.name }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header
+                sortActionDescription="Sort by date">Date</th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.createdDate | date }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="update">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element">
+                <button mat-fab class="mat-icon-button"
+                    (click)="updateCourse(element.name,element.id)">
+                    <mat-icon style="color:rgb(7, 32, 175);">edit</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="delete">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element">
+                <button mat-fab class="mat-icon-button"
+                    (click)="deleteCourse(element.name,element.id)">
+                    <mat-icon style="color:rgb(214, 9, 9);">delete</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">
+                No data matching the filter "{{ input.value }}"
+            </td>
+        </tr>
+    </table>
+</mat-dialog-content>

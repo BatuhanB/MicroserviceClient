@@ -1,36 +1,42 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { CourseCreateModel } from '../../models/Catalog/Course/CourseCreateModel';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CourseService {
+  headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+  });
+  private baseUrl: string = "http://localhost:5000/services/catalog/";
 
-  private baseUrl:string = "http://localhost:5000/services/catalog/";
+  constructor(private httpClient: HttpClient) { }
 
-
-  constructor(private httpClient:HttpClient) { }
-
-  getAllByUserId(userId:string):Observable<any>{
-
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded',
-    });
-    return this.httpClient.get(this.baseUrl + "courses/getallbyuseridwithcategory/" + userId,{
-      headers:headers
+  getAllByUserId(userId: string): Observable<any> {
+    return this.httpClient.get(this.baseUrl + "courses/getallbyuseridwithcategory/" + userId, {
+      headers: this.headers
     });
   }
 
-  create(){
+  getById(id: string): Observable<any> {
+    return this.httpClient.get(`${this.baseUrl}courses/getbyid/${id}`, {
+      headers: this.headers
+    });
+  }
+
+  create(courseModel: CourseCreateModel): Observable<any> {
+    return this.httpClient.post(`${this.baseUrl}courses/create`, courseModel,{
+      headers: this.headers
+    });
+  }
+
+  update() {
 
   }
 
-  update(){
-
-  }
-
-  delete(){
+  delete() {
 
   }
 }

@@ -15,7 +15,8 @@ import {
   MatDialogContent,
   MAT_DIALOG_DATA,
   MatDialogActions,
-  MatDialogClose
+  MatDialogClose,
+  MatDialog
 } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CourseService } from '../services/catalog/course.service';
@@ -24,6 +25,8 @@ import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { CreateAndUpdateCourseDialog } from './createandupdatecourse-dialog';
+import { CourseUpdateModel } from '../models/Catalog/Course/CourseUpdateModel';
 
 interface UserCourseDialogData {
   userInfo: UserInfo;
@@ -59,8 +62,6 @@ interface UserCourseDialogData {
       font-size:18px;
       margin-left: 10px; /* Adjust this margin as needed */
   }
-
-
   `,
   standalone: true,
   imports: [
@@ -92,11 +93,13 @@ export class UserCourseDialog implements OnInit, AfterViewInit {
     'delete'
   ];
   dataSource = new MatTableDataSource();
+  updateCourseData: CourseUpdateModel;
   constructor(
     @Inject(MAT_DIALOG_DATA) public info: UserCourseDialogData,
     private courseService: CourseService,
     private _snackBar: MatSnackBar,
-    private _liveAnnouncer: LiveAnnouncer
+    private _liveAnnouncer: LiveAnnouncer,
+    private dialog: MatDialog
   ) { }
 
   @ViewChild(MatSort) sort: MatSort;
@@ -127,7 +130,19 @@ export class UserCourseDialog implements OnInit, AfterViewInit {
   }
 
   createCourse() {
-    this._snackBar.open(`Created`, 'Okey');
+    this.dialog.open(CreateAndUpdateCourseDialog, {
+      data: {
+        //updateData: this.updateCourse
+      },
+    });
+  }
+
+  getById(id: string) {
+    this.courseService.getById(id).subscribe({
+      next: response => {
+        this.updateCourse = response.data;
+      }
+    })
   }
 
   deleteCourse(name: string, id: string) {

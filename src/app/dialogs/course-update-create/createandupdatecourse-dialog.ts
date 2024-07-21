@@ -1,3 +1,5 @@
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import { PhotostockService } from './../../services/photostock.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from "@angular/common";
 import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core";
@@ -19,6 +21,8 @@ import { CategoryService } from '../../services/catalog/category.service';
 import { CourseService } from '../../services/catalog/course.service';
 import { UserInfo, IdentityService } from '../../services/identity-service';
 import { UserCourseDialog } from '../course-list/usercourse-dialog';
+import { PhotostockModel } from '../../models/photostock/photostockmodel';
+import { throwError } from 'rxjs';
 
 
 
@@ -48,6 +52,14 @@ import { UserCourseDialog } from '../course-list/usercourse-dialog';
     .mat-icon-button-text{
         margin-left:10px;
     }
+    .file-input {
+        display: none;
+    }
+    .file-upload{
+        display:flex;
+        justify-content:space-between;
+        width:210px;
+    }
     `,
     encapsulation: ViewEncapsulation.None,
     standalone: true,
@@ -68,16 +80,19 @@ import { UserCourseDialog } from '../course-list/usercourse-dialog';
         ReactiveFormsModule,
         MatSelectModule,
         FormsModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
     ]
 })
 export class CreateAndUpdateCourseDialog implements OnInit {
-
     createForm: FormGroup;
     createCourseModel: CourseCreateModel = new CourseCreateModel();
+    updateCourseModel: CourseUpdateModel = new CourseUpdateModel();
     categories: CategoryModel[];
     userInfo: UserInfo;
     selectedCourseId: string;
+    fileUrl: string = '';
+    imageUrl:string = 'http://localhost:5000/services/photostock/';
+    fileFormData = new FormData();
 
     ngOnInit(): void {
         this.getCategories();
@@ -91,13 +106,13 @@ export class CreateAndUpdateCourseDialog implements OnInit {
         private _snackBar: MatSnackBar,
         private categoryService: CategoryService,
         private identityService: IdentityService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private photoStockService:PhotostockService
     ) {
         this.createForm = this.fb.group({
             name: ['', [Validators.minLength(3), Validators.required]],
             description: ['', Validators.required],
             price: [0, [Validators.minLength(0), Validators.required]],
-            image: [''],
             duration: [0, [Validators.minLength(0), Validators.required]],
             categoryId: ['', [Validators.required]],
         });
@@ -113,45 +128,55 @@ export class CreateAndUpdateCourseDialog implements OnInit {
 
     onSubmit(): void {
         if (this.createForm.valid) {
-            if (this.selectedCourseId != null) {
-                var returnModel = this.mapFormDataToUpdateModel();
-
-                this.courseService.update(returnModel).subscribe({
-                    next: (response) => {
-                            this._snackBar.open(`Updated successfully`, 'Okey');
-                            this.dialog.closeAll();
-                            this.dialog.open(UserCourseDialog, {
-                                data: {
-                                    userInfo: this.userInfo,
-                                },
-                            });
-                    },
-                    error: (err) => {
-                        console.error('error', err);
-                    },
-                });
-            } else {
-                this.mapFormToCreateModel();
-                this.courseService.create(this.createCourseModel).subscribe({
-                    next: (response) => {
+            this.uploadPhoto().pipe(
+                switchMap(() => {
+                    if (this.selectedCourseId != null) {
+                        this.mapFormDataToUpdateModel();
+                        return this.courseService.update(this.updateCourseModel);
+                    } else {
+                        this.mapFormToCreateModel();
+                        return this.courseService.create(this.createCourseModel);
+                    }
+                })
+            ).subscribe({
+                next: (response) => {
+                    if (this.selectedCourseId != null) {
+                        this._snackBar.open(`Updated successfully`, 'Okey');
+                    } else {
                         if (response.isSuccessful) {
                             this._snackBar.open(`${response.data.name} created successfully`, 'Okey');
-                            this.dialog.closeAll();
-                            this.dialog.open(UserCourseDialog, {
-                                data: {
-                                    userInfo: this.userInfo,
-                                },
-                            });
                         } else {
                             console.error('error', response.errors);
                         }
-                    },
-                    error: (err) => {
-                        console.error('error', err);
-                    },
-                });
-            }
+                    }
+                    this.dialog.closeAll();
+                    this.dialog.open(UserCourseDialog, {
+                        data: {
+                            userInfo: this.userInfo,
+                        },
+                    });
+                },
+                error: (err) => {
+                    console.error('error', err);
+                },
+            });
         }
+    }
+    
+    uploadPhoto() {
+        return this.photoStockService.upload(this.fileFormData).pipe(
+            tap(response => {
+                if (response.isSuccessful) {
+                    this.fileUrl = response.data.url;
+                } else {
+                    console.error(response.errors);
+                }
+            }),
+            catchError(err => {
+                console.error(err);
+                return throwError(err);
+            })
+        );
     }
 
     getCourseById(id: string) {
@@ -166,20 +191,20 @@ export class CreateAndUpdateCourseDialog implements OnInit {
         });
     }
 
-    mapFormDataToUpdateModel(): FormData {
-        var featureModel = new FeatureViewModel();
-        featureModel.duration = this.createForm.get("duration").value;
-        var formData = new FormData();
-        formData.append("id", this.selectedCourseId);
-        formData.append("categoryId", this.createForm.get("categoryId").value);
-        formData.append("name", this.createForm.get("name").value);
-        formData.append("description", this.createForm.get("description").value);
-        formData.append("price", this.createForm.get("price").value);
-        formData.append("feature", featureModel.toJSON());
-        formData.append("image", this.createForm.get("image").value);
-        formData.append("userId", this.identityService.getUserId());
+    mapFormDataToUpdateModel(){
+        if (this.createForm.valid 
+            && (this.selectedCourseId != null 
+                || this.selectedCourseId != '')) {
 
-        return formData;
+            this.updateCourseModel.id = this.selectedCourseId;
+            this.updateCourseModel.categoryId = this.createForm.get("categoryId").value;
+            this.updateCourseModel.name = this.createForm.get("name").value;
+            this.updateCourseModel.description = this.createForm.get("description").value;
+            this.updateCourseModel.price = this.createForm.get("price").value;
+            this.updateCourseModel.feature.duration = this.createForm.get("duration").value;
+            this.updateCourseModel.image = this.fileUrl;
+            this.updateCourseModel.userId = this.identityService.getUserId();
+        }
     }
 
     mapFormToCreateModel() {
@@ -189,20 +214,20 @@ export class CreateAndUpdateCourseDialog implements OnInit {
             this.createCourseModel.description = this.createForm.get("description").value;
             this.createCourseModel.price = this.createForm.get("price").value;
             this.createCourseModel.feature.duration = this.createForm.get("duration").value;
-            this.createCourseModel.image = this.createForm.get("image").value;
+            this.createCourseModel.image = this.fileUrl;
             this.createCourseModel.userId = this.identityService.getUserId();
         }
     }
 
     fillInputsByUpdateModel(courseModel: CourseUpdateModel) {
         this.selectedCourseId = courseModel.id;
+        this.fileUrl = courseModel.image;
         this.createForm.setValue({
             name: courseModel.name,
             price: courseModel.price,
             description: courseModel.description,
             duration: courseModel.feature.duration,
             categoryId: courseModel.categoryId,
-            image: courseModel.image
         })
     }
 
@@ -212,5 +237,12 @@ export class CreateAndUpdateCourseDialog implements OnInit {
                 this.userInfo = value;
             },
         });
+    }
+
+    onFileSelected(event) {
+        const file: File = event.target.files[0];
+        if (file) {
+            this.fileFormData.append("file", file);
+        }
     }
 }

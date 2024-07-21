@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CourseCreateModel } from '../../models/Catalog/Course/CourseCreateModel';
+import { CourseUpdateModel } from '../../models/Catalog/Course/CourseUpdateModel';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class CourseService {
     });
   }
 
-  update(courseModel: FormData): Observable<any> {
+  update(courseModel: CourseUpdateModel): Observable<any> {
     return this.httpClient.put(`${this.baseUrl}courses/update`, courseModel);
   }
 

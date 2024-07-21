@@ -79,10 +79,6 @@
                     </div>
                 </mat-form-field>
             </mat-grid-tile>
-<!-- 
-            <mat-grid-tile [colspan]="6" [rowspan]="5">
-                    <input formControlName="image" type="file"/>
-            </mat-grid-tile> -->
 
             <mat-grid-tile [colspan]="6" [rowspan]="5">
                 <mat-form-field>
@@ -94,6 +90,23 @@
                             [value]="category.id">{{category.name}}</mat-option>
                     </mat-select>
                 </mat-form-field>
+            </mat-grid-tile>
+
+            <mat-grid-tile [colspan]="6" [rowspan]="4">
+                <input type="file" class="file-input"
+                    (change)="onFileSelected($event)" #fileUpload
+                    accept=".png,.jpeg,.jpg">
+                <div class="file-upload">
+                    @if(fileUrl !='' || fileUrl != null){
+                    <img src="{{fileUrl}}" width="75" height="75">
+                    }@else{
+                    <p>No File Uploaded Yet</p>
+                    }
+                    <button mat-mini-fab color="primary" class="upload-btn"
+                        (click)="fileUpload.click()">
+                        <mat-icon>attach_file</mat-icon>
+                    </button>
+                </div>
             </mat-grid-tile>
 
             <mat-grid-tile [colspan]="6" [rowspan]="2.5">

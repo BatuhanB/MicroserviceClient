@@ -13,7 +13,7 @@ export class ClientCredentialTokenInterceptor implements HttpInterceptor {
     constructor(private identityService: IdentityService) { }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        if (req.url.includes('/catalog')) {
+        if (req.url.includes('/catalog') || req.url.includes('/photostock')) {
             return this.identityService.getClientCredentialToken().pipe(
                 mergeMap(token => {
                     const cloned = req.clone({

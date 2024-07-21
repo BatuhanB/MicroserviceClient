@@ -96,6 +96,7 @@ export class UserCourseDialog implements OnInit, AfterViewInit {
   ];
   dataSource = new MatTableDataSource();
   updateCourseData: CourseUpdateModel;
+  imageUrl:string = 'http://localhost:5020/photos/';
   constructor(
     @Inject(MAT_DIALOG_DATA) public info: UserCourseDialogData,
     private courseService: CourseService,

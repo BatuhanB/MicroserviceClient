@@ -33,13 +33,10 @@ export class CourseService {
   }
 
   update(courseModel: FormData): Observable<any> {
-    var header = new HttpHeaders({
-      'Content-Type': 'multipart/form-data',
-    });
     return this.httpClient.put(`${this.baseUrl}courses/update`, courseModel);
   }
 
-  delete() {
-
+  delete(id:string) :Observable<any>{
+    return this.httpClient.delete(`${this.baseUrl}courses/delete/${id}`);
   }
 }

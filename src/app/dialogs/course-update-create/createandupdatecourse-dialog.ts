@@ -1,4 +1,4 @@
-import { CategoryService } from './../services/catalog/category.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from "@angular/common";
 import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core";
 import { MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
@@ -6,19 +6,19 @@ import { MatFormField, MatLabel, MatFormFieldModule } from "@angular/material/fo
 import { MatIcon } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { CourseService } from "../services/catalog/course.service";
-import { CourseCreateModel } from "../models/Catalog/Course/CourseCreateModel";
 import { MatGridListModule } from "@angular/material/grid-list";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatSelectModule } from "@angular/material/select";
-import { CategoryModel } from "../models/Catalog/Category/CategoryModel";
-import { IdentityService, UserInfo } from '../services/identity-service';
-import { UserCourseDialog } from './usercourse-dialog';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CourseUpdateModel } from '../models/Catalog/Course/CourseUpdateModel';
-import { FeatureViewModel } from '../models/Catalog/Course/FeatureViewModel';
+import { CategoryModel } from '../../models/Catalog/Category/CategoryModel';
+import { CourseCreateModel } from '../../models/Catalog/Course/CourseCreateModel';
+import { CourseUpdateModel } from '../../models/Catalog/Course/CourseUpdateModel';
+import { FeatureViewModel } from '../../models/Catalog/Course/FeatureViewModel';
+import { CategoryService } from '../../services/catalog/category.service';
+import { CourseService } from '../../services/catalog/course.service';
+import { UserInfo, IdentityService } from '../../services/identity-service';
+import { UserCourseDialog } from '../course-list/usercourse-dialog';
 
 
 

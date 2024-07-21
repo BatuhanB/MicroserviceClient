@@ -4,7 +4,7 @@ import {
 } from '@angular/material/dialog';
 import { UserInfo } from '../services/identity-service';
 import { Component, OnInit } from '@angular/core';
-import { UserCourseDialog } from '../dialogs/usercourse-dialog';
+import { UserCourseDialog } from '../dialogs/course-list/usercourse-dialog';
 
 @Component({
   selector: 'app-user-profile',

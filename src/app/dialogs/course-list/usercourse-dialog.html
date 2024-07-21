@@ -92,7 +92,7 @@
             <th mat-header-cell *matHeaderCellDef> </th>
             <td mat-cell *matCellDef="let element">
                 <button mat-fab class="mat-icon-button"
-                    (click)="deleteCourse(element.name,element.id)">
+                    (click)="deleteCourse(element.id,element.name)">
                     <mat-icon style="color:rgb(214, 9, 9);">delete</mat-icon>
                 </button>
             </td>

@@ -19,20 +19,22 @@ import {
   MatDialog
 } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CourseService } from '../services/catalog/course.service';
-import { UserInfo } from '../services/identity-service';
+import { CourseService } from '../../services/catalog/course.service';
+import { UserInfo } from '../../services/identity-service';
 import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { CreateAndUpdateCourseDialog } from './createandupdatecourse-dialog';
-import { CourseUpdateModel } from '../models/Catalog/Course/CourseUpdateModel';
+import { CourseUpdateModel } from '../../models/Catalog/Course/CourseUpdateModel';
+import { CreateAndUpdateCourseDialog } from '../course-update-create/createandupdatecourse-dialog';
+import { UserCourseDeleteDialog } from '../course-delete/usercoursedelete-dialog';
+import { CourseDeleteModel } from '../../models/Catalog/Course/CourseDeleteModel';
 
 interface UserCourseDialogData {
   userInfo: UserInfo;
 }
 @Component({
-  selector: 'dialog-data-example-dialog',
+  selector: 'user-course-dialog',
   templateUrl: 'usercourse-dialog.html',
   styles: `
   .dialog-title{
@@ -135,8 +137,10 @@ export class UserCourseDialog implements OnInit, AfterViewInit {
     this.dialog.open(CreateAndUpdateCourseDialog);
   }
 
-  deleteCourse(name: string, id: string) {
-    this._snackBar.open(`${name} deleted`, 'Okey');
+  deleteCourse(id: string,name: string) {
+    this.dialog.open(UserCourseDeleteDialog,{
+      data : new CourseDeleteModel(id,name)
+    });
   }
 
   getAllCourses() {

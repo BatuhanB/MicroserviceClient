@@ -1,8 +1,9 @@
+<!-- <mat-spinner></mat-spinner> -->
 <div class="dialog-top-area">
     <div class="title-and-button">
         <h2 mat-dialog-title class="dialog-title">Update Or Create Course</h2>
     </div>
-    <mat-dialog-actions>
+    <mat-dialog-actions style="margin-left: 10px;">
         <button mat-fab mat-dialog-close class="mat-icon-button">
             <mat-icon>close</mat-icon>
         </button>
@@ -11,24 +12,95 @@
 
 <mat-dialog-content>
     <form [formGroup]="createForm" (ngSubmit)="onSubmit()">
-        <mat-grid-list cols="2" rowHeight="2:0.3">
-            <mat-grid-tile [colspan]="2" [rowspan]="2">
+        <mat-grid-list cols="6" rowHeight="2:1">
+
+            <mat-grid-tile [colspan]="6" [rowspan]="5">
                 <mat-form-field hintLabel="Min 3 characters">
                     <mat-label>Name</mat-label>
                     <input formControlName="name" matInput minlength="3" />
                     <div
                         *ngIf="createForm.controls['name'].invalid && (createForm.controls['name'].dirty || createForm.controls['name'].touched)">
-                        <div *ngIf="createForm.controls['name'].errors['required']">Name is required.</div>
-                        <div *ngIf="createForm.controls['name'].errors['name']">Invalid name format.</div>
+                        <div
+                            *ngIf="createForm.controls['name'].errors['required']">Name
+                            is required.</div>
+                        <div
+                            *ngIf="createForm.controls['name'].errors['name']">Invalid
+                            name format.</div>
                     </div>
-                    <mat-hint align="end">3 < {{createForm.get('name').value?.length}}</mat-hint>
+                    <mat-hint align="end">3 <
+                        {{createForm.get('name').value?.length}}</mat-hint>
                 </mat-form-field>
             </mat-grid-tile>
 
-            <mat-grid-tile [colspan]="1" [rowspan]="2">
-                <button mat-fab type="submit"  class="mat-icon-button" [disabled]="createForm.invalid"> 
-                    <mat-icon style="color:rgb(250, 21, 97);">add_circle</mat-icon>
-                </button>
+            <mat-grid-tile [colspan]="6" [rowspan]="5">
+                <mat-form-field>
+                    <mat-label>Description</mat-label>
+                    <input formControlName="description" matInput />
+                    <div
+                        *ngIf="createForm.controls['description'].invalid && (createForm.controls['description'].dirty || createForm.controls['description'].touched)">
+                        <div
+                            *ngIf="createForm.controls['description'].errors['required']">Description
+                            is required.</div>
+                        <div
+                            *ngIf="createForm.controls['description'].errors['description']">Invalid
+                            Description format.</div>
+                    </div>
+                </mat-form-field>
+
+            </mat-grid-tile>
+
+            <mat-grid-tile [colspan]="6" [rowspan]="5">
+
+                <mat-form-field>
+                    <mat-label>Price</mat-label>
+                    <input formControlName="price" matInput />
+                    <div
+                        *ngIf="createForm.controls['price'].invalid && (createForm.controls['price'].dirty || createForm.controls['price'].touched)">
+                        <div
+                            *ngIf="createForm.controls['price'].errors['required']">Price
+                            is required.</div>
+                        <div
+                            *ngIf="createForm.controls['price'].errors['price']">Invalid
+                            Price format.</div>
+                    </div>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="6" [rowspan]="5">
+
+                <mat-form-field>
+                    <mat-label>Duration</mat-label>
+                    <input formControlName="duration" matInput minlength="3" />
+                    <div
+                        *ngIf="createForm.controls['duration'].invalid && (createForm.controls['duration'].dirty || createForm.controls['duration'].touched)">
+                        <div
+                            *ngIf="createForm.controls['duration'].errors['required']">Duration
+                            is required.</div>
+                        <div
+                            *ngIf="createForm.controls['duration'].errors['duration']">Invalid
+                            duration format.</div>
+                    </div>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="6" [rowspan]="5">
+                <mat-form-field>
+                    <mat-label>Select Category</mat-label>
+                    <mat-select
+                        name="category"
+                        formControlName="categoryId">
+                        <mat-option *ngFor="let category of categories"
+                            [value]="category.id">{{category.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="6" [rowspan]="2.5">
+                <div class="button-grid">
+                    <button mat-fab type="submit" class="mat-icon-button"
+                        [disabled]="createForm.invalid">
+                        <mat-icon
+                            style="color:rgb(250, 21, 97);">add_circle</mat-icon>
+                    </button>
+                    <label class="mat-icon-button-text">Submit</label>
+                </div>
             </mat-grid-tile>
         </mat-grid-list>
     </form>

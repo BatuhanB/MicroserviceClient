@@ -28,10 +28,10 @@ export class UserProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAll();
+    this.get();
   }
 
-  getAll() {
+  get() {
     this.identityService.getUserProfile().subscribe({
       next: (value: UserInfo) => {
         this.userInfo = value;

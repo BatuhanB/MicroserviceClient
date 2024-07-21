@@ -1,13 +1,21 @@
 import { FeatureViewModel } from "./FeatureViewModel";
-import {CategoryModel} from "../Category/CategoryModel"
 
 export class CourseCreateModel {
-    name:string;
+    name: string;
     description: string;
     price: number;
-    image: string | null;
-    userId: string | null;
-    feature: FeatureViewModel | null;
+    image: string;
+    userId: string;
+    feature: FeatureViewModel;
     categoryId: string;
-    category: CategoryModel | null;
+
+    constructor() {
+        this.categoryId = '';
+        this.name = '';
+        this.description = '';
+        this.price = 0;
+        this.image = '';
+        this.feature = new FeatureViewModel();
+        this.userId = '';
+    }
 }

@@ -125,24 +125,14 @@ export class UserCourseDialog implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  updateCourse(name: string, id: string) {
-    this._snackBar.open(`${name} updated`, 'Okey');
-  }
-
-  createCourse() {
+  updateCourse(courseId:string) {
     this.dialog.open(CreateAndUpdateCourseDialog, {
-      data: {
-        //updateData: this.updateCourse
-      },
+      data: courseId,
     });
   }
 
-  getById(id: string) {
-    this.courseService.getById(id).subscribe({
-      next: response => {
-        this.updateCourse = response.data;
-      }
-    })
+  createCourse() {
+    this.dialog.open(CreateAndUpdateCourseDialog);
   }
 
   deleteCourse(name: string, id: string) {

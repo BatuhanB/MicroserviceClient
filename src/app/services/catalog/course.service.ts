@@ -27,13 +27,16 @@ export class CourseService {
   }
 
   create(courseModel: CourseCreateModel): Observable<any> {
-    return this.httpClient.post(`${this.baseUrl}courses/create`, courseModel,{
+    return this.httpClient.post(`${this.baseUrl}courses/create`, courseModel, {
       headers: this.headers
     });
   }
 
-  update() {
-
+  update(courseModel: FormData): Observable<any> {
+    var header = new HttpHeaders({
+      'Content-Type': 'multipart/form-data',
+    });
+    return this.httpClient.put(`${this.baseUrl}courses/update`, courseModel);
   }
 
   delete() {

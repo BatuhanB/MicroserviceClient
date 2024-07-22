@@ -1,4 +1,4 @@
-import { IdentityService } from './../../services/identity-service';
+import { IdentityService } from '../../services/identity-service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CourseService } from '../../services/catalog/course.service';
 

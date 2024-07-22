@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CourseCreateModel } from '../../models/Catalog/Course/CourseCreateModel';
 import { CourseUpdateModel } from '../../models/Catalog/Course/CourseUpdateModel';
+import { CourseViewModel } from '../../models/Catalog/Course/CourseViewModel';
+import { Response } from '../../models/response';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +23,10 @@ export class CourseService {
     });
   }
 
+  getAllWithCategory(): Observable<Response<CourseViewModel[]>> {
+    return this.httpClient.get<Response<CourseViewModel[]>>(this.baseUrl + "courses/getallwithcategory");
+  }
+
   getById(id: string): Observable<any> {
     return this.httpClient.get(`${this.baseUrl}courses/getbyid/${id}`, {
       headers: this.headers
@@ -37,7 +43,7 @@ export class CourseService {
     return this.httpClient.put(`${this.baseUrl}courses/update`, courseModel);
   }
 
-  delete(id:string) :Observable<any>{
+  delete(id: string): Observable<any> {
     return this.httpClient.delete(`${this.baseUrl}courses/delete/${id}`);
   }
 }

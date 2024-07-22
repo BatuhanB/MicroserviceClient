@@ -7,11 +7,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthInterceptor } from '../interceptors/auth-interceptor';
-import { SignInComponent } from './sign-in/sign-in.component';
+import { SignInComponent } from './components/sign-in/sign-in.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { UserProfileComponent } from './user-profile/user-profile.component';
-import { HeaderComponent } from './header/header.component';
-import { HomeComponent } from './home/home.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { HeaderComponent } from './components/header/header.component';
+import { HomeComponent } from './components/home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -22,12 +22,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatTableModule} from '@angular/material/table';
-import { CoursesComponent } from './catalog/courses/courses.component';
+import { CoursesComponent } from './components/courses/courses.component';
 import {MatChipsModule} from '@angular/material/chips';
 import { ClientCredentialTokenInterceptor } from '../interceptors/clientcredential-interceptor';
 import {MatDialogModule} from '@angular/material/dialog';
 import { MatSortModule } from '@angular/material/sort';
-
+import { PhotoHelperNotStPipe } from './pipes/photo-helper-notst';
+import { MatPaginator } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { MatSortModule } from '@angular/material/sort';
     HeaderComponent,
     HomeComponent,
     CoursesComponent,
+    PhotoHelperNotStPipe
   ],
   imports: [
     BrowserAnimationsModule,
@@ -56,6 +58,7 @@ import { MatSortModule } from '@angular/material/sort';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
+    MatPaginator,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {

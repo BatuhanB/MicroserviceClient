@@ -1,10 +1,10 @@
-import { IdentityService } from './../services/identity-service';
+import { IdentityService } from '../../services/identity-service';
 import {
   MatDialog,
 } from '@angular/material/dialog';
-import { UserInfo } from '../services/identity-service';
+import { UserInfo } from '../../services/identity-service';
 import { Component, OnInit } from '@angular/core';
-import { UserCourseDialog } from '../dialogs/course-list/usercourse-dialog';
+import { UserCourseDialog } from '../../dialogs/course-list/usercourse-dialog';
 
 @Component({
   selector: 'app-user-profile',

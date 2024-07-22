@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SignInComponent } from './sign-in/sign-in.component';
-import { UserProfileComponent } from './user-profile/user-profile.component';
-import { HomeComponent } from './home/home.component';
+import { SignInComponent } from './components/sign-in/sign-in.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from './guards/auth.guard';
-import { CoursesComponent } from './catalog/courses/courses.component';
+import { CoursesComponent } from './components/courses/courses.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },

@@ -29,6 +29,7 @@ import { CourseUpdateModel } from '../../models/Catalog/Course/CourseUpdateModel
 import { CreateAndUpdateCourseDialog } from '../course-update-create/createandupdatecourse-dialog';
 import { UserCourseDeleteDialog } from '../course-delete/usercoursedelete-dialog';
 import { CourseDeleteModel } from '../../models/Catalog/Course/CourseDeleteModel';
+import { PhotoHelperPipe } from '../../pipes/photo-helper.pipe';
 
 interface UserCourseDialogData {
   userInfo: UserInfo;
@@ -79,7 +80,8 @@ interface UserCourseDialogData {
     MatIcon,
     MatDialogActions,
     MatDialogClose,
-    MatSortModule
+    MatSortModule,
+    PhotoHelperPipe
   ],
 })
 export class UserCourseDialog implements OnInit, AfterViewInit {

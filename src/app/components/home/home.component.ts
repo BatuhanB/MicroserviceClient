@@ -1,7 +1,8 @@
-import { PageEvent } from '@angular/material/paginator';
+import { PageRequest } from './../../models/pagerequest';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { CourseViewModel } from '../../models/Catalog/Course/CourseViewModel';
 import { CourseService } from './../../services/catalog/course.service';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-home',
@@ -9,45 +10,31 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   courseModel: CourseViewModel[];
-  length = 0;
-  pageSize = 10;
-  pageIndex = 0;
-  pageSizeOptions = [5, 10, 25];
-
-  hidePageSize = false;
-  showPageSizeOptions = true;
-  showFirstLastButtons = true;
-  disabled = false;
-
-  pageEvent: PageEvent;
 
   handlePageEvent(e: PageEvent) {
-    this.pageEvent = e;
-    this.length = e.length;
-    this.pageSize = e.pageSize;
-    this.pageIndex = e.pageIndex;
+    this.getAllCourses();
   }
-
-  setPageSizeOptions(setPageSizeOptionsInput: string) {
-    if (setPageSizeOptionsInput) {
-      this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
-    }
-  }
-
-  constructor(private courseService: CourseService) { }
+  
+  constructor(private courseService: CourseService,private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.getAllCourses();
-    this.length = 12;
-    this.pageSize = 6;
   }
-
   getAllCourses() {
-    this.courseService.getAllWithCategory().subscribe({
+    var pageRequest = new PageRequest();
+    let pageNumber = this.paginator ? this.paginator.pageIndex : 0;
+    let pageSize = this.paginator ? this.paginator.pageSize : 6;
+    pageRequest.pageNumber = pageNumber;
+    pageRequest.pageSize = pageSize;
+
+    this.courseService.getAllWithCategory(pageRequest).subscribe({
       next: response => {
         if (response.isSuccessful) {
-          this.courseModel = response.data;
+          this.paginator.length = response.data.totalCount;
+          this.courseModel = response.data.items;
+          this.cdr.detectChanges();
         } else {
           console.error(response.errors);
         }

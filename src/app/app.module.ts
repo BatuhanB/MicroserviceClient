@@ -28,7 +28,7 @@ import { ClientCredentialTokenInterceptor } from '../interceptors/clientcredenti
 import {MatDialogModule} from '@angular/material/dialog';
 import { MatSortModule } from '@angular/material/sort';
 import { PhotoHelperNotStPipe } from './pipes/photo-helper-notst';
-import { MatPaginator } from '@angular/material/paginator';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -58,7 +58,7 @@ import { MatPaginator } from '@angular/material/paginator';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    MatPaginator,
+    MatPaginatorModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {

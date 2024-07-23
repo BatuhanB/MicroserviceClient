@@ -1,10 +1,13 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { PageRequest } from './../../models/pagerequest';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CourseCreateModel } from '../../models/Catalog/Course/CourseCreateModel';
 import { CourseUpdateModel } from '../../models/Catalog/Course/CourseUpdateModel';
 import { CourseViewModel } from '../../models/Catalog/Course/CourseViewModel';
 import { Response } from '../../models/response';
+import { Paging } from '../../models/paging';
+import { CourseWithCategoryViewModel } from '../../models/Catalog/Course/CourseWithCategoryModel';
 
 @Injectable({
   providedIn: 'root'
@@ -17,14 +20,23 @@ export class CourseService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getAllByUserId(userId: string): Observable<any> {
-    return this.httpClient.get(this.baseUrl + "courses/getallbyuseridwithcategory/" + userId, {
+  getAllByUserId(userId: string, request: PageRequest): Observable<Response<Paging<CourseWithCategoryViewModel>>> {
+    let params = new HttpParams()
+      .set('PageNumber', request.pageNumber.toString())
+      .set('PageSize', request.pageSize.toString());
+    return this.httpClient.get<Response<Paging<CourseWithCategoryViewModel>>>(this.baseUrl + "courses/getallbyuseridwithcategory/" + userId, {
+      params:params,
       headers: this.headers
     });
   }
 
-  getAllWithCategory(): Observable<Response<CourseViewModel[]>> {
-    return this.httpClient.get<Response<CourseViewModel[]>>(this.baseUrl + "courses/getallwithcategory");
+  getAllWithCategory(request: PageRequest): Observable<Response<Paging<CourseViewModel>>> {
+    let params = new HttpParams()
+      .set('PageNumber', (request.pageNumber + 1).toString())
+      .set('PageSize', request.pageSize.toString());
+    return this.httpClient.get<Response<Paging<CourseViewModel>>>(this.baseUrl + "courses/getallwithcategory",{
+      params:params
+    });
   }
 
   getById(id: string): Observable<any> {

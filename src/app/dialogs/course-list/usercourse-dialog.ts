@@ -1,3 +1,4 @@
+import { PageRequest } from './../../models/pagerequest';
 import {
   MatTable,
   MatTableDataSource,
@@ -98,7 +99,6 @@ export class UserCourseDialog implements OnInit, AfterViewInit {
   ];
   dataSource = new MatTableDataSource();
   updateCourseData: CourseUpdateModel;
-  imageUrl:string = 'http://localhost:5020/photos/';
   constructor(
     @Inject(MAT_DIALOG_DATA) public info: UserCourseDialogData,
     private courseService: CourseService,
@@ -130,7 +130,7 @@ export class UserCourseDialog implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  updateCourse(courseId:string) {
+  updateCourse(courseId: string) {
     this.dialog.open(CreateAndUpdateCourseDialog, {
       data: courseId,
     });
@@ -140,16 +140,19 @@ export class UserCourseDialog implements OnInit, AfterViewInit {
     this.dialog.open(CreateAndUpdateCourseDialog);
   }
 
-  deleteCourse(id: string,name: string) {
-    this.dialog.open(UserCourseDeleteDialog,{
-      data : new CourseDeleteModel(id,name)
+  deleteCourse(id: string, name: string) {
+    this.dialog.open(UserCourseDeleteDialog, {
+      data: new CourseDeleteModel(id, name)
     });
   }
 
   getAllCourses() {
-    this.courseService.getAllByUserId(this.info.userInfo.sub).subscribe({
+    var pageRequest = new PageRequest();
+    pageRequest.pageNumber = 1;
+    pageRequest.pageSize = 6;
+    this.courseService.getAllByUserId(this.info.userInfo.sub, pageRequest).subscribe({
       next: (value) => {
-        this.dataSource.data = value.data;
+        this.dataSource.data = value.data.items;
       },
     });
   }

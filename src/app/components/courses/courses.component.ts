@@ -1,3 +1,4 @@
+import { PageRequest } from './../../models/pagerequest';
 import { IdentityService } from '../../services/identity-service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CourseService } from '../../services/catalog/course.service';
@@ -55,10 +56,13 @@ export class CoursesComponent implements OnInit {
   }
 
   getAllByUserId() {
+    var pageRequest = new PageRequest();
+    pageRequest.pageNumber = 1;
+    pageRequest.pageSize = 6;
     var userId: string = this.identityService.getUserId();
-    this.courseService.getAllByUserId(userId).subscribe({
+    this.courseService.getAllByUserId(userId,pageRequest).subscribe({
       next: (value) => {
-        this.dataSource.data = value.data;
+        this.dataSource.data = value.data.items;
       },
       error: (err) => {
         console.log(err);

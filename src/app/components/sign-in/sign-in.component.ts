@@ -31,20 +31,11 @@ export class SignInComponent {
         next: (response) => {
 
           if (this.signInForm.get('isRemember').value) {
-
-            const expirationDate = new Date();
-            expirationDate.setDate(expirationDate.getDate() + 60);
-            this.cookieService.set(
-              'authToken',
-              response.access_token,
-              expirationDate
-            );
+            this.setExpToCookie(response);
           } else {
             sessionStorage.setItem('authToken', response.access_token);
           }
-
           localStorage.setItem('access_token', response.access_token);
-
           this.identityService.getUserProfile().subscribe({
             next: (val: UserInfo) => {
               localStorage.setItem('user_name', val.name);
@@ -58,5 +49,15 @@ export class SignInComponent {
         },
       });
     }
+  }
+
+  private setExpToCookie(response: any) {
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + 60);
+    this.cookieService.set(
+      'authToken',
+      response.access_token,
+      expirationDate
+    );
   }
 }

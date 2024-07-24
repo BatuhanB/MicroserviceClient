@@ -1,7 +1,7 @@
-import { AuthGuard } from './../../guards/auth.guard';
 import { BasketModel } from '../../models/Basket/basketmodel';
 import { BasketService } from './../../services/basket.service';
 import { Component, OnInit } from '@angular/core';
+import { IdentityService } from '../../services/identity-service';
 
 @Component({
   selector: 'app-basket',
@@ -14,12 +14,12 @@ export class BasketComponent implements OnInit {
 
   constructor(
     private basketService: BasketService,
-    private auth: AuthGuard) { }
+    private identityService: IdentityService) { }
 
   ngOnInit(): void {
-    if(this.auth.canActivate()){
-      this.get();
-    }
+    let authStatus = false;
+    this.identityService.getAuthStatus().subscribe(response => authStatus = response);
+    if(authStatus) this.get();
   }
 
   get() {

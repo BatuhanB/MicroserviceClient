@@ -128,6 +128,7 @@ export class CreateAndUpdateCourseDialog implements OnInit {
         })
     }
 
+    //todo Check if uploadPhoto method triggers to directly course services
     onSubmit(): void {
         if (this.createForm.valid) {
             this.uploadPhoto().pipe(

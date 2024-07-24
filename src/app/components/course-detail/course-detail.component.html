@@ -1,16 +1,21 @@
-<mat-card class="course-card">
-    <img mat-card-image [src]="course.image | photoHelperNotSt" alt="Course Image">
-    <mat-card-content class="card-content">
-        <h2>{{ course.name }}</h2>
-        <p>{{ course.description }}</p>
-        <p><strong>Price:</strong> {{ course.price | currency }}</p>
-        <p><strong>Duration:</strong> {{ course.feature.duration |
-            durationFormatter }}</p>
-        <p><strong>Category:</strong> {{ category.name }}</p>
-        <p><strong>Created Date:</strong> {{ course.createdDate | date }}</p>
-    </mat-card-content>
-    <mat-card-actions>
-        <button mat-raised-button color="primary"
-            (click)="addToCart(course.id,course.name)">Add to Cart</button>
-    </mat-card-actions>
-</mat-card>
+@if(!spinnerVal){
+        <mat-spinner class="spinner"></mat-spinner>
+}@else{
+    <mat-card class="course-card">
+        <img mat-card-image [src]="course.image | photoHelperNotSt" alt="Course Image">
+        <mat-card-content class="card-content">
+            <h2>{{ course.name }}</h2>
+            <p>{{ course.description }}</p>
+            <p><strong>Price:</strong> {{ course.price | currency }}</p>
+            <p><strong>Duration:</strong> {{ course.feature.duration |
+                durationFormatter }}</p>
+            <p><strong>Category:</strong> {{ category.name }}</p>
+            <p><strong>Created Date:</strong> {{ course.createdDate | date }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button color="primary"
+                (click)="addToCart(course.id,course.name)">Add to Cart</button>
+        </mat-card-actions>
+    </mat-card>
+    
+}

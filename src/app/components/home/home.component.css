@@ -27,3 +27,7 @@
     margin: 0 auto;
 }
 
+.spinner {
+    z-index: 1000;
+    margin: 0 auto;
+}

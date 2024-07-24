@@ -32,6 +32,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import { DurationFormatterPipe } from './pipes/duration-formatter.pipe';
 import { CourseDetailComponent } from './components/course-detail/course-detail.component';
 import { BasketComponent } from './components/basket/basket.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { BasketComponent } from './components/basket/basket.component';
     ReactiveFormsModule,
     HttpClientModule,
     MatPaginatorModule,
+    MatProgressSpinnerModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {

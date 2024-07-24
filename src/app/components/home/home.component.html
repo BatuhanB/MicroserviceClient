@@ -1,7 +1,11 @@
+@if(!spinnerVal){
+<mat-spinner mat-spinner class="spinner"></mat-spinner>
+}@else{
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-12 d-flex col-flex">
-            <div class="col-lg-4 col-md-6 mb-4" *ngFor="let course of courseModel">
+            <div class="col-lg-4 col-md-6 mb-4"
+                *ngFor="let course of courseModel">
                 <mat-card class="example-card" appearance="outlined">
                     <mat-card-header>
                         <div mat-card-avatar class="example-header-image"></div>
@@ -16,12 +20,8 @@
                         </p>
                     </mat-card-content>
                     <mat-card-actions class="card-actions">
-                        <p
-                            class="fs-5 mx-3 mt-3"><strong>{{course.price |
-                                currency}}</strong></p>
-                        <p
-                            class="fs-5 mx-3 mt-3"><strong>{{course.feature.duration
-                                | durationFormatter}}</strong></p>
+                        <p class="fs-5 mx-3 mt-3"><strong>{{course.price | currency}}</strong></p>
+                        <p class="fs-5 mx-3 mt-3"><strong>{{course.feature.duration | durationFormatter}}</strong></p>
                         <a mat-raised-button
                             color="primary"
                             routerLink="/course/{{course.id}}"
@@ -30,10 +30,14 @@
                 </mat-card>
             </div>
             <div class="paginator">
-                <mat-paginator (page)="handlePageEvent($event)"
-                    [pageSizeOptions]="[6, 12, 18]" showFirstLastButtons>
+                <mat-paginator
+                    (page)="handlePageEvent($event)"
+                    [pageSizeOptions]="[6, 12, 18]"
+                    showFirstLastButtons
+                    #paginator>
                 </mat-paginator>
             </div>
         </div>
     </div>
 </div>
+}

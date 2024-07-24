@@ -1,7 +1,7 @@
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { CourseService } from './../../services/catalog/course.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { CourseGetByIdModel } from '../../models/Catalog/Course/CourseGetByIdModel';
 import { CategoryModel } from '../../models/Catalog/Category/CategoryModel';
 import { CategoryService } from '../../services/catalog/category.service';
@@ -12,7 +12,7 @@ import { CategoryService } from '../../services/catalog/category.service';
   styleUrl: './course-detail.component.css'
 })
 export class CourseDetailComponent implements OnInit {
-
+  spinnerVal:boolean = false;
   course: CourseGetByIdModel;
   category: CategoryModel;
 
@@ -43,6 +43,7 @@ export class CourseDetailComponent implements OnInit {
         if(response.isSuccessful){
           this.getCategoryById(response.data.categoryId);
           this.course = response.data;
+          this.spinnerVal = true;
         }
       }
     });

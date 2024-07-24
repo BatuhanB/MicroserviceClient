@@ -48,6 +48,7 @@ export class SignInComponent {
           this.identityService.getUserProfile().subscribe({
             next: (val: UserInfo) => {
               localStorage.setItem('user_name', val.name);
+              this.identityService.updateAuthStatus(true);
             },
           });
           this.router.navigate(['/']);

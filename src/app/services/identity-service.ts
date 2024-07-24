@@ -1,7 +1,7 @@
 import { CookieService } from 'ngx-cookie-service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
@@ -33,18 +33,38 @@ export class IdentityService {
   private clientId = 'FrontEndClientWithResource';
   private clientSecret = 'secret';
   private clientCredentialId = 'FrontEndClient';
+  private authStatus = new BehaviorSubject<boolean>(false);
 
   constructor(
     private http: HttpClient,
     private cookieService: CookieService,
     private jwtHelper: JwtHelperService
-  ) {}
+  ) {
+    this.checkAuthToken();
+  }
 
   getUserId(): string | null {
     const token = localStorage.getItem('access_token');
     if (!token) return null;
     const decodedToken = this.jwtHelper.decodeToken(token);
     return decodedToken ? decodedToken.sub : null;
+  }
+
+  getAuthStatus(): Observable<boolean> {
+    return this.authStatus.asObservable();
+  }
+
+  private checkAuthToken(): void {
+    const authToken =
+      this.cookieService.get('authToken') ||
+      sessionStorage.getItem('authToken') ||
+      localStorage.getItem('access_token');
+    const isAuthenticated = !!authToken;
+    this.authStatus.next(isAuthenticated);
+  }
+
+  updateAuthStatus(isAuthenticated: boolean): void {
+    this.authStatus.next(isAuthenticated);
   }
 
   getAccessTokenByRefreshToken(): Observable<TokenResponse> {
@@ -82,7 +102,6 @@ export class IdentityService {
     );
   }
   
-
   signIn(credentials: {
     email: string;
     password: string;
@@ -124,6 +143,7 @@ export class IdentityService {
   }
 
   logout(): void {
+    this.updateAuthStatus(false);
     this.cookieService.delete('authToken');
     sessionStorage.removeItem('authToken');
     localStorage.removeItem('access_token');

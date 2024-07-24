@@ -8,7 +8,7 @@
             <button mat-raised-button routerLink="/sign-in">Sign In</button>
         </div>
         <ng-template #loggedIn>
-                <button mat-button [matMenuTriggerFor]="afterSignIn">
+                <button mat-raised-button [matMenuTriggerFor]="afterSignIn">
                     <strong>{{userName}}</strong>
                 </button>
                 <mat-menu #afterSignIn="matMenu" yPosition="below">
@@ -16,5 +16,11 @@
                     <button mat-menu-item (click)="signOut()">Sign Out</button>
                 </mat-menu>
         </ng-template>
+        @if(showBasket){
+            <button mat-mini-fab routerLink="/"
+            class="basket-btn" (click)="openBasketDialog()">
+            <mat-icon>shopping_basket</mat-icon>
+        </button>
+        }
     </div>
 </div>

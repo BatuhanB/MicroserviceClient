@@ -1,13 +1,19 @@
+import { IdentityService } from './../services/identity-service';
 // auth.guard.ts
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { Observable, of, tap } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-    constructor(private router: Router, private cookieService: CookieService) { }
+    constructor(
+        private router: Router,
+        private cookieService: CookieService,
+        private identityService: IdentityService
+    ) { }
 
     canActivate(): boolean {
         const authToken =

@@ -3,7 +3,7 @@
     <div class="title-and-button">
         <h2 mat-dialog-title class="dialog-title">Update Or Create Course</h2>
     </div>
-    <mat-dialog-actions style="margin-left: 10px;">
+    <mat-dialog-actions style="margin-left: 10px">
         <button mat-fab mat-dialog-close class="mat-icon-button">
             <mat-icon>close</mat-icon>
         </button>
@@ -11,9 +11,8 @@
 </div>
 
 <mat-dialog-content>
-    <form [formGroup]="createForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="createForm">
         <mat-grid-list cols="6" rowHeight="2:1">
-
             <mat-grid-tile [colspan]="6" [rowspan]="5">
                 <mat-form-field hintLabel="Min 3 characters">
                     <mat-label>Name</mat-label>
@@ -21,11 +20,12 @@
                     <div
                         *ngIf="createForm.controls['name'].invalid && (createForm.controls['name'].dirty || createForm.controls['name'].touched)">
                         <div
-                            *ngIf="createForm.controls['name'].errors['required']">Name
-                            is required.</div>
-                        <div
-                            *ngIf="createForm.controls['name'].errors['name']">Invalid
-                            name format.</div>
+                            *ngIf="createForm.controls['name'].errors['required']">
+                            Name is required.
+                        </div>
+                        <div *ngIf="createForm.controls['name'].errors['name']">
+                            Invalid name format.
+                        </div>
                     </div>
                     <mat-hint align="end">3 <
                         {{createForm.get('name').value?.length}}</mat-hint>
@@ -39,11 +39,13 @@
                     <div
                         *ngIf="createForm.controls['description'].invalid && (createForm.controls['description'].dirty || createForm.controls['description'].touched)">
                         <div
-                            *ngIf="createForm.controls['description'].errors['required']">Description
-                            is required.</div>
+                            *ngIf="createForm.controls['description'].errors['required']">
+                            Description is required.
+                        </div>
                         <div
-                            *ngIf="createForm.controls['description'].errors['description']">Invalid
-                            Description format.</div>
+                            *ngIf="createForm.controls['description'].errors['description']">
+                            Invalid Description format.
+                        </div>
                     </div>
                 </mat-form-field>
             </mat-grid-tile>
@@ -55,11 +57,13 @@
                     <div
                         *ngIf="createForm.controls['price'].invalid && (createForm.controls['price'].dirty || createForm.controls['price'].touched)">
                         <div
-                            *ngIf="createForm.controls['price'].errors['required']">Price
-                            is required.</div>
+                            *ngIf="createForm.controls['price'].errors['required']">
+                            Price is required.
+                        </div>
                         <div
-                            *ngIf="createForm.controls['price'].errors['price']">Invalid
-                            Price format.</div>
+                            *ngIf="createForm.controls['price'].errors['price']">
+                            Invalid Price format.
+                        </div>
                     </div>
                 </mat-form-field>
             </mat-grid-tile>
@@ -71,11 +75,13 @@
                     <div
                         *ngIf="createForm.controls['duration'].invalid && (createForm.controls['duration'].dirty || createForm.controls['duration'].touched)">
                         <div
-                            *ngIf="createForm.controls['duration'].errors['required']">Duration
-                            is required.</div>
+                            *ngIf="createForm.controls['duration'].errors['required']">
+                            Duration is required.
+                        </div>
                         <div
-                            *ngIf="createForm.controls['duration'].errors['duration']">Invalid
-                            duration format.</div>
+                            *ngIf="createForm.controls['duration'].errors['duration']">
+                            Invalid duration format.
+                        </div>
                     </div>
                 </mat-form-field>
             </mat-grid-tile>
@@ -83,9 +89,7 @@
             <mat-grid-tile [colspan]="6" [rowspan]="5">
                 <mat-form-field>
                     <mat-label>Select Category</mat-label>
-                    <mat-select
-                        name="category"
-                        formControlName="categoryId">
+                    <mat-select name="category" formControlName="categoryId">
                         <mat-option *ngFor="let category of categories"
                             [value]="category.id">{{category.name}}</mat-option>
                     </mat-select>
@@ -95,12 +99,16 @@
             <mat-grid-tile [colspan]="6" [rowspan]="4">
                 <input type="file" class="file-input"
                     (change)="onFileSelected($event)" #fileUpload
-                    accept=".png,.jpeg,.jpg">
+                    accept=".png,.jpeg,.jpg"/>
                 <div class="file-upload">
-                    @if(fileUrl !='' || fileUrl != null){
-                    <img src="{{fileUrl}}" width="75" height="75">
-                    }@else{
-                    <p>No File Uploaded Yet</p>
+                    @if(fileUrl && selectedCourseId){
+                        <img src="{{fileUrl | photoHelper}}" width="75" height="75" />
+                    }@else {
+                        @if(fileUrl && !selectedCourseId){
+                            <p>{{fileName}}</p>
+                        }@else {
+                            <p>No File Uploaded Yet</p>
+                        } 
                     }
                     <button mat-mini-fab color="primary" class="upload-btn"
                         (click)="fileUpload.click()">
@@ -112,9 +120,9 @@
             <mat-grid-tile [colspan]="6" [rowspan]="2.5">
                 <div class="button-grid">
                     <button mat-fab type="submit" class="mat-icon-button"
-                        [disabled]="createForm.invalid">
+                        [disabled]="createForm.invalid" (click)="submitForm()">
                         <mat-icon
-                            style="color:rgb(250, 21, 97);">add_circle</mat-icon>
+                            style="color: rgb(250, 21, 97)">add_circle</mat-icon>
                     </button>
                     <label class="mat-icon-button-text">Submit</label>
                 </div>

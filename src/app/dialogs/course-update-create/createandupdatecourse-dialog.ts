@@ -25,6 +25,7 @@ import { PhotostockModel } from '../../models/photostock/photostockmodel';
 import { throwError } from 'rxjs';
 import { CourseViewModel } from '../../models/Catalog/Course/CourseViewModel';
 import { CourseGetByIdModel } from '../../models/Catalog/Course/CourseGetByIdModel';
+import { PhotoHelperPipe } from '../../pipes/photo-helper.pipe';
 
 
 
@@ -83,6 +84,7 @@ import { CourseGetByIdModel } from '../../models/Catalog/Course/CourseGetByIdMod
         MatSelectModule,
         FormsModule,
         MatProgressSpinnerModule,
+        PhotoHelperPipe
     ]
 })
 export class CreateAndUpdateCourseDialog implements OnInit {
@@ -92,8 +94,9 @@ export class CreateAndUpdateCourseDialog implements OnInit {
     categories: CategoryModel[];
     userInfo: UserInfo;
     selectedCourseId: string;
-    fileUrl: string = '';
-    imageUrl:string = 'http://localhost:5000/services/photostock/';
+    fileUrl: string;
+    fileName: string;
+    imageUrl: string = 'http://localhost:5000/services/photostock/';
     fileFormData = new FormData();
 
     ngOnInit(): void {
@@ -109,7 +112,7 @@ export class CreateAndUpdateCourseDialog implements OnInit {
         private categoryService: CategoryService,
         private identityService: IdentityService,
         private dialog: MatDialog,
-        private photoStockService:PhotostockService
+        private photoStockService: PhotostockService
     ) {
         this.createForm = this.fb.group({
             name: ['', [Validators.minLength(3), Validators.required]],
@@ -128,8 +131,7 @@ export class CreateAndUpdateCourseDialog implements OnInit {
         })
     }
 
-    //todo Check if uploadPhoto method triggers to directly course services
-    onSubmit(): void {
+    submitForm(): void {
         if (this.createForm.valid) {
             this.uploadPhoto().pipe(
                 switchMap(() => {
@@ -165,7 +167,7 @@ export class CreateAndUpdateCourseDialog implements OnInit {
             });
         }
     }
-    
+
     uploadPhoto() {
         return this.photoStockService.upload(this.fileFormData).pipe(
             tap(response => {
@@ -194,9 +196,9 @@ export class CreateAndUpdateCourseDialog implements OnInit {
         });
     }
 
-    mapFormDataToUpdateModel(){
-        if (this.createForm.valid 
-            && (this.selectedCourseId != null 
+    mapFormDataToUpdateModel() {
+        if (this.createForm.valid
+            && (this.selectedCourseId != null
                 || this.selectedCourseId != '')) {
 
             this.updateCourseModel.id = this.selectedCourseId;
@@ -245,6 +247,7 @@ export class CreateAndUpdateCourseDialog implements OnInit {
     onFileSelected(event) {
         const file: File = event.target.files[0];
         if (file) {
+            this.fileName = file.name;
             this.fileFormData.append("file", file);
         }
     }

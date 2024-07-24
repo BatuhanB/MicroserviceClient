@@ -32,6 +32,7 @@ import { UserCourseDeleteDialog } from '../course-delete/usercoursedelete-dialog
 import { CourseDeleteModel } from '../../models/Catalog/Course/CourseDeleteModel';
 import { PhotoHelperPipe } from '../../pipes/photo-helper.pipe';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { DurationFormatterPipe } from '../../pipes/duration-formatter-notst.pipe';
 
 interface UserCourseDialogData {
   userInfo: UserInfo;
@@ -84,7 +85,8 @@ interface UserCourseDialogData {
     MatDialogClose,
     MatSortModule,
     PhotoHelperPipe,
-    MatPaginatorModule
+    MatPaginatorModule,
+    DurationFormatterPipe
   ],
 })
 export class UserCourseDialog implements OnInit, AfterViewInit {

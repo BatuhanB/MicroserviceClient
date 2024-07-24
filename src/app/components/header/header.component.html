@@ -1,18 +1,20 @@
 <div style="display: flex;justify-content: space-between;margin: 20px;">
-    <h1>Course.Web</h1>
+    <a class="logo" routerLink="/">Course.Web</a>
     <div style="display: flex;">
 
-        <button mat-raised-button routerLink="/" style="margin-right:10px;">Home</button>
+        <button mat-raised-button routerLink="/"
+            style="margin-right:10px;">Home</button>
         <div *ngIf="!isAuthenticated; else loggedIn">
             <button mat-raised-button routerLink="/sign-in">Sign In</button>
         </div>
         <ng-template #loggedIn>
-            <button mat-button [matMenuTriggerFor]="afterSignIn"><strong>{{ userName}}</strong></button>
-            <mat-menu #afterSignIn="matMenu" yPosition="below">
-                <button mat-menu-item routerLink="/profile">Profile</button>
-                <button mat-menu-item (click)="signOut()">Sign Out</button>
-            </mat-menu>
+                <button mat-button [matMenuTriggerFor]="afterSignIn">
+                    <strong>{{userName}}</strong>
+                </button>
+                <mat-menu #afterSignIn="matMenu" yPosition="below">
+                    <button mat-menu-item routerLink="/profile">Profile</button>
+                    <button mat-menu-item (click)="signOut()">Sign Out</button>
+                </mat-menu>
         </ng-template>
-
     </div>
 </div>

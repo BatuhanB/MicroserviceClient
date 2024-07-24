@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CategoryModel } from '../../models/Catalog/Category/CategoryModel';
+import { Response } from '../../models/response';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class CategoryService {
     });
   }
 
-  getById(id: string): Observable<any> {
+  getById(id: string): Observable<Response<CategoryModel>> {
     return this.httpClient.get(`${this.baseUrl}categories/getbyid/${id}`, {
       headers: this.headers
     });

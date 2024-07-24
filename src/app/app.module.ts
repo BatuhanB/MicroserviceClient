@@ -30,6 +30,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { PhotoHelperNotStPipe } from './pipes/photo-helper-notst';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { DurationFormatterPipe } from './pipes/duration-formatter.pipe';
+import { CourseDetailComponent } from './components/course-detail/course-detail.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { DurationFormatterPipe } from './pipes/duration-formatter.pipe';
     HomeComponent,
     CoursesComponent,
     PhotoHelperNotStPipe,
-    DurationFormatterPipe
+    DurationFormatterPipe,
+    CourseDetailComponent
   ],
   imports: [
     BrowserAnimationsModule,

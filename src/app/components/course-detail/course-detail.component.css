@@ -1,0 +1,17 @@
+.course-card {
+  max-width: 600px;
+  margin: 20px auto;
+}
+.card-content{
+  margin-top: 20px;
+}
+mat-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: center;
+}

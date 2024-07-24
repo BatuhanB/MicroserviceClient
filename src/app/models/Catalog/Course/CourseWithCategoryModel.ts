@@ -1,4 +1,4 @@
-import CategoryViewModel from "./CategoryViewModel";
+import { CategoryModel } from "../Category/CategoryModel";
 import { FeatureViewModel } from "./FeatureViewModel";
 
 export interface CourseWithCategoryViewModel {
@@ -11,6 +11,6 @@ export interface CourseWithCategoryViewModel {
     userId: string | null;
     feature: FeatureViewModel | null;
     categoryId: string;
-    category: CategoryViewModel | null;
+    category: CategoryModel | null;
 }
 

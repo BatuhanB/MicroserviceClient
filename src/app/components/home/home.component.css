@@ -11,17 +11,19 @@
     background-size: cover;
     background-position: center;
 }
-.card-actions{
+
+.card-actions {
     display: flex;
-    justify-content:space-between; 
+    justify-content: space-between;
     align-items: center;
     margin-right: 8px;
 }
-.detail-button{
-    border-radius: 15px;
-    box-shadow: 2px 2px rgb(0,0,0,.1);
-}
 
-.col-flex{
+.col-flex {
     flex-wrap: wrap;
 }
+
+.paginator {
+    margin: 0 auto;
+}
+

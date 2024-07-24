@@ -8,6 +8,7 @@ import { CourseViewModel } from '../../models/Catalog/Course/CourseViewModel';
 import { Response } from '../../models/response';
 import { Paging } from '../../models/paging';
 import { CourseWithCategoryViewModel } from '../../models/Catalog/Course/CourseWithCategoryModel';
+import { CourseGetByIdModel } from '../../models/Catalog/Course/CourseGetByIdModel';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +40,7 @@ export class CourseService {
     });
   }
 
-  getById(id: string): Observable<any> {
+  getById(id: string): Observable<Response<CourseGetByIdModel>> {
     return this.httpClient.get(`${this.baseUrl}courses/getbyid/${id}`, {
       headers: this.headers
     });

@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'durationFormatter'
+  name: 'durationFormatterNotSt',
+  standalone:true
 })
 export class DurationFormatterPipe implements PipeTransform {
 

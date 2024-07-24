@@ -23,6 +23,8 @@ import { UserInfo, IdentityService } from '../../services/identity-service';
 import { UserCourseDialog } from '../course-list/usercourse-dialog';
 import { PhotostockModel } from '../../models/photostock/photostockmodel';
 import { throwError } from 'rxjs';
+import { CourseViewModel } from '../../models/Catalog/Course/CourseViewModel';
+import { CourseGetByIdModel } from '../../models/Catalog/Course/CourseGetByIdModel';
 
 
 
@@ -219,7 +221,7 @@ export class CreateAndUpdateCourseDialog implements OnInit {
         }
     }
 
-    fillInputsByUpdateModel(courseModel: CourseUpdateModel) {
+    fillInputsByUpdateModel(courseModel: CourseGetByIdModel) {
         this.selectedCourseId = courseModel.id;
         this.fileUrl = courseModel.image;
         this.createForm.setValue({

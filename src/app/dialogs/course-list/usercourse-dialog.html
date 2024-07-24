@@ -31,8 +31,7 @@
         <ng-container matColumnDef="description">
             <th mat-header-cell *matHeaderCellDef mat-sort-header
                 sortActionDescription="Sort by description">Description</th>
-            <td mat-cell *matCellDef="let element">{{ element.description
-                }}</td>
+            <td mat-cell *matCellDef="let element">{{ element.description.substring(0,190)}}  ...</td>
         </ng-container>
 
         <ng-container matColumnDef="price">
@@ -45,7 +44,8 @@
             <th mat-header-cell *matHeaderCellDef>Image</th>
             <td mat-cell *matCellDef="let element">
                 @if(element.image != null && element.image != ''){
-                <img src="{{element.image | photoHelper}}" width="75" height="75" />
+                <img src="{{element.image | photoHelper}}" width="75"
+                    height="75" />
                 }@else{
                 <p>No image</p>
                 }
@@ -107,4 +107,8 @@
             </td>
         </tr>
     </table>
+
 </mat-dialog-content>
+<mat-paginator (page)="handlePageEvent($event)"
+    [pageSizeOptions]="[6, 12, 18]" showFirstLastButtons>
+</mat-paginator>

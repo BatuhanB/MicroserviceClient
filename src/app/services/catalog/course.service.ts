@@ -22,8 +22,8 @@ export class CourseService {
 
   getAllByUserId(userId: string, request: PageRequest): Observable<Response<Paging<CourseWithCategoryViewModel>>> {
     let params = new HttpParams()
-      .set('PageNumber', request.pageNumber.toString())
-      .set('PageSize', request.pageSize.toString());
+    .set('PageNumber', (request.pageNumber + 1).toString())
+    .set('PageSize', request.pageSize.toString());
     return this.httpClient.get<Response<Paging<CourseWithCategoryViewModel>>>(this.baseUrl + "courses/getallbyuseridwithcategory/" + userId, {
       params:params,
       headers: this.headers

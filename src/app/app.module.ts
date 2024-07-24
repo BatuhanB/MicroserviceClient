@@ -29,6 +29,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { MatSortModule } from '@angular/material/sort';
 import { PhotoHelperNotStPipe } from './pipes/photo-helper-notst';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { DurationFormatterPipe } from './pipes/duration-formatter.pipe';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     HeaderComponent,
     HomeComponent,
     CoursesComponent,
-    PhotoHelperNotStPipe
+    PhotoHelperNotStPipe,
+    DurationFormatterPipe
   ],
   imports: [
     BrowserAnimationsModule,

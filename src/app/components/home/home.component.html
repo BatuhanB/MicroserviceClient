@@ -9,18 +9,18 @@
                         <mat-card-subtitle>{{course.category.name}}</mat-card-subtitle>
                     </mat-card-header>
                     <img src="{{course.image | photoHelperNotSt}}"
-                        mat-card-image>
+                        mat-card-image height="350">
                     <mat-card-content class="mt-3">
                         <p>
-                            {{course.description}}
+                            {{course.description.substring(0,265)}} ...
                         </p>
                     </mat-card-content>
                     <mat-card-actions class="card-actions">
                         <p
-                            class="fs-5 mx-3 mt-3"><strong>{{course.price|currency}}</strong></p>
+                            class="fs-5 mx-3 mt-3"><strong>{{course.price | currency}}</strong></p>
                         <p
-                            class="fs-5 mx-3 mt-3"><strong>{{course.feature.duration}}</strong>
-                            min</p>
+                            class="fs-5 mx-3 mt-3"><strong>{{course.feature.duration
+                                | durationFormatter}}</strong></p>
                         <button mat-stroked-button
                             class="detail-button">Detail</button>
                     </mat-card-actions>

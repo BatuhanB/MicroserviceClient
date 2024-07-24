@@ -7,6 +7,6 @@ export class CourseUpdateModel{
     price: number;
     image: string | null;
     userId: string | null;
-    feature: FeatureViewModel | null;
+    feature: FeatureViewModel = new FeatureViewModel();
     categoryId: string;
 }

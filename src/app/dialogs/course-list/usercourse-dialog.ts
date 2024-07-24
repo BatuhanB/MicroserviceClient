@@ -31,6 +31,7 @@ import { CreateAndUpdateCourseDialog } from '../course-update-create/createandup
 import { UserCourseDeleteDialog } from '../course-delete/usercoursedelete-dialog';
 import { CourseDeleteModel } from '../../models/Catalog/Course/CourseDeleteModel';
 import { PhotoHelperPipe } from '../../pipes/photo-helper.pipe';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 interface UserCourseDialogData {
   userInfo: UserInfo;
@@ -82,10 +83,12 @@ interface UserCourseDialogData {
     MatDialogActions,
     MatDialogClose,
     MatSortModule,
-    PhotoHelperPipe
+    PhotoHelperPipe,
+    MatPaginatorModule
   ],
 })
 export class UserCourseDialog implements OnInit, AfterViewInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   displayedColumns: string[] = [
     'name',
     'description',
@@ -121,6 +124,10 @@ export class UserCourseDialog implements OnInit, AfterViewInit {
     }
   }
 
+  handlePageEvent(e: PageEvent) {
+    this.getAllCourses();
+  }
+
   ngOnInit(): void {
     this.getAllCourses();
   }
@@ -148,10 +155,13 @@ export class UserCourseDialog implements OnInit, AfterViewInit {
 
   getAllCourses() {
     var pageRequest = new PageRequest();
-    pageRequest.pageNumber = 1;
-    pageRequest.pageSize = 6;
+    let pageNumber = this.paginator ? this.paginator.pageIndex : 0;
+    let pageSize = this.paginator ? this.paginator.pageSize : 6;
+    pageRequest.pageNumber = pageNumber;
+    pageRequest.pageSize = pageSize;
     this.courseService.getAllByUserId(this.info.userInfo.sub, pageRequest).subscribe({
       next: (value) => {
+        this.paginator.length = value.data.totalCount;
         this.dataSource.data = value.data.items;
       },
     });

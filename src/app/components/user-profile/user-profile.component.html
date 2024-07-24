@@ -1,22 +1,20 @@
-<mat-grid-list cols="3" rowHeight="2:1" class="grid">
-    <mat-grid-tile colspan="1">
-        <mat-card class="example-card" appearance="outlined">
-            <mat-card-header>
-                <mat-card-title>{{userInfo?.name | uppercase}}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content class="card-content">
-                <p><strong>Id: </strong> {{userInfo?.sub}}</p>
-                <p><strong>Email: </strong> {{userInfo?.email}}</p>
-            </mat-card-content>
-        </mat-card>
-    </mat-grid-tile>
-
-    <mat-grid-tile colspan="2">
-        <h2>To see the courses click the button</h2>
-        <div class="example-button-container">
-            <button mat-fab (click)="openDialog()" class="dialog-button">
-                <mat-icon>list</mat-icon>
-            </button>
-        </div>
-    </mat-grid-tile>
-</mat-grid-list>
+ <div class="container">
+    <mat-card class="example-card" appearance="outlined">
+        <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title>{{userInfo?.name | uppercase}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="card-content">
+            <p><strong>Id: </strong> {{userInfo?.sub}}</p>
+            <p><strong>Email: </strong> {{userInfo?.email}}</p>
+            <p><strong>Email Verified: </strong>
+                {{userInfo?.email_verified}}</p>
+            <div class="example-button-container">
+                <button mat-raised-button (click)="openDialog()"
+                    class="dialog-button">
+                    To see the courses
+                </button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

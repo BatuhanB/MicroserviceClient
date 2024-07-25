@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { IdentityService } from './identity-service';
 import { Observable } from 'rxjs';
 import { Response } from '../models/response';
 import { BasketModel } from '../models/Basket/basketmodel';
@@ -12,11 +11,9 @@ export class BasketService {
   private baseUrl = 'http://localhost:5000/services/basket/baskets';
 
   constructor(
-    private httpClient: HttpClient,
-    private identityService: IdentityService) { }
+    private httpClient: HttpClient) { }
 
   get(): Observable<Response<BasketModel>> {
-    const userId = this.identityService.getUserId();
     return this.httpClient.get<Response<BasketModel>>(`${this.baseUrl}/get`);
   }
 

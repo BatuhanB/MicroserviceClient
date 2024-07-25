@@ -87,7 +87,9 @@ export class UserCourseDeleteDialog implements OnInit{
   deleteCourse() {
     this.courseService.delete(this.data.id).subscribe({
       next: response => {
-          this._snackBar.open(`You successfully deleted ${this.data.name}`, 'close');
+          this._snackBar.open(`You successfully deleted ${this.data.name}`, 'close',{
+            duration:2000
+          });
           this.dialog.closeAll();
           this.dialog.open(UserCourseDialog, {
             data: {

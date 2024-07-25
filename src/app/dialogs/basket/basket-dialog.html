@@ -1,23 +1,19 @@
-<h2 mat-dialog-title> Basket</h2>
 
 <mat-dialog-content>
-    <ul>
+    <h2 mat-dialog-title class="dialog-title"> Basket</h2>
+    <div class="basket-items">
         @for (basketItem of basket.basketItems; track $index) {
-        <li>
-            <div>
-                <p>Name: <strong>{{basketItem.courseName}}</strong></p>
-                <br>
-                <p>Price: <strong>{{basketItem.price}}</strong></p>
-                <br>
-                <p>Quantity: <strong>{{basketItem.quantity}}</strong></p>
-            </div>
-        </li>
+        <div>
+            <p>Name: <strong>{{basketItem.courseName}}</strong></p>
+            <p>Price: <strong>{{basketItem.price | currency}}</strong></p>
+            <p>Quantity: <strong>{{basketItem.quantity}}</strong></p>
+        </div>
         <br>
         }
-    </ul>
-    <p>Total Price : {{basket.totalPrice}}</p>
+    </div>
+    <p class="dialog-total-price"><strong>Total Price : {{basket.totalPrice | currency}}</strong> </p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Delete</button>
+    <button mat-button color="primary"  cdkFocusInitial (click)="checkout()">Checkout</button>
 </mat-dialog-actions>

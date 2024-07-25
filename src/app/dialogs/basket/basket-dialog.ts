@@ -21,8 +21,37 @@ import { BasketModel } from '../../models/Basket/basketmodel';
   selector: 'basket-dialog',
   templateUrl: 'basket-dialog.html',
   styles: `
+  .basket-items {
+    min-width:400px;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    display:flex;
+    justify-content:center;
+    font-size:20px;
+    padding-top:20px;
+    border:1px rgba(0,0,0,.2) solid;
+  }
+  .dialog-total-price{
+    display:flex;
+    justify-content:flex-end;
+    font-size:18px;
+  }
+  .basket-item {
+      padding: 10px;
+      border-bottom: 1px solid #e0e0e0;
+  }
+  .basket-item:last-child {
+      border-bottom: none;
+  }
+  .total-price {
+      font-weight: bold;
+      text-align: right;
+      margin-top: 10px;
+  }
   .dialog-title{
-    height:45px;
+    display:flex;
+    justify-content:center;
     font-size:25px;
   }
   .dialog-top-area {
@@ -60,29 +89,33 @@ import { BasketModel } from '../../models/Basket/basketmodel';
     MatButtonModule,
   ],
 })
-export class BasketDialog implements OnInit{
-  basket:BasketModel = new BasketModel();
+export class BasketDialog implements OnInit {
+  basket: BasketModel;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private courseService: CourseService,
     private _snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private identity:IdentityService,
-    private basketService:BasketService,
-    private guard:AuthGuard
+    private identity: IdentityService,
+    private basketService: BasketService,
+    private guard: AuthGuard
   ) { }
 
   ngOnInit(): void {
     var isAuthenticated = this.guard.canActivate();
-    if(isAuthenticated){
+    if (isAuthenticated) {
       this.get();
     }
   }
-  
-  get(){
+
+  checkout(){
+
+  }
+
+  get() {
     this.basketService.get().subscribe({
-      next:response=>{
-        if(response.isSuccessful){
+      next: response => {
+        if (response.isSuccessful) {
           this.basket = response.data;
         }
       }

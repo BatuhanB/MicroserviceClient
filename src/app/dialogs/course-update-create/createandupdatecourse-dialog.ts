@@ -146,10 +146,14 @@ export class CreateAndUpdateCourseDialog implements OnInit {
             ).subscribe({
                 next: (response) => {
                     if (this.selectedCourseId != null) {
-                        this._snackBar.open(`Updated successfully`, 'Okey');
+                        this._snackBar.open(`Updated successfully`, 'Okey',{
+                            duration:2000
+                        });
                     } else {
                         if (response.isSuccessful) {
-                            this._snackBar.open(`${response.data.name} created successfully`, 'Okey');
+                            this._snackBar.open(`${response.data.name} created successfully`, 'Okey',{
+                                duration:2000
+                            });
                         } else {
                             console.error('error', response.errors);
                         }

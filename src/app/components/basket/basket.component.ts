@@ -10,7 +10,7 @@ import { IdentityService } from '../../services/identity-service';
 })
 export class BasketComponent implements OnInit {
 
-  basketModel: BasketModel = new BasketModel();
+  basketModel: BasketModel;
 
   constructor(
     private basketService: BasketService,

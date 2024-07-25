@@ -1,6 +1,6 @@
 import { Feature } from "./CourseViewModel"
 
-export interface CourseGetByIdModel {
+export class CourseGetByIdModel {
     name: string;
     description: string;
     price: number;

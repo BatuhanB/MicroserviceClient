@@ -1,11 +1,11 @@
-export interface BasketModel {
-    userId: string;
-    discountCode: string | null;
-    basketItems: BasketItemModel[];
-    totalPrice: number;
+export class BasketModel {
+    userId: string = null;
+    discountCode: string = null;
+    basketItems: BasketItemModel[] = [];
+    totalPrice: number = 0;
 }
 
-export interface BasketItemModel {
+export class BasketItemModel {
     quantity: number;
     courseId: string;
     courseName: string;

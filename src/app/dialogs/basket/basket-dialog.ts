@@ -15,7 +15,7 @@ import { CourseService } from '../../services/catalog/course.service';
 import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { BasketModel } from '../../models/Basket/basketmodel';
+import { BasketItemModel, BasketModel } from '../../models/Basket/basketmodel';
 
 @Component({
   selector: 'basket-dialog',
@@ -98,14 +98,25 @@ export class BasketDialog implements OnInit {
     private dialog: MatDialog,
     private identity: IdentityService,
     private basketService: BasketService,
-    private guard: AuthGuard
   ) { }
 
   ngOnInit(): void {
-    var isAuthenticated = this.guard.canActivate();
-    if (isAuthenticated) {
+    if (this.identity.isAuthenticated()) {
       this.get();
     }
+  }
+
+  removeFromCart(basketItem:BasketItemModel){
+    this.basketService.removeFromBasket(basketItem).subscribe(res=>res);
+    // .subscribe({
+    //   next:response=>{
+    //     if(response.isSuccessful){
+    //       this._snackBar.open(`${basketItem.courseName} has removed!`,"Okay",{
+    //         duration:2000
+    //       })
+    //     }
+    //   }
+    // })
   }
 
   checkout(){

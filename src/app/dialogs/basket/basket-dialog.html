@@ -1,19 +1,28 @@
-
-<mat-dialog-content>
-    <h2 mat-dialog-title class="dialog-title"> Basket</h2>
-    <div class="basket-items">
-        @for (basketItem of basket.basketItems; track $index) {
-        <div>
-            <p>Name: <strong>{{basketItem.courseName}}</strong></p>
-            <p>Price: <strong>{{basketItem.price | currency}}</strong></p>
-            <p>Quantity: <strong>{{basketItem.quantity}}</strong></p>
+@if(basket){
+    <mat-dialog-content>
+        <h2 mat-dialog-title class="dialog-title"> Basket</h2>
+        <div class="basket-items">
+            @for (basketItem of basket.basketItems; track $index) {
+            <div>
+                <p>Name: <strong>{{basketItem.courseName}}</strong></p>
+                <p>Price: <strong>{{basketItem.price | currency}}</strong></p>
+                <p>Quantity: <strong>{{basketItem.quantity}}</strong></p>
+                <button mat-button (click)="removeFromCart(basketItem)"><strong>Remove</strong></button>
+            </div>
+            <br>
+            }
         </div>
-        <br>
-        }
-    </div>
-    <p class="dialog-total-price"><strong>Total Price : {{basket.totalPrice | currency}}</strong> </p>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button color="primary"  cdkFocusInitial (click)="checkout()">Checkout</button>
-</mat-dialog-actions>
+        <p class="dialog-total-price"><strong>Total Price : {{basket.totalPrice | currency}}</strong> </p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-button color="primary"  cdkFocusInitial (click)="checkout()">Checkout</button>
+    </mat-dialog-actions>
+}@else{
+    <mat-dialog-content>
+        <h2 mat-dialog-title class="dialog-title"> Basket is Empty</h2>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cancel</button>
+    </mat-dialog-actions>
+}

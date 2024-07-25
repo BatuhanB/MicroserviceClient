@@ -1,3 +1,4 @@
+import { BasketModel } from './../../models/Basket/basketmodel';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { CourseService } from './../../services/catalog/course.service';
@@ -6,8 +7,7 @@ import { CourseGetByIdModel } from '../../models/Catalog/Course/CourseGetByIdMod
 import { CategoryModel } from '../../models/Catalog/Category/CategoryModel';
 import { CategoryService } from '../../services/catalog/category.service';
 import { BasketService } from '../../services/basket.service';
-import { BasketItemModel, BasketModel } from '../../models/Basket/basketmodel';
-import { CartService } from '../../services/cart.service';
+import { BasketItemModel } from '../../models/Basket/basketmodel';
 
 @Component({
   selector: 'app-course-detail',
@@ -18,15 +18,13 @@ export class CourseDetailComponent implements OnInit {
   spinnerVal: boolean = false;
   course: CourseGetByIdModel = new CourseGetByIdModel();
   category: CategoryModel = new CategoryModel();
-  basket:BasketModel;
 
   constructor(
     private courseService: CourseService,
     private snackBar: MatSnackBar,
     private categoryService: CategoryService,
     private router: ActivatedRoute,
-    private basketService: BasketService,
-    private cartService:CartService) {
+    private basketService: BasketService) {
     router.paramMap.subscribe({
       next: params => {
         if (params != null) {
@@ -41,19 +39,25 @@ export class CourseDetailComponent implements OnInit {
 
   addToCart(course:CourseGetByIdModel) {
     var basketItem = this.mapToBasketItem(course);
-    this.cartService.addToCart(basketItem);
+    this.basketService.addToBasket(basketItem).subscribe({
+      next:response=>{
+        console.log(response);
+        
+        // if(response){
+        //   this.snackBar.open(`${course.name} has added to cart`,"Okay",{
+        //     duration:2000
+        //   })
+        // }
+      }
+    });
     
-    this.snackBar.open(`${course.name} has added to cart!`, 'Okey', {
+    this.snackBar.open(`${course.name} has added to cart!`, 'Okay', {
       duration: 2000
     });
   }
 
-  removeFromCart(courseId:string){
-    this.cartService.removeFromCart(courseId);
-  }
-
   mapToBasketItem(course:CourseGetByIdModel):BasketItemModel{
-    let basketItem:BasketItemModel;
+    let basketItem:BasketItemModel = new BasketItemModel();
     basketItem.courseId = course.id;
     basketItem.courseName = course.name;
     basketItem.price = course.price;

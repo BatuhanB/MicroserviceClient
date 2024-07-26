@@ -16,6 +16,10 @@ import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { BasketItemModel, BasketModel } from '../../models/Basket/basketmodel';
+import { CourseGetByIdModel } from '../../models/Catalog/Course/CourseGetByIdModel';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'basket-dialog',
@@ -23,19 +27,31 @@ import { BasketItemModel, BasketModel } from '../../models/Basket/basketmodel';
   styles: `
   .basket-items {
     min-width:400px;
-    max-height: 400px;
-    overflow-y: auto;
-    margin-bottom: 20px;
-    display:flex;
-    justify-content:center;
+  }
+  .basket-item{
     font-size:20px;
-    padding-top:20px;
+    margin-top:10px;
     border:1px rgba(0,0,0,.2) solid;
+    margin-bottom:-20px;
+  }
+  .dialog-action-section{
+    display:flex;
+    margin:0 15px;
+  }
+  .apply-coupon-btn{
+    margin-bottom: 50px;
+    background-color: #0b9d3d;
+    color: white;
   }
   .dialog-total-price{
     display:flex;
-    justify-content:flex-end;
+    justify-content:flex-start;
     font-size:18px;
+    height:5px;
+  }
+  .coupon-actions{
+    margin:0 15px -35px 15px;
+    justify-content: space-between;
   }
   .basket-item {
       padding: 10px;
@@ -87,10 +103,15 @@ import { BasketItemModel, BasketModel } from '../../models/Basket/basketmodel';
     MatDialogActions,
     MatDialogClose,
     MatButtonModule,
+    MatFormFieldModule,
+    MatLabel,
+    ReactiveFormsModule,
+    MatInputModule
   ],
 })
 export class BasketDialog implements OnInit {
   basket: BasketModel;
+  courses: CourseGetByIdModel[];
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private courseService: CourseService,
@@ -127,7 +148,7 @@ export class BasketDialog implements OnInit {
             this._snackBar.open(`${basketItem.courseName} has removed!`, "Okay", {
               duration: 2000
             })
-          }else{
+          } else {
             console.log("Error");
           }
         }
@@ -135,6 +156,10 @@ export class BasketDialog implements OnInit {
   }
 
   checkout() {
+
+  }
+
+  getCourseById() {
 
   }
 }

@@ -7,24 +7,43 @@
     }@else {
     <div class="basket-items">
         @for (basketItem of basket?.basketItems; track $index) {
-        <div>
+        <div class="basket-item">
             <p>Name: <strong>{{basketItem?.courseName}}</strong></p>
             <p>Price: <strong>{{basketItem?.price | currency}}</strong></p>
-            <p>Quantity: <strong>{{basketItem?.quantity}}</strong></p>
-            <button mat-button
+            <!-- <p>Quantity: <strong>{{basketItem?.quantity}}</strong></p> -->
+            <button mat-flat-button color="primary"
                 (click)="removeFromCart(basketItem)"><strong>Remove</strong></button>
         </div>
         <br>
         }
     </div>
-    <p class="dialog-total-price"><strong>Total Price : {{basket?.totalPrice |
-            currency}}</strong> </p>
     }
+
 </mat-dialog-content>
-<mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
+<mat-dialog-actions class="coupon-actions">
+    <div class="coupon-form-field">
+        <mat-form-field>
+            <mat-label>Enter Coupon</mat-label>
+            <input matInput>
+        </mat-form-field>
+        <p>Coupon has applied.</p>
+    </div>
+    <button mat-raised-button class="apply-coupon-btn">Apply Coupon</button>
+</mat-dialog-actions>
+<mat-dialog-actions class="dialog-action-section"
+    [ngStyle]="{'justify-content': basket?.basketItems.length == 0 ? 'flex-end' : 'space-between' }">
     @if(basket?.basketItems.length > 0 ){
-        <button mat-button color="primary" cdkFocusInitial
-        (click)="checkout()">Checkout</button>
+    <div>
+        <p class="dialog-total-price">
+            <strong>Total Price : {{basket?.totalPrice | currency}}</strong>
+        </p>
+    </div>
     }
+    <div class="dialog-actions">
+        <button mat-button mat-dialog-close>Cancel</button>
+        @if(basket?.basketItems.length > 0 ){
+        <button mat-button color="primary" cdkFocusInitial
+            (click)="checkout()">Checkout</button>
+        }
+    </div>
 </mat-dialog-actions>

@@ -41,18 +41,14 @@ export class CourseDetailComponent implements OnInit {
     var basketItem = this.mapToBasketItem(course);
     this.basketService.addToBasket(basketItem).subscribe({
       next:response=>{
-        console.log(response);
-        
-        // if(response){
-        //   this.snackBar.open(`${course.name} has added to cart`,"Okay",{
-        //     duration:2000
-        //   })
-        // }
+        if(response.data){
+          this.snackBar.open(`${course.name} has added to cart!`, 'Okay', {
+            duration: 2000
+          });
+        }else{
+          console.log("Error");
+        }
       }
-    });
-    
-    this.snackBar.open(`${course.name} has added to cart!`, 'Okay', {
-      duration: 2000
     });
   }
 

@@ -106,22 +106,6 @@ export class BasketDialog implements OnInit {
     }
   }
 
-  removeFromCart(basketItem:BasketItemModel){
-    this.basketService.removeFromBasket(basketItem).subscribe(res=>res);
-    // .subscribe({
-    //   next:response=>{
-    //     if(response.isSuccessful){
-    //       this._snackBar.open(`${basketItem.courseName} has removed!`,"Okay",{
-    //         duration:2000
-    //       })
-    //     }
-    //   }
-    // })
-  }
-
-  checkout(){
-
-  }
 
   get() {
     this.basketService.get().subscribe({
@@ -131,5 +115,26 @@ export class BasketDialog implements OnInit {
         }
       }
     });
+  }
+
+
+  removeFromCart(basketItem: BasketItemModel) {
+    this.basketService.removeFromBasket(basketItem)
+      .subscribe({
+        next: response => {
+          if (response.isSuccessful) {
+            this.get();
+            this._snackBar.open(`${basketItem.courseName} has removed!`, "Okay", {
+              duration: 2000
+            })
+          }else{
+            console.log("Error");
+          }
+        }
+      })
+  }
+
+  checkout() {
+
   }
 }

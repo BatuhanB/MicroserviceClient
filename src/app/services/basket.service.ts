@@ -21,8 +21,8 @@ export class BasketService {
     );
   }
 
-  saveOrUpdate(basket: BasketModel): Observable<any> {
-    return this.httpClient.post(`${this.baseUrl}/saveorupdate`, basket).pipe(
+  saveOrUpdate(basket: BasketModel): Observable<Response<boolean>> {
+    return this.httpClient.post<Response<boolean>>(`${this.baseUrl}/saveorupdate`, basket).pipe(
       catchError(this.handleError)
     );
   }
@@ -31,7 +31,7 @@ export class BasketService {
     return this.httpClient.delete<Response<boolean>>(`${this.baseUrl}/delete`);
   }
 
-  addToBasket(basketItem: BasketItemModel): Observable<boolean> {
+  addToBasket(basketItem: BasketItemModel): Observable<Response<boolean>> {
     return this.get().pipe(
       switchMap(res => {
         let basket: BasketModel = res.data;
@@ -51,19 +51,16 @@ export class BasketService {
     );
   }
 
-  removeFromBasket(basketItem: BasketItemModel): Observable<any> {
+  removeFromBasket(basketItem: BasketItemModel): Observable<Response<boolean>> {
     return this.get().pipe(
       switchMap(res => {
-        const basket: BasketModel = res.data;
-        if (!basket) {
-          return of(false);
+        let basket: BasketModel = res.data;
+        if (basket) {
+          const deleteBasketItem = basket.basketItems.find(x => x.courseId === basketItem.courseId);
+          if (deleteBasketItem) {
+            basket.basketItems = basket.basketItems.filter(x => x.courseId !== basketItem.courseId);
+          }
         }
-
-        const deleteBasketItem = basket.basketItems.find(x => x.courseId === basketItem.courseId);
-        if (!deleteBasketItem) {
-          return of(false);
-        }
-        basket.basketItems = basket.basketItems.filter(x => x.courseId !== basketItem.courseId);
         return this.saveOrUpdate(basket);
       })
     );

@@ -28,7 +28,8 @@ export class HeaderComponent implements OnInit {
   private getAuthStatus() {
     this.basketService.get()
       .pipe(switchMap(res => {
-        this.isBasketEmpty = res.data.basketItems.length > 0 ? false : true;
+        this.isBasketEmpty = res.data ? false : true;
+        this.cdr.detectChanges();
         return this.identityService.getAuthStatus();
       }))
       .subscribe(isAuthenticated => {

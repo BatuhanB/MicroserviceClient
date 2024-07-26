@@ -1,4 +1,4 @@
- <mat-dialog-content>
+<mat-dialog-content>
     <h2 mat-dialog-title class="dialog-title"> Basket</h2>
     @if(basket?.basketItems.length == 0 ){
     <mat-dialog-content>
@@ -6,13 +6,21 @@
     </mat-dialog-content>
     }@else {
     <div class="basket-items">
-        @for (basketItem of basket?.basketItems; track $index) {
+        @for (course of courses; track $index) {
         <div class="basket-item">
-            <p>Name: <strong>{{basketItem?.courseName}}</strong></p>
-            <p>Price: <strong>{{basketItem?.price | currency}}</strong></p>
-            <!-- <p>Quantity: <strong>{{basketItem?.quantity}}</strong></p> -->
-            <button mat-flat-button color="primary"
-                (click)="removeFromCart(basketItem)"><strong>Remove</strong></button>
+            <div class="course-image">
+                <img [src]="course.image | photoHelper" width="150" height="150">
+            </div>
+            <div class="course-content">
+                <h1><strong>{{course?.name}}</strong></h1>
+                <h2>{{course?.description.substring(0,52)}}...</h2>
+                <p><strong>{{course?.price | currency}}</strong></p>
+                <p><strong>{{course?.feature?.duration | durationFormatterNotSt}}</strong></p>
+            </div>
+            <div class="course-remove">
+                <button mat-flat-button color="primary"
+                (click)="removeFromCart(course)"><strong>Remove</strong></button>
+            </div>
         </div>
         <br>
         }
@@ -22,13 +30,13 @@
 </mat-dialog-content>
 <mat-dialog-actions class="coupon-actions">
     <div class="coupon-form-field">
-        <mat-form-field>
+        <mat-form-field style="margin-bottom: -10px;">
             <mat-label>Enter Coupon</mat-label>
-            <input matInput>
+            <input matInput [formControl]="couponCode" >
         </mat-form-field>
-        <p>Coupon has applied.</p>
+        <p style="margin-bottom: 15px;"><strong>{{couponCodeAppliedText}}</strong> </p>
     </div>
-    <button mat-raised-button class="apply-coupon-btn">Apply Coupon</button>
+    <button mat-raised-button class="apply-coupon-btn" (click)="applyDiscount()">Apply Coupon</button>
 </mat-dialog-actions>
 <mat-dialog-actions class="dialog-action-section"
     [ngStyle]="{'justify-content': basket?.basketItems.length == 0 ? 'flex-end' : 'space-between' }">

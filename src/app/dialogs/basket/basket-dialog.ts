@@ -1,3 +1,4 @@
+import { CouponModel } from './../../models/Basket/couponmodel';
 import { AuthGuard } from './../../guards/auth.guard';
 import { BasketService } from './../../services/basket.service';
 import { IdentityService } from '../../services/identity-service';
@@ -18,8 +19,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { BasketItemModel, BasketModel } from '../../models/Basket/basketmodel';
 import { CourseGetByIdModel } from '../../models/Catalog/Course/CourseGetByIdModel';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { PhotoHelperPipe } from '../../pipes/photo-helper.pipe';
+import { DurationFormatterPipe } from '../../pipes/duration-formatter-notst.pipe';
 
 @Component({
   selector: 'basket-dialog',
@@ -33,15 +36,27 @@ import { MatInputModule } from '@angular/material/input';
     margin-top:10px;
     border:1px rgba(0,0,0,.2) solid;
     margin-bottom:-20px;
+    display:flex;
+    justify-content:space-between;
   }
   .dialog-action-section{
     display:flex;
     margin:0 15px;
   }
   .apply-coupon-btn{
-    margin-bottom: 50px;
+    margin-bottom: 40px;
     background-color: #0b9d3d;
     color: white;
+  }
+  .course-image{
+    margin-right:20px;
+  }
+  .course-remove{
+    display:flex;
+    align-items:flex-end;
+  }
+  .course-content{
+    color:black !important;
   }
   .dialog-total-price{
     display:flex;
@@ -69,6 +84,8 @@ import { MatInputModule } from '@angular/material/input';
     display:flex;
     justify-content:center;
     font-size:25px;
+    margin-bottom:-20px;
+    font-weight:bold;
   }
   .dialog-top-area {
     display: flex;
@@ -106,12 +123,18 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatLabel,
     ReactiveFormsModule,
-    MatInputModule
+    MatInputModule,
+    PhotoHelperPipe,
+    DurationFormatterPipe,
+    ReactiveFormsModule
   ],
 })
 export class BasketDialog implements OnInit {
   basket: BasketModel;
-  courses: CourseGetByIdModel[];
+  courses: CourseGetByIdModel[] = [];
+  coupon:CouponModel = new CouponModel();
+  couponCode = new FormControl();
+  couponCodeAppliedText:string = '';
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private courseService: CourseService,
@@ -119,7 +142,11 @@ export class BasketDialog implements OnInit {
     private dialog: MatDialog,
     private identity: IdentityService,
     private basketService: BasketService,
-  ) { }
+  ) { 
+    this.coupon.code = "7JFF6A0GKAF18H";
+    this.coupon.rate = 20;
+    this.coupon.isUsed = false;
+  }
 
   ngOnInit(): void {
     if (this.identity.isAuthenticated()) {
@@ -127,19 +154,19 @@ export class BasketDialog implements OnInit {
     }
   }
 
-
   get() {
     this.basketService.get().subscribe({
       next: response => {
         if (response.isSuccessful) {
           this.basket = response.data;
+          this.mapBasketItemsToCourses(this.basket.basketItems);
         }
       }
     });
   }
 
-
-  removeFromCart(basketItem: BasketItemModel) {
+  removeFromCart(course:CourseGetByIdModel) {
+    let basketItem = this.basket.basketItems.find((value)=>value.courseId === course.id);
     this.basketService.removeFromBasket(basketItem)
       .subscribe({
         next: response => {
@@ -155,11 +182,52 @@ export class BasketDialog implements OnInit {
       })
   }
 
+  applyDiscount(){
+    let checkCouponExists = this.couponCode.value != this.basket.discountCode;
+    if(checkCouponExists && !this.coupon.isUsed){
+      this.coupon.isUsed = true;
+      if(this.couponCode.value == this.coupon.code){
+        this.basket.totalPrice = this.basket.totalPrice - ((this.basket.totalPrice * 20) / 100); 
+        this.couponCodeAppliedText = `${this.couponCode.value} has applied!`;
+        this.basket.discountCode = this.couponCode.value;
+        this.couponCode.setValue('');
+
+        this.basketService.saveOrUpdate(this.basket).subscribe({
+          next:response=>{
+            console.log(response.data);
+          }
+        })
+      }else{
+        this._snackBar.open(`Coupon code is not valid!`,'Okay',{
+          duration:4000
+        });
+      }
+    }else{
+      this._snackBar.open(`Coupon code has already used!`,'Okay',{
+        duration:4000
+      });
+    }
+  }
+
   checkout() {
 
   }
 
-  getCourseById() {
-
+  mapBasketItemsToCourses(basketItems: BasketItemModel[]) {
+    basketItems.forEach((basketItem) => {
+      this.courseService.getById(basketItem.courseId).subscribe({
+        next: response => {
+          if (response.isSuccessful) {
+            this.courses.push(response.data);
+          } else {
+            response.errors.forEach(err => {
+              console.log(err);
+            })
+          }
+        }, error: errs => {
+          console.error(errs);
+        }
+      })
+    });
   }
 }

@@ -2,8 +2,8 @@
 @import "../../../../node_modules/bootstrap/dist/css/bootstrap-utilities.min.css";
 
 .example-card {
-    max-width: 400px;
     border-radius: 15px;
+    max-width: 400px;
 }
 
 .example-header-image {
@@ -31,3 +31,69 @@
     z-index: 1000;
     margin: 0 auto;
 }
+
+.add-to-cart-btn{
+    width: 100%;
+    color: white;
+    background-color: orangered;
+}
+.course-image{
+    height: 350px;
+}
+
+@media only screen and (max-width: 1400px) {
+    .example-card {
+        border-radius: 15px;
+        max-width: 500px;
+    }
+
+    .course-image{
+        height: 450px;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    .example-card {
+        border-radius: 15px;
+        max-width: 450px;
+    }
+
+    .course-image{
+        height: 400px;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .example-card {
+        border-radius: 15px;
+        max-width: 350px;
+    }
+
+    .course-image{
+        height: 320px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .example-card {
+        border-radius: 15px;
+        max-width: 600px;
+    }
+
+    .course-image{
+        height: 500px;
+    }
+}
+
+
+@media only screen and (max-width: 450px) {
+    .course-image{
+        height: 250px;
+    }
+
+    .example-card {
+        border-radius: 15px;
+        max-width: 350px;
+    }
+}
+

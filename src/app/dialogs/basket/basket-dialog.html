@@ -8,14 +8,16 @@
     <div class="basket-items">
         @for (course of courses; track $index) {
         <div class="basket-item">
-            <div class="course-image">
-                <img [src]="course.image | photoHelper" width="150" height="150">
-            </div>
-            <div class="course-content">
-                <h1><strong>{{course?.name}}</strong></h1>
-                <h2>{{course?.description.substring(0,52)}}...</h2>
-                <p><strong>{{course?.price | currency}}</strong></p>
-                <p><strong>{{course?.feature?.duration | durationFormatterNotSt}}</strong></p>
+            <div class="course-image-content">
+                <div class="course-image">
+                    <img [src]="course.image | photoHelper" width="140" height="140">
+                </div>
+                <div class="course-content">
+                    <h1 ><strong>{{course?.name}}</strong></h1>
+                    <h2>{{course?.description.substring(0,52)}}...</h2>
+                    <p class="mb-0"><strong>{{course?.price | currency}}</strong></p>
+                    <p class="mb-0"><strong>{{course?.feature?.duration | durationFormatterNotSt}}</strong></p>
+                </div>
             </div>
             <div class="course-remove">
                 <button mat-flat-button color="primary"
@@ -28,16 +30,23 @@
     }
 
 </mat-dialog-content>
+@if(basket?.basketItems.length != 0 ){
 <mat-dialog-actions class="coupon-actions">
     <div class="coupon-form-field">
         <mat-form-field style="margin-bottom: -10px;">
-            <mat-label>Enter Coupon</mat-label>
-            <input matInput [formControl]="couponCode" >
+            <mat-label>Coupon</mat-label>
+            <input matInput [formControl]="couponCode" placeholder="Enter Coupon">
         </mat-form-field>
         <p style="margin-bottom: 15px;"><strong>{{couponCodeAppliedText}}</strong> </p>
     </div>
-    <button mat-raised-button class="apply-coupon-btn" (click)="applyDiscount()">Apply Coupon</button>
+    <div>
+        <!-- @if(basket.discountCode){
+            <button mat-raised-button class="remove-coupon-btn" (click)="removeDiscount()">Remove Coupon</button>
+        } -->
+        <button mat-raised-button class="apply-coupon-btn" (click)="applyDiscount()">Apply Coupon</button>
+    </div>
 </mat-dialog-actions>
+}
 <mat-dialog-actions class="dialog-action-section"
     [ngStyle]="{'justify-content': basket?.basketItems.length == 0 ? 'flex-end' : 'space-between' }">
     @if(basket?.basketItems.length > 0 ){

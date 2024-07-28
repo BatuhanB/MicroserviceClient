@@ -1,5 +1,4 @@
-import { CouponModel } from './../../models/Basket/couponmodel';
-import { AuthGuard } from './../../guards/auth.guard';
+import { DiscountService } from './../../services/discount.service';
 import { BasketService } from './../../services/basket.service';
 import { IdentityService } from '../../services/identity-service';
 import { Component, OnInit, Inject, } from '@angular/core';
@@ -23,94 +22,13 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { PhotoHelperPipe } from '../../pipes/photo-helper.pipe';
 import { DurationFormatterPipe } from '../../pipes/duration-formatter-notst.pipe';
+import { DiscountGetByCode } from '../../models/Discount/discountgetbycode';
+import { of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'basket-dialog',
   templateUrl: 'basket-dialog.html',
-  styles: `
-  .basket-items {
-    min-width:400px;
-  }
-  .basket-item{
-    font-size:20px;
-    margin-top:10px;
-    border:1px rgba(0,0,0,.2) solid;
-    margin-bottom:-20px;
-    display:flex;
-    justify-content:space-between;
-  }
-  .dialog-action-section{
-    display:flex;
-    margin:0 15px;
-  }
-  .apply-coupon-btn{
-    margin-bottom: 40px;
-    background-color: #0b9d3d;
-    color: white;
-  }
-  .course-image{
-    margin-right:20px;
-  }
-  .course-remove{
-    display:flex;
-    align-items:flex-end;
-  }
-  .course-content{
-    color:black !important;
-  }
-  .dialog-total-price{
-    display:flex;
-    justify-content:flex-start;
-    font-size:18px;
-    height:5px;
-  }
-  .coupon-actions{
-    margin:0 15px -35px 15px;
-    justify-content: space-between;
-  }
-  .basket-item {
-      padding: 10px;
-      border-bottom: 1px solid #e0e0e0;
-  }
-  .basket-item:last-child {
-      border-bottom: none;
-  }
-  .total-price {
-      font-weight: bold;
-      text-align: right;
-      margin-top: 10px;
-  }
-  .dialog-title{
-    display:flex;
-    justify-content:center;
-    font-size:25px;
-    margin-bottom:-20px;
-    font-weight:bold;
-  }
-  .dialog-top-area {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .title-and-button {
-      display: flex;
-      align-items: center;
-  }
-  .mat-icon-button {
-      border: none;
-      background-color: #e7e7e7;
-      border-radius: 35%;
-      width: 40px;
-      height: 40px;
-      line-height: 1px;
-      cursor: pointer;
-      margin-left: 10px; /* Adjust this margin as needed */
-  }
-  .title-and-button span {
-      font-size:18px;
-      margin-left: 10px; /* Adjust this margin as needed */
-  }
-  `,
+  styleUrl: 'basket-dialog.css',
   standalone: true,
   imports: [
     MatDialogTitle,
@@ -132,9 +50,9 @@ import { DurationFormatterPipe } from '../../pipes/duration-formatter-notst.pipe
 export class BasketDialog implements OnInit {
   basket: BasketModel;
   courses: CourseGetByIdModel[] = [];
-  coupon:CouponModel = new CouponModel();
+  discount: DiscountGetByCode;
   couponCode = new FormControl();
-  couponCodeAppliedText:string = '';
+  couponCodeAppliedText: string = '';
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private courseService: CourseService,
@@ -142,11 +60,8 @@ export class BasketDialog implements OnInit {
     private dialog: MatDialog,
     private identity: IdentityService,
     private basketService: BasketService,
-  ) { 
-    this.coupon.code = "7JFF6A0GKAF18H";
-    this.coupon.rate = 20;
-    this.coupon.isUsed = false;
-  }
+    private discountService: DiscountService
+  ) { }
 
   ngOnInit(): void {
     if (this.identity.isAuthenticated()) {
@@ -159,55 +74,77 @@ export class BasketDialog implements OnInit {
       next: response => {
         if (response.isSuccessful) {
           this.basket = response.data;
+          if (this.basket.discountCode != null) this.couponCode.setValue(this.basket.discountCode);
           this.mapBasketItemsToCourses(this.basket.basketItems);
         }
       }
     });
   }
 
-  removeFromCart(course:CourseGetByIdModel) {
-    let basketItem = this.basket.basketItems.find((value)=>value.courseId === course.id);
-    this.basketService.removeFromBasket(basketItem)
-      .subscribe({
-        next: response => {
-          if (response.isSuccessful) {
-            this.get();
-            this._snackBar.open(`${basketItem.courseName} has removed!`, "Okay", {
-              duration: 2000
-            })
-          } else {
-            console.log("Error");
-          }
-        }
-      })
-  }
-
-  applyDiscount(){
-    let checkCouponExists = this.couponCode.value != this.basket.discountCode;
-    if(checkCouponExists && !this.coupon.isUsed){
-      this.coupon.isUsed = true;
-      if(this.couponCode.value == this.coupon.code){
-        this.basket.totalPrice = this.basket.totalPrice - ((this.basket.totalPrice * 20) / 100); 
-        this.couponCodeAppliedText = `${this.couponCode.value} has applied!`;
-        this.basket.discountCode = this.couponCode.value;
-        this.couponCode.setValue('');
-
-        this.basketService.saveOrUpdate(this.basket).subscribe({
-          next:response=>{
-            console.log(response.data);
+  removeFromCart(course: CourseGetByIdModel) {
+    let basketItem = this.basket.basketItems.find((value) => value.courseId === course.id);
+    if (basketItem != null) {
+      this.basketService.removeFromBasket(basketItem)
+        .subscribe({
+          next: response => {
+            if (response.isSuccessful) {
+              this.courses = this.courses.filter((value) => value.id !== basketItem.courseId);
+              this._snackBar.open(`${basketItem.courseName} has removed!`, "Okay", {
+                duration: 2000
+              })
+            } else {
+              console.log("Error");
+            }
           }
         })
-      }else{
-        this._snackBar.open(`Coupon code is not valid!`,'Okay',{
-          duration:4000
-        });
-      }
-    }else{
-      this._snackBar.open(`Coupon code has already used!`,'Okay',{
-        duration:4000
+    }
+  }
+
+  applyDiscount() {
+    let checkCouponExists = this.couponCode.value == this.basket.discountCode;
+    if (!checkCouponExists) {
+      this.discountService
+        .getById(this.couponCode.value, this.couponNotValidCallback.bind(this))
+        .pipe(switchMap(discRes => {
+          if (discRes.isSuccessful) {
+            this.discount = discRes.data;
+            this.applyDiscountCodes(this.basket.basketItems);
+            this.basket.discountCode = this.couponCode.value;
+            return this.basketService.saveOrUpdate(this.basket);
+          } else {
+            return of({ isSuccessful: false });
+          }
+        })).subscribe({
+          next: saveRes => {
+            if (saveRes.isSuccessful) {
+              this._snackBar.open(`Coupon code has applied!`, 'Okay', {
+                duration: 4000
+              });
+              this.get();
+            }
+          }
+        })
+    } else {
+      this._snackBar.open(`Coupon code has already used!`, 'Okay', {
+        duration: 4000
       });
     }
   }
+
+  couponNotValidCallback(){
+    this._snackBar.open(`Coupon code is not valid!`, 'Okay', {
+      duration: 4000
+    });
+  }
+
+  applyDiscountCodes(basketItems: BasketItemModel[]) {
+    if (this.discount.code == this.couponCode.value &&
+      this.discount.userId == this.basket.userId) {
+      basketItems.map((value) => value.price = (value.price - (value.price * this.discount.rate) / 100));
+      this.mapBasketItemsToCourses(basketItems);
+    }
+  }
+
 
   checkout() {
 
@@ -218,6 +155,7 @@ export class BasketDialog implements OnInit {
       this.courseService.getById(basketItem.courseId).subscribe({
         next: response => {
           if (response.isSuccessful) {
+            response.data.price = basketItem.price;
             this.courses.push(response.data);
           } else {
             response.errors.forEach(err => {

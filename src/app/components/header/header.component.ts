@@ -1,10 +1,8 @@
 import { BasketService } from './../../services/basket.service';
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IdentityService } from '../../services/identity-service';
 import { MatDialog } from '@angular/material/dialog';
 import { BasketDialog } from '../../dialogs/basket/basket-dialog';
-import { catchError, EMPTY, switchMap, throwError } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-header',
@@ -12,12 +10,11 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrl: './header.component.css',
 })
 export class HeaderComponent implements OnInit {
-  showBasket: boolean = false;
-  isBasketEmpty: boolean = true;
+  isAuth: boolean = false;
+  isBasketEmpty: boolean = false;
   constructor(
     private identityService: IdentityService,
     private dialog: MatDialog,
-    private cdr: ChangeDetectorRef,
     private basketService: BasketService
   ) { }
 
@@ -26,16 +23,17 @@ export class HeaderComponent implements OnInit {
   }
 
   private getAuthStatus() {
-    this.basketService.get()
-      .pipe(switchMap(res => {
-        this.isBasketEmpty = res.data ? false : true;
-        this.cdr.detectChanges();
-        return this.identityService.getAuthStatus();
-      }))
+    this.identityService.getAuthStatus()
       .subscribe(isAuthenticated => {
-        this.showBasket = isAuthenticated && !this.isBasketEmpty
-        this.cdr.detectChanges();
+        this.isAuth = isAuthenticated;
       });
+
+      if(this.isAuth){
+        this.basketService.get()
+        .subscribe(res => {
+          this.isBasketEmpty = (res.data && !this.isAuth) ? false : true;
+        });
+      }
   }
 
   get isAuthenticated(): boolean {
@@ -51,7 +49,7 @@ export class HeaderComponent implements OnInit {
   }
 
   openBasketDialog() {
-    if (this.showBasket) {
+    if (this.isBasketEmpty) {
       this.dialog.open(BasketDialog);
     }
   }

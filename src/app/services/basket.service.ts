@@ -17,7 +17,7 @@ export class BasketService {
 
   get(): Observable<Response<BasketModel>> {
     return this.httpClient.get<Response<BasketModel>>(`${this.baseUrl}/get`).pipe(
-      catchError(this.handleError)
+      catchError((error)=>this.handleError(error))
     );
   }
 
@@ -35,7 +35,6 @@ export class BasketService {
     return this.get().pipe(
       switchMap(res => {
         let basket: BasketModel = res.data;
-        
         if (basket) {
           if (!basket.basketItems.find(x => x.courseId === basketItem.courseId)) {
             basket.basketItems.push(basketItem);
@@ -47,15 +46,19 @@ export class BasketService {
         }
         return this.saveOrUpdate(basket);
       }),
-      catchError(this.handleError)
     );
   }
+
 
   removeFromBasket(basketItem: BasketItemModel): Observable<Response<boolean>> {
     return this.get().pipe(
       switchMap(res => {
         let basket: BasketModel = res.data;
         if (basket) {
+          if(basket.basketItems.length == 1){
+            basket.discountCode = '';
+            basket.discountRate = null;
+          }
           const deleteBasketItem = basket.basketItems.find(x => x.courseId === basketItem.courseId);
           if (deleteBasketItem) {
             basket.basketItems = basket.basketItems.filter(x => x.courseId !== basketItem.courseId);
@@ -66,14 +69,13 @@ export class BasketService {
     );
   }
 
-
-
-  private handleError(error: HttpErrorResponse) {
+  private handleError(error: HttpErrorResponse) : Observable<any> {
+    let errorMessage = 'An unknown error occurred!';
     if (error.status === 404) {
-      console.log('Resource not found');
+      errorMessage = 'Resource not found';
       return EMPTY;
     } else {
-      return throwError(() => new Error('An error occurred'));
+      return of({ isSuccessful: false, message: errorMessage });
     }
   }
 }

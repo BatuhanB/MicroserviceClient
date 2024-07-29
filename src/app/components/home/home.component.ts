@@ -50,7 +50,7 @@ export class HomeComponent implements OnInit {
         if(response.data){
           this.getAllCourses();
           this.snackBar.open(`${course.name} has added to cart!`, 'Okay', {
-            duration: 2000
+            duration: 4000
           });
         }else{
           console.log("Error");
@@ -93,7 +93,6 @@ export class HomeComponent implements OnInit {
     this.dialog.open(BasketDialog);
   }
 
-
   mapCourseToCourseForHomeModel(courses:CourseViewModel[]){
     this.courseModel = [];
     courses.forEach((course)=>{
@@ -113,8 +112,6 @@ export class HomeComponent implements OnInit {
           next: response => {
             if (response.isSuccessful) {
               courseModelForHome.isExistInCart = response.data.basketItems.find((val) => val.courseId == course.id) ? true : false;
-            } else {
-              console.error(response.errors);
             }
           }
         });

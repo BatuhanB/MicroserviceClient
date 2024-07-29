@@ -1,6 +1,7 @@
 export class BasketModel {
     userId: string = null;
     discountCode: string = null;
+    discountRate: number = 0;
     basketItems: BasketItemModel[] = [];
     totalPrice: number = 0;
 }

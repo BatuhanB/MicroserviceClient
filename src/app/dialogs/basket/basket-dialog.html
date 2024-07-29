@@ -30,13 +30,16 @@
     }
 
 </mat-dialog-content>
-@if(basket?.basketItems.length != 0 ){
+@if(basket?.basketItems.length > 0 ){
 <mat-dialog-actions class="coupon-actions">
     <div class="coupon-form-field">
         <mat-form-field style="margin-bottom: -10px;">
             <mat-label>Coupon</mat-label>
             <input matInput [formControl]="couponCode" placeholder="Enter Coupon">
         </mat-form-field>
+        @if(basket?.discountCode){
+            <p><strong>{{basket?.discountRate}}% discount has applied.</strong> </p>
+        }
         <p style="margin-bottom: 15px;"><strong>{{couponCodeAppliedText}}</strong> </p>
     </div>
     <div>

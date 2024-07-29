@@ -1,7 +1,7 @@
 import { DiscountService } from './../../services/discount.service';
 import { BasketService } from './../../services/basket.service';
 import { IdentityService } from '../../services/identity-service';
-import { Component, OnInit, Inject, } from '@angular/core';
+import { Component, OnInit, Inject} from '@angular/core';
 import {
   MatDialogTitle,
   MatDialogContent,
@@ -60,7 +60,7 @@ export class BasketDialog implements OnInit {
     private dialog: MatDialog,
     private identity: IdentityService,
     private basketService: BasketService,
-    private discountService: DiscountService
+    private discountService: DiscountService,
   ) { }
 
   ngOnInit(): void {
@@ -89,6 +89,7 @@ export class BasketDialog implements OnInit {
           next: response => {
             if (response.isSuccessful) {
               this.courses = this.courses.filter((value) => value.id !== basketItem.courseId);
+              this.get();
               this._snackBar.open(`${basketItem.courseName} has removed!`, "Okay", {
                 duration: 2000
               })
@@ -108,8 +109,7 @@ export class BasketDialog implements OnInit {
         .pipe(switchMap(discRes => {
           if (discRes.isSuccessful) {
             this.discount = discRes.data;
-            this.applyDiscountCodes(this.basket.basketItems);
-            this.basket.discountCode = this.couponCode.value;
+            this.applyDiscountCode(this.basket.basketItems);
             return this.basketService.saveOrUpdate(this.basket);
           } else {
             return of({ isSuccessful: false });
@@ -131,26 +131,37 @@ export class BasketDialog implements OnInit {
     }
   }
 
-  couponNotValidCallback(){
+  couponNotValidCallback() {
     this._snackBar.open(`Coupon code is not valid!`, 'Okay', {
       duration: 4000
     });
   }
 
-  applyDiscountCodes(basketItems: BasketItemModel[]) {
+  applyDiscountCode(basketItems: BasketItemModel[]) {
     if (this.discount.code == this.couponCode.value &&
       this.discount.userId == this.basket.userId) {
       basketItems.map((value) => value.price = (value.price - (value.price * this.discount.rate) / 100));
+      this.basket.discountCode = this.couponCode.value;
+      this.basket.discountRate = this.discount.rate;
       this.mapBasketItemsToCourses(basketItems);
     }
   }
 
+  removeDiscountCode(basketItems: BasketItemModel[]) {
+    if (this.discount.code == this.couponCode.value &&
+      this.discount.userId == this.basket.userId) {
+      basketItems.map((value) => value.price = (value.price - (value.price * this.discount.rate) / 100));
+      this.basket.discountCode = this.couponCode.value;
+      this.mapBasketItemsToCourses(basketItems);
+    }
+  }
 
   checkout() {
 
   }
 
   mapBasketItemsToCourses(basketItems: BasketItemModel[]) {
+    this.courses = [];
     basketItems.forEach((basketItem) => {
       this.courseService.getById(basketItem.courseId).subscribe({
         next: response => {

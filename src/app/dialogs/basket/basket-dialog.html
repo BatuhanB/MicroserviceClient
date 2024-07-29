@@ -6,22 +6,35 @@
     </mat-dialog-content>
     }@else {
     <div class="basket-items">
-        @for (course of courses; track $index) {
+        @for (course of basketWithCourses; track $index) {
         <div class="basket-item">
             <div class="course-image-content">
                 <div class="course-image">
                     <img [src]="course.image | photoHelper" width="140" height="140">
                 </div>
                 <div class="course-content">
-                    <h1 ><strong>{{course?.name}}</strong></h1>
+                    <h1><strong>{{course?.name}}</strong></h1>
                     <h2>{{course?.description.substring(0,52)}}...</h2>
-                    <p class="mb-0"><strong>{{course?.price | currency}}</strong></p>
-                    <p class="mb-0"><strong>{{course?.feature?.duration | durationFormatterNotSt}}</strong></p>
+                    @if(course?.priceWithDiscount > 0){
+                        <p class="mb-0">
+                            <strong>
+                                <span class="cut-text">{{course?.price | currency}} </span>
+                                {{course.priceWithDiscount | currency}}
+                            </strong>
+                        </p>
+                    }@else {
+                        <p class="mb-0">
+                            <strong>{{course?.price | currency}}</strong>
+                        </p>
+                    }
+                    <p class="mb-0">
+                        <strong>{{course?.feature?.duration | durationFormatterNotSt}}</strong>
+                    </p>
                 </div>
             </div>
             <div class="course-remove">
                 <button mat-flat-button color="primary"
-                (click)="removeFromCart(course)"><strong>Remove</strong></button>
+                    (click)="removeFromBasket(course)"><strong>Remove</strong></button>
             </div>
         </div>
         <br>
@@ -35,18 +48,21 @@
     <div class="coupon-form-field">
         <mat-form-field style="margin-bottom: -10px;">
             <mat-label>Coupon</mat-label>
-            <input matInput [formControl]="couponCode" placeholder="Enter Coupon">
+            <input matInput [formControl]="couponCode"
+                placeholder="Enter Coupon">
         </mat-form-field>
         @if(basket?.discountCode){
-            <p><strong>{{basket?.discountRate}}% discount has applied.</strong> </p>
+        <p><strong>{{basket?.discountRate}}{{couponCodeAppliedText}}</strong>
+        </p>
         }
-        <p style="margin-bottom: 15px;"><strong>{{couponCodeAppliedText}}</strong> </p>
     </div>
     <div>
-        <!-- @if(basket.discountCode){
-            <button mat-raised-button class="remove-coupon-btn" (click)="removeDiscount()">Remove Coupon</button>
-        } -->
-        <button mat-raised-button class="apply-coupon-btn" (click)="applyDiscount()">Apply Coupon</button>
+        @if(basket.discountCode){
+        <button mat-raised-button class="remove-coupon-btn"
+            (click)="removeDiscount()">Remove Coupon</button>
+        }
+        <button mat-raised-button class="apply-coupon-btn"
+            (click)="applyDiscount()">Apply Coupon</button>
     </div>
 </mat-dialog-actions>
 }
@@ -54,9 +70,18 @@
     [ngStyle]="{'justify-content': basket?.basketItems.length == 0 ? 'flex-end' : 'space-between' }">
     @if(basket?.basketItems.length > 0 ){
     <div>
+        @if(basket?.totalPriceWithDiscount > 0){
+        <p class="dialog-total-price">
+            <strong>Total Price : <span class="cut-text">{{basket?.totalPrice |
+                    currency}} </span> </strong>
+            <strong>{{basket?.totalPriceWithDiscount | currency}}</strong>
+        </p>
+        }@else {
         <p class="dialog-total-price">
             <strong>Total Price : {{basket?.totalPrice | currency}}</strong>
         </p>
+        }
+
     </div>
     }
     <div class="dialog-actions">

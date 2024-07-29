@@ -1,7 +1,8 @@
+import { BasketWithCourseModel } from './../../models/Basket/basketwithcoursemodel';
 import { DiscountService } from './../../services/discount.service';
 import { BasketService } from './../../services/basket.service';
 import { IdentityService } from '../../services/identity-service';
-import { Component, OnInit, Inject} from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import {
   MatDialogTitle,
   MatDialogContent,
@@ -49,10 +50,11 @@ import { of, switchMap } from 'rxjs';
 })
 export class BasketDialog implements OnInit {
   basket: BasketModel;
-  courses: CourseGetByIdModel[] = [];
+  basketWithCourses: BasketWithCourseModel[] = [];
   discount: DiscountGetByCode;
   couponCode = new FormControl();
   couponCodeAppliedText: string = '';
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private courseService: CourseService,
@@ -64,119 +66,176 @@ export class BasketDialog implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.couponCodeAppliedText = "% discount has applied.";
     if (this.identity.isAuthenticated()) {
-      this.get();
+      this.loadBasket();
     }
   }
 
-  get() {
+  loadBasket() {
     this.basketService.get().subscribe({
       next: response => {
         if (response.isSuccessful) {
           this.basket = response.data;
-          if (this.basket.discountCode != null) this.couponCode.setValue(this.basket.discountCode);
+          if (this.basket.discountCode) this.couponCode.setValue(this.basket.discountCode);
           this.mapBasketItemsToCourses(this.basket.basketItems);
         }
       }
     });
   }
 
-  removeFromCart(course: CourseGetByIdModel) {
-    let basketItem = this.basket.basketItems.find((value) => value.courseId === course.id);
-    if (basketItem != null) {
-      this.basketService.removeFromBasket(basketItem)
-        .subscribe({
-          next: response => {
-            if (response.isSuccessful) {
-              this.courses = this.courses.filter((value) => value.id !== basketItem.courseId);
-              this.get();
-              this._snackBar.open(`${basketItem.courseName} has removed!`, "Okay", {
-                duration: 2000
-              })
-            } else {
-              console.log("Error");
-            }
-          }
-        })
-    }
-  }
-
-  applyDiscount() {
-    let checkCouponExists = this.couponCode.value == this.basket.discountCode;
-    if (!checkCouponExists) {
-      this.discountService
-        .getById(this.couponCode.value, this.couponNotValidCallback.bind(this))
-        .pipe(switchMap(discRes => {
-          if (discRes.isSuccessful) {
-            this.discount = discRes.data;
-            this.applyDiscountCode(this.basket.basketItems);
-            return this.basketService.saveOrUpdate(this.basket);
+  removeFromBasket(course: CourseGetByIdModel) {
+    const basketItem = this.basket.basketItems.find(item => item.courseId === course.id);
+    if (basketItem) {
+      this.basketService.removeFromBasket(basketItem).subscribe({
+        next: response => {
+          if (response.isSuccessful) {
+            this.basketWithCourses = this.basketWithCourses.filter(item => item.id !== basketItem.courseId);
+            this.loadBasket();
+            this._snackBar.open(`${basketItem.courseName} has been removed!`, "Okay", { duration: 2000 });
           } else {
-            return of({ isSuccessful: false });
+            console.error("Error removing item from basket");
           }
-        })).subscribe({
-          next: saveRes => {
-            if (saveRes.isSuccessful) {
-              this._snackBar.open(`Coupon code has applied!`, 'Okay', {
-                duration: 4000
-              });
-              this.get();
-            }
-          }
-        })
-    } else {
-      this._snackBar.open(`Coupon code has already used!`, 'Okay', {
-        duration: 4000
+        }
       });
     }
   }
 
-  couponNotValidCallback() {
-    this._snackBar.open(`Coupon code is not valid!`, 'Okay', {
-      duration: 4000
-    });
+  applyDiscount() {
+    if (this.couponCode.value !== this.basket.discountCode) {
+      this.discountService
+        .getById(this.couponCode.value, this.couponNotValidCallback.bind(this))
+        .pipe(
+          switchMap(discRes => {
+            if (discRes.isSuccessful) {
+              this.discount = discRes.data;
+              this.applyDiscountCode(this.basket.basketItems);
+              return this.basketService.saveOrUpdate(this.basket);
+            } else {
+              return of({ isSuccessful: false });
+            }
+          })
+        ).subscribe({
+          next: saveRes => {
+            if (saveRes.isSuccessful) {
+              this._snackBar.open(`Coupon code has been applied!`, 'Okay', { duration: 4000 });
+              this.loadBasket();
+            }
+          }
+        });
+    } else {
+      this._snackBar.open(`Coupon code has already been used!`, 'Okay', { duration: 4000 });
+    }
+  }
+
+  removeDiscount() {
+    if (this.couponCode.value === this.basket.discountCode) {
+      this.discountService
+        .getById(this.couponCode.value, this.couponNotValidCallback.bind(this))
+        .pipe(
+          switchMap(discRes => {
+            if (discRes.isSuccessful) {
+              this.discount = discRes.data;
+              this.removeDiscountCode(this.basket.basketItems);
+              return this.basketService.saveOrUpdate(this.basket);
+            } else {
+              return of({ isSuccessful: false });
+            }
+          })
+        ).subscribe({
+          next: saveRes => {
+            if (saveRes.isSuccessful) {
+              this._snackBar.open(`Coupon code has been removed!`, 'Okay', { duration: 4000 });
+              this.loadBasket();
+            }
+          }
+        });
+    } else {
+      this._snackBar.open(`There is no coupon code!`, 'Okay', { duration: 4000 });
+    }
   }
 
   applyDiscountCode(basketItems: BasketItemModel[]) {
-    if (this.discount.code == this.couponCode.value &&
-      this.discount.userId == this.basket.userId) {
-      basketItems.map((value) => value.price = (value.price - (value.price * this.discount.rate) / 100));
+    if (this.discount.code === this.couponCode.value &&
+      this.discount.userId === this.basket.userId) {
+      this.updateBasketItemsWithDiscount(basketItems);
       this.basket.discountCode = this.couponCode.value;
       this.basket.discountRate = this.discount.rate;
-      this.mapBasketItemsToCourses(basketItems);
     }
   }
 
   removeDiscountCode(basketItems: BasketItemModel[]) {
-    if (this.discount.code == this.couponCode.value &&
-      this.discount.userId == this.basket.userId) {
-      basketItems.map((value) => value.price = (value.price - (value.price * this.discount.rate) / 100));
-      this.basket.discountCode = this.couponCode.value;
-      this.mapBasketItemsToCourses(basketItems);
+    if (this.discount.code === this.couponCode.value &&
+      this.discount.userId === this.basket.userId) {
+      this.updateBasketItemsWithoutDiscount(basketItems);
+      this.couponCode.setValue('');
     }
   }
 
-  checkout() {
-
-  }
-
   mapBasketItemsToCourses(basketItems: BasketItemModel[]) {
-    this.courses = [];
-    basketItems.forEach((basketItem) => {
-      this.courseService.getById(basketItem.courseId).subscribe({
+    this.basketWithCourses = [];
+    basketItems.forEach(item => {
+      this.courseService.getById(item.courseId).subscribe({
         next: response => {
           if (response.isSuccessful) {
-            response.data.price = basketItem.price;
-            this.courses.push(response.data);
+            this.mapCoursesToBasketCourseModel(response.data);
           } else {
-            response.errors.forEach(err => {
-              console.log(err);
-            })
+            response.errors.forEach(err => console.error(err));
           }
-        }, error: errs => {
-          console.error(errs);
-        }
-      })
+        },
+        error: err => console.error(err)
+      });
+      return item;
     });
+    
+  }
+
+  updateBasketItemsWithDiscount(basketItems: BasketItemModel[]) {
+    basketItems = basketItems.map(basketItem => {
+      basketItem.priceWithDiscount = basketItem.price - (basketItem.price * this.discount.rate) / 100;
+      return basketItem;
+    });
+    this.basket.basketItems = basketItems;
+  }
+
+  updateBasketItemsWithoutDiscount(basketItems: BasketItemModel[]) {
+    basketItems = basketItems.map(basketItem => {
+      basketItem.priceWithDiscount = 0;
+      return basketItem;
+    });
+    this.basket.discountCode = null;
+    this.basket.discountRate = 0;
+    this.basket.basketItems = basketItems;
+  }
+  
+  mapCoursesToBasketCourseModel(course: CourseGetByIdModel) {
+    this.basketService.get().subscribe({
+      next: response => {
+        if (response.isSuccessful) {
+          let basket = response.data.basketItems.find((val) => val.courseId == course.id);
+          let basketWithCourseModel:BasketWithCourseModel = {
+            categoryId: course.categoryId,
+            createdDate:course.createdDate,
+            description:course.description,
+            feature: course.feature,
+            id:course.id,
+            image:course.image,
+            name:course.name,
+            price:course.price,
+            priceWithDiscount:basket.priceWithDiscount,
+            userId:course.userId
+          }
+          this.basketWithCourses.push(basketWithCourseModel);
+        }
+      }
+    });
+  }
+  
+    couponNotValidCallback() {
+      this._snackBar.open(`Coupon code is not valid!`, 'Okay', { duration: 4000 });
+    }
+
+  checkout() {
+
   }
 }

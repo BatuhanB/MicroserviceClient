@@ -64,6 +64,7 @@ export class HomeComponent implements OnInit {
     basketItem.courseId = course.id;
     basketItem.courseName = course.name;
     basketItem.price = course.price;
+    basketItem.priceWithDiscount = 0;
     basketItem.quantity = 1;
     return basketItem;
   }

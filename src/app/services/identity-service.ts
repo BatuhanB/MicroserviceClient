@@ -143,13 +143,13 @@ export class IdentityService {
   }
 
   logout(): void {
-    this.updateAuthStatus(false);
     this.cookieService.delete('authToken');
     sessionStorage.removeItem('authToken');
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('expires_in');
     localStorage.removeItem('user_name');
+    this.updateAuthStatus(false);
   }
 
   getUserProfile(): Observable<UserInfo> {

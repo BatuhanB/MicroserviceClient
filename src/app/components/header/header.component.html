@@ -15,7 +15,7 @@
                     <button mat-menu-item (click)="signOut()">Sign Out</button>
                 </mat-menu>
         </ng-template>
-        @if(isBasketEmpty){
+        @if(isBasketEmpty()){
             <button mat-mini-fab routerLink="/"
             class="basket-btn" (click)="openBasketDialog()">
             <mat-icon>shopping_basket</mat-icon>

@@ -1,5 +1,5 @@
 import { BasketService } from './../../services/basket.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { IdentityService } from '../../services/identity-service';
 import { MatDialog } from '@angular/material/dialog';
 import { BasketDialog } from '../../dialogs/basket/basket-dialog';
@@ -10,8 +10,8 @@ import { BasketDialog } from '../../dialogs/basket/basket-dialog';
   styleUrl: './header.component.css',
 })
 export class HeaderComponent implements OnInit {
-  isAuth: boolean = false;
-  isBasketEmpty: boolean = false;
+  isBasketEmpty = signal(false);
+  isAuth = signal(false);
   constructor(
     private identityService: IdentityService,
     private dialog: MatDialog,
@@ -25,15 +25,22 @@ export class HeaderComponent implements OnInit {
   private getAuthStatus() {
     this.identityService.getAuthStatus()
       .subscribe(isAuthenticated => {
-        this.isAuth = isAuthenticated;
+        this.isAuth.set(isAuthenticated);
+        
+        this.getBasket(this.isAuth());
       });
+      
+  }
 
-      if(this.isAuth){
-        this.basketService.get()
+  private getBasket(isAuthenticated: boolean) {
+    if (isAuthenticated) {
+      this.basketService.get()
         .subscribe(res => {
-          this.isBasketEmpty = (res.data && !this.isAuth) ? false : true;
+          this.isBasketEmpty.set(((res.data && !isAuthenticated) ? false : true));
         });
-      }
+    }else{
+      this.isBasketEmpty.set(false);
+    }
   }
 
   get isAuthenticated(): boolean {

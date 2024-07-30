@@ -5,7 +5,8 @@
 .basket-item {
     font-size: 20px;
     margin-top: 10px;
-    border: 1px rgba(0, 0, 0, .2) solid;
+    box-shadow: -14px 8px 43px -26px rgba(0,0,0,0.2);
+    border-radius: 5px;
     margin-bottom: -20px;
     display: flex;
     justify-content: space-between;

@@ -33,6 +33,7 @@ import { DurationFormatterPipe } from './pipes/duration-formatter.pipe';
 import { CourseDetailComponent } from './components/course-detail/course-detail.component';
 import { BasketComponent } from './components/basket/basket.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { CheckoutComponent } from './components/checkout/checkout.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     PhotoHelperNotStPipe,
     DurationFormatterPipe,
     CourseDetailComponent,
-    BasketComponent
+    BasketComponent,
+    CheckoutComponent
   ],
   imports: [
     BrowserAnimationsModule,

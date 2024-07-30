@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         <div class="col-12 d-flex main-col">
-            <div class="col-md-8">
+            <div class="col-md-12 col-lg-7 col-xxl-8">
                 <h2 class="dialog-title"> Basket</h2>
                 @if(basket?.basketItems.length == 0 ){
                 <div>
@@ -50,7 +50,7 @@
                 </div>
                 }
             </div>
-            <div class="col-md-4 mt-5">
+            <div class="col-md-8 col-lg-5 col-xxl-4 mt-5 bottom-col">
                 <div class="sticky-top">
                     @if(basket?.basketItems.length > 0 ){
                     <div class="coupon-actions">
@@ -102,8 +102,8 @@
                         }
                         <div class="dialog-actions">
                             @if(basket?.basketItems.length > 0 ){
-                            <button mat-raised-button color="primary"
-                                (click)="checkout()">Checkout</button>
+                            <a mat-raised-button color="primary"
+                                routerLink="/checkout">Checkout</a>
                             }
                         </div>
                     </div>

@@ -187,7 +187,7 @@ export class BasketDialog implements OnInit {
       });
       return item;
     });
-    
+
   }
 
   updateBasketItemsWithDiscount(basketItems: BasketItemModel[]) {
@@ -207,33 +207,33 @@ export class BasketDialog implements OnInit {
     this.basket.discountRate = 0;
     this.basket.basketItems = basketItems;
   }
-  
+
   mapCoursesToBasketCourseModel(course: CourseGetByIdModel) {
     this.basketService.get().subscribe({
       next: response => {
         if (response.isSuccessful) {
           let basket = response.data.basketItems.find((val) => val.courseId == course.id);
-          let basketWithCourseModel:BasketWithCourseModel = {
+          let basketWithCourseModel: BasketWithCourseModel = {
             categoryId: course.categoryId,
-            createdDate:course.createdDate,
-            description:course.description,
+            createdDate: course.createdDate,
+            description: course.description,
             feature: course.feature,
-            id:course.id,
-            image:course.image,
-            name:course.name,
-            price:course.price,
-            priceWithDiscount:basket.priceWithDiscount,
-            userId:course.userId
+            id: course.id,
+            image: course.image,
+            name: course.name,
+            price: course.price,
+            priceWithDiscount: basket.priceWithDiscount,
+            userId: course.userId
           }
           this.basketWithCourses.push(basketWithCourseModel);
         }
       }
     });
   }
-  
-    couponNotValidCallback() {
-      this._snackBar.open(`Coupon code is not valid!`, 'Okay', { duration: 4000 });
-    }
+
+  couponNotValidCallback() {
+    this._snackBar.open(`Coupon code is not valid!`, 'Okay', { duration: 4000 });
+  }
 
   checkout() {
 

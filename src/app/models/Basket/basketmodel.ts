@@ -5,6 +5,10 @@ export class BasketModel {
     basketItems: BasketItemModel[] = [];
     totalPrice: number = 0;
     totalPriceWithDiscount: number = 0;
+
+    getTotalPrice():number{
+        return this.totalPriceWithDiscount > 0 ? this.totalPriceWithDiscount : this.totalPrice; 
+    }
 }
 
 export class BasketItemModel {
@@ -13,4 +17,8 @@ export class BasketItemModel {
     courseName: string;
     price: number;
     priceWithDiscount: number;
+
+    getPrice():number{
+        return this.priceWithDiscount > 0 ? this.priceWithDiscount : this.price; 
+    }
 }

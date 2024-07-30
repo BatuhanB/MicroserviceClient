@@ -1,1 +1,158 @@
-<p>checkout works!</p>
+<mat-stepper [linear]="isLinear" #stepper>
+    <mat-step [stepControl]="adressFormGroup">
+        <div class="container">
+            <div class="row">
+                <form [formGroup]="adressFormGroup">
+                    <ng-template matStepLabel>Adress</ng-template>
+                    <div class="col-12">
+                        <div class="col-10 d-flex">
+                            <mat-form-field class="col-md-4">
+                                <mat-label>Province</mat-label>
+                                <input matInput placeholder
+                                    formControlName="province" required>
+                                <mat-error
+                                    *ngIf="adressFormGroup.get('province').hasError('required')">Province
+                                    is required.</mat-error>
+                                <mat-error
+                                    *ngIf="adressFormGroup.get('province').hasError('minlength')">Province
+                                    must be greater than 2.</mat-error>
+                            </mat-form-field>
+                            <mat-form-field class="col-md-4 mx-4">
+                                <mat-label>District</mat-label>
+                                <input matInput placeholder
+                                    formControlName="district" required>
+                                <mat-error
+                                    *ngIf="adressFormGroup.get('district').hasError('required')">District
+                                    is required.</mat-error>
+                                <mat-error
+                                    *ngIf="adressFormGroup.get('district').hasError('minlength')">District
+                                    must be greater than 3.</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-10 d-flex">
+                            <mat-form-field class="col-md-4">
+                                <mat-label>Street</mat-label>
+                                <input matInput placeholder
+                                    formControlName="street" required>
+                                <mat-error
+                                    *ngIf="adressFormGroup.get('street').hasError('required')">Street
+                                    is required.</mat-error>
+                                <mat-error
+                                    *ngIf="adressFormGroup.get('street').hasError('minlength')">Street
+                                    must be greater than 3.</mat-error>
+                            </mat-form-field>
+                            <mat-form-field class="col-md-4 mx-4">
+                                <mat-label>ZipCode</mat-label>
+                                <input matInput placeholder
+                                    formControlName="zipCode" required>
+                                <mat-error
+                                    *ngIf="adressFormGroup.get('zipCode').hasError('required')">ZipCode
+                                    is required.</mat-error>
+                                <mat-error
+                                    *ngIf="adressFormGroup.get('zipCode').hasError('minlength')">ZipCode
+                                    must be 5.</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-10 d-flex">
+                            <mat-form-field class="col-md-4">
+                                <mat-label>Line</mat-label>
+                                <input matInput placeholder
+                                    formControlName="line" required>
+                                <mat-error
+                                    *ngIf="adressFormGroup.get('line').hasError('required')">Line
+                                    is required.</mat-error>
+                                <mat-error
+                                    *ngIf="adressFormGroup.get('line').hasError('minlength')">Line
+                                    must be greater than 3.</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <button mat-raised-button color="primary"
+                                matStepperNext
+                                [disabled]="!adressFormGroup.valid">Next</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </mat-step>
+    <mat-step [stepControl]="paymentInfoFormGroup">
+        <div class="container">
+            <div class="row">
+                <form [formGroup]="paymentInfoFormGroup">
+                    <ng-template matStepLabel>Payment Information</ng-template>
+                    <div class="col-12">
+                        <div class="col-10 d-flex">
+                            <mat-form-field class="col-md-4">
+                                <mat-label>Card Name</mat-label>
+                                <input matInput placeholder
+                                    formControlName="cardName" required>
+                                <mat-error
+                                    *ngIf="paymentInfoFormGroup.get('cardName').hasError('required')">Card
+                                    Name
+                                    is required.</mat-error>
+                                <mat-error
+                                    *ngIf="paymentInfoFormGroup.get('cardName').hasError('minlength')">Card
+                                    Name
+                                    must be greater than 3.</mat-error>
+                            </mat-form-field>
+                            <mat-form-field class="col-md-4 mx-4">
+                                <mat-label>Card Number</mat-label>
+                                <input matInput placeholder
+                                    formControlName="cardNumber" required>
+                                <mat-error
+                                    *ngIf="paymentInfoFormGroup.get('cardNumber').hasError('required')">Card
+                                    Number
+                                    is required.</mat-error>
+                                <mat-error
+                                    *ngIf="paymentInfoFormGroup.get('cardNumber').hasError('minlength')">Card
+                                    Number
+                                    must be greater than 12.</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-10 d-flex">
+                            <mat-form-field class="col-md-4">
+                                <mat-label>Expiration</mat-label>
+                                <input matInput placeholder
+                                    formControlName="expiration" required pattern="^(0[1-9]|1[0-2])\/\d{2}$">
+                                <mat-error
+                                    *ngIf="paymentInfoFormGroup.get('expiration').hasError('required')">Expiration
+                                    is required.</mat-error>
+                                <mat-error
+                                    *ngIf="paymentInfoFormGroup.get('expiration').errors['pattern']">Invalid
+                                    Expiration Format.
+                                </mat-error>
+                            </mat-form-field>
+                            <mat-form-field class="col-md-4 mx-4">
+                                <mat-label>CVV</mat-label>
+                                <input matInput placeholder
+                                    formControlName="cvv" required>
+                                <mat-error
+                                    *ngIf="paymentInfoFormGroup.get('cvv').hasError('required')">CVV
+                                    is required.</mat-error>
+                                <mat-error
+                                    *ngIf="paymentInfoFormGroup.get('cvv').hasError('minlength')">CVV
+                                    must be greater than 3.</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <button mat-raised-button
+                                matStepperPrevious>Back</button>
+                            <button mat-raised-button color="primary"
+                                matStepperNext
+                                [disabled]="!paymentInfoFormGroup.valid"
+                                class="mx-2">Next</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </mat-step>
+    <mat-step>
+        <ng-template matStepLabel>Order Complete</ng-template>
+        <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button (click)="stepper.reset()">Reset</button>
+        </div>
+    </mat-step>
+</mat-stepper>

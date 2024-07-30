@@ -34,6 +34,7 @@ import { CourseDetailComponent } from './components/course-detail/course-detail.
 import { BasketComponent } from './components/basket/basket.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { CheckoutComponent } from './components/checkout/checkout.component';
+import {MatStepperModule} from '@angular/material/stepper';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
     MatChipsModule,
     MatSortModule,
     MatTableModule,
+    MatStepperModule,
     MatDialogModule,
     MatCheckboxModule,
     MatCardModule,

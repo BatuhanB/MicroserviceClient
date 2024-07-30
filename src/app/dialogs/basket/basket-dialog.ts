@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { BasketWithCourseModel } from './../../models/Basket/basketwithcoursemodel';
 import { DiscountService } from './../../services/discount.service';
 import { BasketService } from './../../services/basket.service';
@@ -63,6 +64,7 @@ export class BasketDialog implements OnInit {
     private identity: IdentityService,
     private basketService: BasketService,
     private discountService: DiscountService,
+    private router:Router
   ) { }
 
   ngOnInit(): void {
@@ -129,7 +131,7 @@ export class BasketDialog implements OnInit {
   }
 
   removeDiscount() {
-    if (this.couponCode.value === this.basket.discountCode) {
+    if (this.basket.discountCode) {
       this.discountService
         .getById(this.couponCode.value, this.couponNotValidCallback.bind(this))
         .pipe(
@@ -165,8 +167,7 @@ export class BasketDialog implements OnInit {
   }
 
   removeDiscountCode(basketItems: BasketItemModel[]) {
-    if (this.discount.code === this.couponCode.value &&
-      this.discount.userId === this.basket.userId) {
+    if (this.discount.code && this.discount.userId === this.basket.userId) {
       this.updateBasketItemsWithoutDiscount(basketItems);
       this.couponCode.setValue('');
     }
@@ -236,6 +237,7 @@ export class BasketDialog implements OnInit {
   }
 
   checkout() {
-
+    this.dialog.closeAll();
+    this.router.navigateByUrl('/basket');
   }
 }

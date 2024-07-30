@@ -10,25 +10,28 @@
         <div class="basket-item">
             <div class="course-image-content">
                 <div class="course-image">
-                    <img [src]="course.image | photoHelper" width="140" height="140">
+                    <img [src]="course.image | photoHelper" width="140"
+                        height="140">
                 </div>
                 <div class="course-content">
                     <h1><strong>{{course?.name}}</strong></h1>
                     <h2>{{course?.description.substring(0,52)}}...</h2>
                     @if(course?.priceWithDiscount > 0){
-                        <p class="mb-0">
-                            <strong>
-                                <span class="cut-text">{{course?.price | currency}} </span>
-                                {{course.priceWithDiscount | currency}}
-                            </strong>
-                        </p>
+                    <p class="mb-0">
+                        <strong>
+                            <span class="cut-text">{{course?.price | currency}}
+                            </span>
+                            {{course.priceWithDiscount | currency}}
+                        </strong>
+                    </p>
                     }@else {
-                        <p class="mb-0">
-                            <strong>{{course?.price | currency}}</strong>
-                        </p>
+                    <p class="mb-0">
+                        <strong>{{course?.price | currency}}</strong>
+                    </p>
                     }
                     <p class="mb-0">
-                        <strong>{{course?.feature?.duration | durationFormatterNotSt}}</strong>
+                        <strong>{{course?.feature?.duration |
+                            durationFormatterNotSt}}</strong>
                     </p>
                 </div>
             </div>
@@ -41,8 +44,8 @@
         }
     </div>
     }
-
 </mat-dialog-content>
+<!-- 
 @if(basket?.basketItems.length > 0 ){
 <mat-dialog-actions class="coupon-actions">
     <div class="coupon-form-field">
@@ -65,7 +68,7 @@
             (click)="applyDiscount()">Apply Coupon</button>
     </div>
 </mat-dialog-actions>
-}
+} -->
 <mat-dialog-actions class="dialog-action-section"
     [ngStyle]="{'justify-content': basket?.basketItems.length == 0 ? 'flex-end' : 'space-between' }">
     @if(basket?.basketItems.length > 0 ){
@@ -81,14 +84,13 @@
             <strong>Total Price : {{basket?.totalPrice | currency}}</strong>
         </p>
         }
-
     </div>
     }
     <div class="dialog-actions">
         <button mat-button mat-dialog-close>Cancel</button>
         @if(basket?.basketItems.length > 0 ){
         <button mat-button color="primary" cdkFocusInitial
-            (click)="checkout()">Checkout</button>
+            (click)="checkout()">Go To Cart</button>
         }
     </div>
 </mat-dialog-actions>

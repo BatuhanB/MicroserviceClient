@@ -12,8 +12,6 @@ import { OrderCreatedModel } from '../models/Order/ordercreatedmodel';
 import { OrderListModel } from '../models/Order/orderlistmodel';
 import { BasketModel } from '../models/Basket/basketmodel';
 import { CheckoutModel } from '../models/Order/checkoutmodel';
-import { PaymentModel } from '../models/Payment/paymentmodel';
-import { AdressModel } from '../models/Order/adressmodel';
 import { IdentityService } from './identity-service';
 import { OrderItemsModel } from '../models/Order/orderitemsmodel';
 
@@ -69,7 +67,7 @@ export class OrderService {
       .set('PageSize', request.pageSize.toString());
     return this.httpClient.get<Response<OrderListModel[]>>(`${this.baseUrl}/get`, {
       params: params
-    })
+    });
   }
 
   mapBasketItemsToOrderItems(basketItems: BasketItemModel[]): OrderItemsModel[] {
@@ -82,7 +80,7 @@ export class OrderService {
       orderItem.productName = innerBasketItem.courseName;
       this.courseService.getById(innerBasketItem.courseId).subscribe({ next: res => orderItem.imageUrl = `${this.imageBaseUrl}${res.data.image}` });
       orderItems.push(orderItem);
-    })
+    });
     return orderItems;
   }
 

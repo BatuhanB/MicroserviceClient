@@ -1,0 +1,159 @@
+@import '../../../../node_modules/bootstrap/dist/css/bootstrap-grid.min.css';
+@import '../../../../node_modules/bootstrap/dist/css/bootstrap-utilities.min.css';
+
+.mb-0 {
+    margin-bottom: 0;
+}
+
+.mtc-4 {
+    margin-top: 35px;
+}
+
+.basket-item {
+    font-size: 20px;
+    border: 1px rgba(0, 0, 0, .2) solid;
+    display: flex;
+    justify-content: space-between;
+}
+
+.dialog-action-section {
+    display: flex;
+    margin: 0 15px;
+    align-items: center;
+}
+
+.apply-coupon-btn {
+    margin-bottom: 40px;
+    color: #0b9d3d;
+    background-color: white;
+}
+
+.remove-coupon-btn {
+    margin-bottom: 40px;
+    color: red;
+    background-color: white;
+}
+
+.course-image {
+    margin-right: 20px;
+    height: 140px;
+}
+
+.course-remove {
+    display: flex;
+    align-items: flex-end;
+}
+
+.course-content {
+    color: black !important;
+}
+
+.course-image-content {
+    display: flex;
+    align-items: center;
+}
+
+.dialog-total-price {
+    display: flex;
+    justify-content: flex-start;
+    font-size: 18px;
+    height: 5px;
+}
+
+.coupon-actions {
+    margin: 0 15px;
+    justify-content: space-between;
+}
+
+.basket-item {
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.basket-item:last-child {
+    border-bottom: none;
+}
+
+.total-price {
+    font-weight: bold;
+    text-align: right;
+    margin-top: 10px;
+}
+
+.dialog-title {
+    display: flex;
+    justify-content: center;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.dialog-top-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title-and-button {
+    display: flex;
+    align-items: center;
+}
+
+.mat-icon-button {
+    border: none;
+    background-color: #e7e7e7;
+    border-radius: 35%;
+    width: 40px;
+    height: 40px;
+    line-height: 1px;
+    cursor: pointer;
+    margin-left: 10px;
+    /* Adjust this margin as needed */
+}
+
+.title-and-button span {
+    font-size: 18px;
+    margin-left: 10px;
+    /* Adjust this margin as needed */
+}
+
+.cut-text {
+    color: red;
+    text-decoration: line-through;
+    rotate: 0 20 0;
+    margin-right: 10px;
+}
+
+.coupon-form-and-text{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom:20px;
+}
+
+.coupon-apply-remove{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media only screen and (max-width: 1000px) {
+    .main-col{
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media only screen and (max-width: 620px) {
+    .basket-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .course-image-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+

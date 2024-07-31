@@ -35,6 +35,10 @@ import { BasketComponent } from './components/basket/basket.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import {MatStepperModule} from '@angular/material/stepper';
+import { ExpirationDateDirective } from './directives/expirationdate-directive';
+import { CardNumberDirective } from './directives/cardnumber-directive';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatListModule} from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -48,7 +52,9 @@ import {MatStepperModule} from '@angular/material/stepper';
     DurationFormatterPipe,
     CourseDetailComponent,
     BasketComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    ExpirationDateDirective,
+    CardNumberDirective
   ],
   imports: [
     BrowserAnimationsModule,
@@ -71,6 +77,8 @@ import {MatStepperModule} from '@angular/material/stepper';
     HttpClientModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatTabsModule,
+    MatListModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {

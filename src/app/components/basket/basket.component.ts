@@ -1,4 +1,3 @@
-import { OrderService } from './../../services/order.service';
 import { BasketItemModel, BasketModel } from '../../models/Basket/basketmodel';
 import { BasketService } from './../../services/basket.service';
 import { Component, Inject, OnInit } from '@angular/core';
@@ -33,7 +32,6 @@ export class BasketComponent implements OnInit {
     private identity: IdentityService,
     private basketService: BasketService,
     private discountService: DiscountService,
-    private orderService: OrderService
   ) { }
 
   ngOnInit(): void {
@@ -49,7 +47,7 @@ export class BasketComponent implements OnInit {
         if (response.isSuccessful) {
           this.basket = response.data;
           if (this.basket.discountCode) this.couponCode.setValue(this.basket.discountCode);
-          this.mapBasketItemsToCourses(this.basket.basketItems);
+          this.basketWithCourses = this.basketService.mapBasketItemsToCourses(this.basketWithCourses, this.basket.basketItems);
         }
       }
     });
@@ -141,24 +139,6 @@ export class BasketComponent implements OnInit {
     }
   }
 
-  mapBasketItemsToCourses(basketItems: BasketItemModel[]) {
-    this.basketWithCourses = [];
-    basketItems.forEach(item => {
-      this.courseService.getById(item.courseId).subscribe({
-        next: response => {
-          if (response.isSuccessful) {
-            this.mapCoursesToBasketCourseModel(response.data);
-          } else {
-            response.errors.forEach(err => console.error(err));
-          }
-        },
-        error: err => console.error(err)
-      });
-      return item;
-    });
-
-  }
-
   updateBasketItemsWithDiscount(basketItems: BasketItemModel[]) {
     basketItems = basketItems.map(basketItem => {
       basketItem.priceWithDiscount = basketItem.price - (basketItem.price * this.discount.rate) / 100;
@@ -178,28 +158,6 @@ export class BasketComponent implements OnInit {
     this.basket.basketItems = basketItems;
   }
 
-  mapCoursesToBasketCourseModel(course: CourseGetByIdModel) {
-    this.basketService.get().subscribe({
-      next: response => {
-        if (response.isSuccessful) {
-          let basket = response.data.basketItems.find((val) => val.courseId == course.id);
-          let basketWithCourseModel: BasketWithCourseModel = {
-            categoryId: course.categoryId,
-            createdDate: course.createdDate,
-            description: course.description,
-            feature: course.feature,
-            id: course.id,
-            image: course.image,
-            name: course.name,
-            price: course.price,
-            priceWithDiscount: basket.priceWithDiscount,
-            userId: course.userId
-          }
-          this.basketWithCourses.push(basketWithCourseModel);
-        }
-      }
-    });
-  }
 
   couponNotValidCallback() {
     this._snackBar.open(`Coupon code is not valid!`, 'Okay', { duration: 4000 });

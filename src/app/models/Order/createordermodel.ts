@@ -1,7 +1,7 @@
-import { AdressModel } from './adressmodel';
+import { AddressModel } from './addressmodel';
 import { OrderItemsModel } from './orderitemsmodel';
 export class CreateOrderModel{
-    adress:AdressModel;
+    address:AddressModel;
     buyerId:string;
-    orderItems:OrderItemsModel[] = [];
+    orderItems:OrderItemsModel[];
 }

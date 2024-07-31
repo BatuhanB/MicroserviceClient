@@ -39,6 +39,7 @@ import { ExpirationDateDirective } from './directives/expirationdate-directive';
 import { CardNumberDirective } from './directives/cardnumber-directive';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatListModule} from '@angular/material/list';
+import { CheckoutResultComponent } from './components/checkout-result/checkout-result.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import {MatListModule} from '@angular/material/list';
     BasketComponent,
     CheckoutComponent,
     ExpirationDateDirective,
-    CardNumberDirective
+    CardNumberDirective,
+    CheckoutResultComponent
   ],
   imports: [
     BrowserAnimationsModule,

@@ -1,7 +1,7 @@
 import { PaymentModel } from './../Payment/paymentmodel';
-import { AdressModel } from "./adressmodel";
+import { AddressModel } from "./addressmodel";
 
 export class CheckoutModel {
-    adress: AdressModel;
-    payment: PaymentModel;
+    address: AddressModel = new AddressModel();
+    payment: PaymentModel = new PaymentModel();
 }

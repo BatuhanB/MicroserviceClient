@@ -1,4 +1,4 @@
-import { AdressModel } from "./adressmodel";
+import { AddressModel } from "./addressmodel";
 import { OrderItemsModel } from "./orderitemsmodel";
 
 export class OrderListModel{

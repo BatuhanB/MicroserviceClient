@@ -1,5 +1,5 @@
 <mat-stepper [linear]="isLinear" #stepper>
-    <!-- <mat-step [stepControl]="addressFormGroup">
+    <mat-step [stepControl]="addressFormGroup">
         <div class="container">
             <div class="row">
                 <form [formGroup]="addressFormGroup">
@@ -229,12 +229,12 @@
                         <button mat-raised-button color="primary"
                             matStepperNext
                             [disabled]="paymentInfoFormGroup.invalid"
-                            class="mx-2" (click)="getBasket()">Next</button>
+                            class="mx-2" (click)="loadBasket()">Next</button>
                     </div>
                 </form>
             </div>
         </div>
-    </mat-step> -->
+    </mat-step>
     <mat-step>
         <ng-template matStepLabel>Order Complete</ng-template>
         <div class="container">
@@ -243,28 +243,28 @@
                     <mat-tab-group dynamicHeight class="col-12">
                         <mat-tab label="Address">
                             <div class="col-12">
-                                <h2>{{addressFormGroup.get('province').value ??
+                                <h2>Province: {{addressFormGroup.get('province').value ??
                                     ''}}</h2>
-                                <h2>{{addressFormGroup.get('district').value ??
+                                <h2>Disctrict: {{addressFormGroup.get('district').value ??
                                     ''}}</h2>
-                                <h2>{{addressFormGroup.get('street').value ??
+                                <h2>Street: {{addressFormGroup.get('street').value ??
                                     ''}}</h2>
-                                <h2>{{addressFormGroup.get('zipCode').value ??
+                                <h2>ZipCode: {{addressFormGroup.get('zipCode').value ??
                                     ''}}</h2>
-                                <h2>{{addressFormGroup.get('line').value ??
+                                <h2>Line: {{addressFormGroup.get('line').value ??
                                     ''}}</h2>
                             </div>
                         </mat-tab>
                         <mat-tab label="Card Information">
                             <div class="col-12">
-                                <h2>{{paymentInfoFormGroup.get('cardName').value
+                                <h2>Carh Holder: {{paymentInfoFormGroup.get('cardName').value
                                     ??
                                     ''}}</h2>
-                                <h2>{{paymentInfoFormGroup.get('cardNumber').value
+                                <h2>Card Number: {{paymentInfoFormGroup.get('cardNumber').value
                                     ?? ''}}</h2>
-                                <h2>{{paymentInfoFormGroup.get('expiration').value
+                                <h2>Expiration: {{paymentInfoFormGroup.get('expiration').value
                                     ?? ''}}</h2>
-                                <h2>{{paymentInfoFormGroup.get('cvv').value ??
+                                <h2>CVV: {{paymentInfoFormGroup.get('cvv').value ??
                                     ''}}</h2>
                             </div>
                         </mat-tab>
@@ -291,7 +291,6 @@
                                                 <div>{{basketItem.priceWithDiscount
                                                     | currency}}</div>
                                                 }
-
                                             </div>
                                         </mat-list-item>
                                         }
@@ -324,7 +323,7 @@
         </div>
         <div class="next-prev-btn">
             <button mat-raised-button matStepperPrevious>Back</button>
-            <button mat-raised-button color="primary" matStepperPrevious>Complete</button>
+            <button mat-raised-button color="primary" (click)="onSubmit()">Complete</button>
             <!-- <button mat-raised-button (click)="stepper.reset()">Reset</button> -->
         </div>
     </mat-step>

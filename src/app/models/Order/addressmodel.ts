@@ -1,4 +1,4 @@
-export class AdressModel{
+export class AddressModel{
     province:string;
     district:string; 
     street:string; 

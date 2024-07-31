@@ -23,7 +23,7 @@ export class AuthInterceptor implements HttpInterceptor {
         req: HttpRequest<any>,
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
-        if (req.url.includes(':5004') || req.url.includes('/basket') || req.url.includes('/discount') || req.url.includes('/order')) {
+        if (req.url.includes(':5004') || req.url.includes('/basket') || req.url.includes('/discount') || req.url.includes('/order') || req.url.includes('/fakepayment')) {
             const accessToken = this.identityService.getAccessToken();
             if (accessToken) {
                 req = this.addToken(req, accessToken);

@@ -6,7 +6,7 @@ import { BasketService } from './basket.service';
 import { PageRequest } from './../models/pagerequest';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, map, of, switchMap } from 'rxjs';
+import { Observable, catchError, of, switchMap,forkJoin, from, map } from 'rxjs';
 import { Response } from '../models/response';
 import { OrderCreatedModel } from '../models/Order/ordercreatedmodel';
 import { OrderListModel } from '../models/Order/orderlistmodel';
@@ -32,27 +32,62 @@ export class OrderService {
   ) { }
 
   create(checkOut: CheckoutModel, success: () => void): Observable<Response<OrderCreatedModel>> {
-    return this.basketService.get().pipe(switchMap(basketRes => {
-      let basket: BasketModel;
-      if (basketRes.isSuccessful) {
-        basket = basketRes.data;
-        let innerBasket = Object.assign(new BasketModel(), basket);
-        checkOut.payment.totalPrice = innerBasket.getTotalPrice();
-      }
-      return this.paymentService.receivePayment(checkOut.payment, () => { }).pipe(switchMap(paymentRes => {
-        let createOrderModel: CreateOrderModel;
-        if (paymentRes.isSuccessful) {
-          createOrderModel.buyerId = this.identityService.getUserId();
-          createOrderModel.adress = checkOut.adress;
-          createOrderModel.orderItems = this.mapBasketItemsToOrderItems(basket.basketItems);
+    return this.basketService.get().pipe(
+      switchMap(basketRes => {
+        if (basketRes.isSuccessful) {
+          let basket = basketRes.data;
+          let innerBasket = Object.assign(new BasketModel(), basket);
+          checkOut.payment.totalPrice = innerBasket.getTotalPrice();
+
+          return this.paymentService.receivePayment(checkOut.payment, () => {}).pipe(
+            switchMap(paymentRes => {
+              if (paymentRes.isSuccessful) {
+                return this.mapBasketItemsToOrderItems(basket.basketItems).pipe(
+                  switchMap(orderItems => {
+                    let createOrderModel = new CreateOrderModel();
+                    createOrderModel.buyerId = this.identityService.getUserId();
+                    createOrderModel.address = checkOut.address;
+                    createOrderModel.orderItems = orderItems;
+
+                    return this.httpClient.post<Response<OrderCreatedModel>>(
+                      `${this.baseUrl}/create`, createOrderModel
+                    ).pipe(
+                      catchError((error) => this.handleError(error, success))
+                    );
+                  })
+                );
+              } else {
+                console.log("Payment is not successful");
+                return of({ isSuccessful: false, message: 'Payment failed' });
+              }
+            })
+          );
         } else {
-          console.log("Payment is not successfull");
+          return of({ isSuccessful: false, message: 'Basket retrieval failed' });
         }
-        return this.httpClient.post<Response<OrderCreatedModel>>(`${this.baseUrl}/create`, createOrderModel).pipe(
-          catchError((error) => this.handleError(error, success))
-        );
-      }))
-    }));
+      })
+    );
+  }
+
+  mapBasketItemsToOrderItems(basketItems: BasketItemModel[]): Observable<OrderItemsModel[]> {
+    let orderItemsObservables = basketItems.map(basketItem => {
+      let orderItem = new OrderItemsModel();
+      let innerBasketItem = Object.assign(new BasketItemModel(), basketItem);
+      orderItem.price = innerBasketItem.getPrice();
+      orderItem.productId = innerBasketItem.courseId;
+      orderItem.productName = innerBasketItem.courseName;
+
+      return this.courseService.getById(innerBasketItem.courseId).pipe(
+        map(res => {
+          if (res.isSuccessful) {
+            orderItem.imageUrl = `${this.imageBaseUrl}${res.data.image}`;
+          }
+          return orderItem;
+        })
+      );
+    });
+
+    return forkJoin(orderItemsObservables);
   }
 
   suspend(order: CreateOrderModel, success: () => void): Observable<Response<OrderCreatedModel>> {
@@ -65,25 +100,8 @@ export class OrderService {
     let params = new HttpParams()
       .set('PageNumber', (request.pageNumber + 1).toString())
       .set('PageSize', request.pageSize.toString());
-    return this.httpClient.get<Response<OrderListModel[]>>(`${this.baseUrl}/get`, {
-      params: params
-    });
+    return this.httpClient.get<Response<OrderListModel[]>>(`${this.baseUrl}/get`, { params: params });
   }
-
-  mapBasketItemsToOrderItems(basketItems: BasketItemModel[]): OrderItemsModel[] {
-    let orderItems: OrderItemsModel[] = [];
-    basketItems.forEach(basketItem => {
-      let orderItem: OrderItemsModel;
-      let innerBasketItem = Object.assign(new BasketItemModel(), basketItem);
-      orderItem.price = innerBasketItem.getPrice();
-      orderItem.productId = innerBasketItem.courseId;
-      orderItem.productName = innerBasketItem.courseName;
-      this.courseService.getById(innerBasketItem.courseId).subscribe({ next: res => orderItem.imageUrl = `${this.imageBaseUrl}${res.data.image}` });
-      orderItems.push(orderItem);
-    });
-    return orderItems;
-  }
-
 
   private handleError(error: HttpErrorResponse, callback: () => void): Observable<any> {
     let errorMessage = 'An unknown error occurred!';
@@ -96,3 +114,4 @@ export class OrderService {
     return of({ isSuccessful: false, message: errorMessage });
   }
 }
+

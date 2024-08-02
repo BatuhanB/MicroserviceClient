@@ -6,14 +6,15 @@ import { BasketService } from './basket.service';
 import { PageRequest } from './../models/pagerequest';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, of, switchMap,forkJoin, from, map } from 'rxjs';
+import { Observable, catchError, of, switchMap, forkJoin, from, map } from 'rxjs';
 import { Response } from '../models/response';
 import { OrderCreatedModel } from '../models/Order/ordercreatedmodel';
 import { OrderListModel } from '../models/Order/orderlistmodel';
 import { BasketModel } from '../models/Basket/basketmodel';
-import { CheckoutModel } from '../models/Order/checkoutmodel';
+import { CheckoutModel, CheckoutModelAsync } from '../models/Order/checkoutmodel';
 import { IdentityService } from './identity-service';
 import { OrderItemsModel } from '../models/Order/orderitemsmodel';
+import { PaymentCreatedModel } from '../models/Payment/paymentcreatedmodel';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +40,7 @@ export class OrderService {
           let innerBasket = Object.assign(new BasketModel(), basket);
           checkOut.payment.totalPrice = innerBasket.getTotalPrice();
 
-          return this.paymentService.receivePayment(checkOut.payment, () => {}).pipe(
+          return this.paymentService.receivePayment(checkOut.payment, () => { }).pipe(
             switchMap(paymentRes => {
               if (paymentRes.isSuccessful) {
                 return this.mapBasketItemsToOrderItems(basket.basketItems).pipe(
@@ -90,9 +91,25 @@ export class OrderService {
     return forkJoin(orderItemsObservables);
   }
 
-  suspend(order: CreateOrderModel, success: () => void): Observable<Response<OrderCreatedModel>> {
-    return this.httpClient.post<Response<OrderCreatedModel>>(`${this.baseUrl}/create`, order).pipe(
-      catchError((error) => this.handleError(error, success))
+  suspendCreate(checkOut: CheckoutModelAsync, success: () => void): Observable<Response<PaymentCreatedModel>> {
+    return this.basketService.get().pipe(
+      switchMap(basketRes => {
+        if (basketRes.isSuccessful) {
+          let basket = basketRes.data;
+          let innerBasket = Object.assign(new BasketModel(), basket);
+          checkOut.payment.totalPrice = innerBasket.getTotalPrice();
+          return this.mapBasketItemsToOrderItems(innerBasket.basketItems).pipe(
+            switchMap(orderItems => {
+              checkOut.payment.order.buyerId = this.identityService.getUserId();
+              checkOut.payment.order.address = checkOut.address;
+              checkOut.payment.order.orderItems = orderItems;
+              return this.paymentService.receivePaymentAsync(checkOut.payment, () => { });
+            })
+          )
+        } else {
+          return of({ isSuccessful: false, message: 'Basket retrieval failed' });
+        }
+      })
     );
   }
 

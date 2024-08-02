@@ -1,5 +1,12 @@
-@if(orderId !=0 ){
-    <h1>Order Successfully Created.</h1>
-}@else{
-    <h1>Order Could Not Created.</h1>
-}
+<div class="container">
+    <div class="row d-flex"
+        style="justify-content: center; align-items: center;">
+        @if(orderId !=0 ){
+        <h1>Order {{orderId}} Successfully Created.</h1>
+        }@else{
+        <h1>Payment Successfull.</h1>
+        <p>Your order will be shown on your order history page. <a
+                routerLink="/user/order-history/"></a></p>
+        }
+    </div>
+</div>

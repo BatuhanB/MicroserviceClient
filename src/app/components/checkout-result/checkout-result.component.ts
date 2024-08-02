@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './checkout-result.component.css'
 })
 export class CheckoutResultComponent implements OnInit {
-  orderId: number;
+  orderId: number = 0;
 
   constructor(private route: ActivatedRoute) {}
 

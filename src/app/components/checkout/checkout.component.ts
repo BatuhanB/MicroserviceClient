@@ -1,11 +1,12 @@
 import { Router } from '@angular/router';
-import { CheckoutModel } from './../../models/Order/checkoutmodel';
+import { CheckoutModel, CheckoutModelAsync } from './../../models/Order/checkoutmodel';
 import { OrderService } from './../../services/order.service';
 import { BasketService } from './../../services/basket.service';
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { BasketModel } from '../../models/Basket/basketmodel';
 import { BasketWithCourseModel } from '../../models/Basket/basketwithcoursemodel';
+import { CreateOrderModel } from '../../models/Order/createordermodel';
 
 @Component({
   selector: 'app-checkout',
@@ -23,7 +24,7 @@ export class CheckoutComponent implements OnInit {
     private fb: FormBuilder,
     private basketService: BasketService,
     private orderService: OrderService,
-    private router:Router
+    private router: Router
   ) {
     this.basket = new BasketModel();
   }
@@ -57,6 +58,7 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+  //
   onSubmit(): void {
     if (this.addressFormGroup.valid && this.paymentInfoFormGroup.valid) {
       let checkout: CheckoutModel = new CheckoutModel();
@@ -77,6 +79,50 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
+  onSubmitAsync(): void {
+    if (this.addressFormGroup.valid && this.paymentInfoFormGroup.valid) {
+      let checkout: CheckoutModelAsync = new CheckoutModelAsync();
+      checkout = this.mapAddressModelAsync(checkout);
+      checkout = this.mapPaymentModelAsync(checkout);
+      this.orderService.suspendCreate(checkout, () => { }).subscribe({
+        next: response => {
+          if (response.isSuccessful) {
+            this.addressFormGroup.reset();
+            this.paymentInfoFormGroup.reset();
+            this.basketService.delete().subscribe({ next: res => res });
+            if(response.data){
+              this.router.navigateByUrl(`/checkout/result/`);
+            }
+          }
+        }
+      })
+    }
+  }
+
+  mapAddressModelAsync(checkout: CheckoutModelAsync): CheckoutModelAsync {
+    checkout.address = {
+      district: this.addressFormGroup.get('district').value,
+      province: this.addressFormGroup.get('province').value,
+      line: this.addressFormGroup.get('line').value,
+      street: this.addressFormGroup.get('street').value,
+      zipCode: this.addressFormGroup.get('zipCode').value
+    };
+    return checkout;
+  }
+
+  mapPaymentModelAsync(checkout: CheckoutModelAsync): CheckoutModelAsync {
+    const cardNumber = this.paymentInfoFormGroup.value.cardNumber.replace(/\s+/g, '');
+    checkout.payment = {
+      cardName: this.paymentInfoFormGroup.get('cardName').value,
+      cardNumber: cardNumber,
+      cvv: this.paymentInfoFormGroup.get('cvv').value,
+      expiration: this.paymentInfoFormGroup.get('expiration').value,
+      totalPrice: 0,
+      order: new CreateOrderModel()
+    };
+    return checkout;
+  }
+
   mapAddressModel(checkout: CheckoutModel): CheckoutModel {
     checkout.address = {
       district: this.addressFormGroup.get('district').value,
@@ -88,16 +134,16 @@ export class CheckoutComponent implements OnInit {
     return checkout;
   }
 
-  mapPaymentModel(checkout: CheckoutModel) : CheckoutModel {
+  mapPaymentModel(checkout: CheckoutModel): CheckoutModel {
     const cardNumber = this.paymentInfoFormGroup.value.cardNumber.replace(/\s+/g, '');
-  checkout.payment = {
-    cardName: this.paymentInfoFormGroup.get('cardName').value,
-    cardNumber: cardNumber,
-    cvv: this.paymentInfoFormGroup.get('cvv').value,
-    expiration: this.paymentInfoFormGroup.get('expiration').value,
-    totalPrice: 0
-  };
-  return checkout;
+    checkout.payment = {
+      cardName: this.paymentInfoFormGroup.get('cardName').value,
+      cardNumber: cardNumber,
+      cvv: this.paymentInfoFormGroup.get('cvv').value,
+      expiration: this.paymentInfoFormGroup.get('expiration').value,
+      totalPrice: 0
+    };
+    return checkout;
   }
 
   getCardNumberChunks(): string[] {

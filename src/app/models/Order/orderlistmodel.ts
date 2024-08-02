@@ -4,7 +4,7 @@ import { OrderItemsModel } from "./orderitemsmodel";
 export class OrderListModel{
     id:number; 
     createdDate:Date; 
-    //address:AdressModel; 
+    address:AddressModel; 
     buyerId:string; 
     orderItems:OrderItemsModel[];
 }

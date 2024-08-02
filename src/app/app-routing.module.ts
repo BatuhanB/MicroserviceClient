@@ -9,15 +9,18 @@ import { CourseDetailComponent } from './components/course-detail/course-detail.
 import { BasketComponent } from './components/basket/basket.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { CheckoutResultComponent } from './components/checkout-result/checkout-result.component';
+import { OrderHistoryComponent } from './components/order-history/order-history.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'course/:id', component: CourseDetailComponent },
   { path: 'sign-in', component: SignInComponent },
+  { path: 'user/order-history', component: OrderHistoryComponent, canActivate: [AuthGuard] },
   { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard] },
   { path: 'checkout/result/:orderId', component: CheckoutResultComponent, canActivate: [AuthGuard] },
+  { path: 'checkout/result', component: CheckoutResultComponent, canActivate: [AuthGuard] },
   { path: 'basket', component: BasketComponent, canActivate: [AuthGuard] },
-  { path: 'profile', component: UserProfileComponent, canActivate: [AuthGuard] },
+  { path: 'user/profile', component: UserProfileComponent, canActivate: [AuthGuard] },
   { path: 'courses', component: CoursesComponent, canActivate: [AuthGuard] },
 ];
 

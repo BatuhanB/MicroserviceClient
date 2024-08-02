@@ -40,6 +40,7 @@ import { CardNumberDirective } from './directives/cardnumber-directive';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatListModule} from '@angular/material/list';
 import { CheckoutResultComponent } from './components/checkout-result/checkout-result.component';
+import { OrderHistoryComponent } from './components/order-history/order-history.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { CheckoutResultComponent } from './components/checkout-result/checkout-r
     CheckoutComponent,
     ExpirationDateDirective,
     CardNumberDirective,
-    CheckoutResultComponent
+    CheckoutResultComponent,
+    OrderHistoryComponent
   ],
   imports: [
     BrowserAnimationsModule,

@@ -15,6 +15,7 @@ import { CheckoutModel, CheckoutModelAsync } from '../models/Order/checkoutmodel
 import { IdentityService } from './identity-service';
 import { OrderItemsModel } from '../models/Order/orderitemsmodel';
 import { PaymentCreatedModel } from '../models/Payment/paymentcreatedmodel';
+import { OrderPaging } from '../models/Order/orderpaging';
 
 @Injectable({
   providedIn: 'root'
@@ -113,11 +114,11 @@ export class OrderService {
     );
   }
 
-  getAll(request: PageRequest): Observable<Response<OrderListModel[]>> {
+  getAll(request: PageRequest): Observable<Response<OrderPaging<OrderListModel[]>>> {
     let params = new HttpParams()
-      .set('PageNumber', (request.pageNumber + 1).toString())
+      .set('Page', (request.pageNumber).toString())
       .set('PageSize', request.pageSize.toString());
-    return this.httpClient.get<Response<OrderListModel[]>>(`${this.baseUrl}/get`, { params: params });
+    return this.httpClient.get<Response<OrderPaging<OrderListModel[]>>>(`${this.baseUrl}/get`, { params: params });
   }
 
   private handleError(error: HttpErrorResponse, callback: () => void): Observable<any> {

@@ -26,7 +26,6 @@ export class HeaderComponent implements OnInit {
     this.identityService.getAuthStatus()
       .subscribe(isAuthenticated => {
         this.isAuth.set(isAuthenticated);
-        
         this.getBasket(this.isAuth());
       });
       

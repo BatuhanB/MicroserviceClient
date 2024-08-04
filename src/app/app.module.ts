@@ -24,7 +24,6 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatTableModule} from '@angular/material/table';
 import { CoursesComponent } from './components/courses/courses.component';
 import {MatChipsModule} from '@angular/material/chips';
-import { ClientCredentialTokenInterceptor } from '../interceptors/clientcredential-interceptor';
 import {MatDialogModule} from '@angular/material/dialog';
 import { MatSortModule } from '@angular/material/sort';
 import { PhotoHelperNotStPipe } from './pipes/photo-helper-notst';
@@ -93,7 +92,6 @@ import { OrderHistoryComponent } from './components/order-history/order-history.
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ClientCredentialTokenInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })

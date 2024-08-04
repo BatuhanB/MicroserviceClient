@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IdentityService, UserInfo } from '../../services/identity-service';
-import { CookieService } from 'ngx-cookie-service';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',
@@ -16,48 +16,26 @@ export class SignInComponent {
     private fb: FormBuilder,
     private identityService: IdentityService,
     private router: Router,
-    private cookieService: CookieService
   ) {
     this.signInForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      email: ['admin@mail.com', [Validators.required, Validators.email]],
+      password: ['Password12*', Validators.required],
       isRemember: [false],
     });
   }
 
   onSubmit(): void {
     if (this.signInForm.valid) {
-      this.identityService.signIn(this.signInForm.value).subscribe({
-        next: (response) => {
-
-          if (this.signInForm.get('isRemember').value) {
-            this.setExpToCookie(response);
-          } else {
-            sessionStorage.setItem('authToken', response.access_token);
-          }
-          localStorage.setItem('access_token', response.access_token);
-          this.identityService.getUserProfile().subscribe({
-            next: (val: UserInfo) => {
-              localStorage.setItem('user_name', val.name);
-              this.identityService.updateAuthStatus(true);
-            },
-          });
+      this.identityService.signIn(this.signInForm.value).pipe(
+        switchMap(response=>{
+            return this.identityService.getUserProfile();
+      })).subscribe({
+        next: (val: UserInfo) => {
+          localStorage.setItem('user_name', val.name);
+          this.identityService.updateAuthStatus(true);
           this.router.navigate(['/']);
-        },
-        error: (err) => {
-          console.error('Invalid login attempt', err);
         },
       });
     }
-  }
-
-  private setExpToCookie(response: any) {
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + 60);
-    this.cookieService.set(
-      'authToken',
-      response.access_token,
-      expirationDate
-    );
   }
 }

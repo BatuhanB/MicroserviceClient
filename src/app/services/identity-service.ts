@@ -44,7 +44,7 @@ export class IdentityService {
   }
 
   getUserId(): string | null {
-    const token = localStorage.getItem('access_token');
+    const token = this.cookieService.get('access_token');
     if (!token) return null;
     const decodedToken = this.jwtHelper.decodeToken(token);
     return decodedToken ? decodedToken.sub : null;
@@ -56,9 +56,8 @@ export class IdentityService {
 
   private checkAuthToken(): void {
     const authToken =
-      this.cookieService.get('authToken') ||
-      sessionStorage.getItem('authToken') ||
-      localStorage.getItem('access_token');
+      this.cookieService.get('access_token') ||
+      sessionStorage.getItem('access_token');
     const isAuthenticated = !!authToken;
     this.authStatus.next(isAuthenticated);
   }
@@ -79,7 +78,7 @@ export class IdentityService {
       .post<TokenResponse>(`${this.identityUrl}/connect/token`, body)
       .pipe(
         map((token) => {
-          this.storeTokens(token);
+          this.storeTokens(token, true); // Assuming isRemember is true here
           return token;
         })
       );
@@ -91,9 +90,9 @@ export class IdentityService {
     });
 
     const body = new HttpParams()
-    .set('client_id', this.clientCredentialId)
-    .set('client_secret', this.clientSecret)
-    .set('grant_type', 'client_credentials');
+      .set('client_id', this.clientCredentialId)
+      .set('client_secret', this.clientSecret)
+      .set('grant_type', 'client_credentials');
 
     return this.http.post(
       `${this.identityUrl}/connect/token`,
@@ -101,53 +100,54 @@ export class IdentityService {
       { headers }
     );
   }
-  
-  signIn(credentials: {
-    email: string;
-    password: string;
-    isRemember: boolean;
-  }): Observable<any> {
+
+  signIn(credentials: SignInModel): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
     });
 
     const body = new HttpParams()
-      .set('client_id', 'FrontEndClientWithResource')
-      .set('client_secret', 'secret')
+      .set('client_id', this.clientId)
+      .set('client_secret', this.clientSecret)
       .set('grant_type', 'password')
       .set('username', credentials.email)
       .set('password', credentials.password);
 
-    return this.http.post(
+    return this.http.post<TokenResponse>(
       `${this.identityUrl}/connect/token`,
       body.toString(),
       { headers }
+    ).pipe(
+      map((token) => {
+        this.storeTokens(token, credentials.isRemember);
+        return token;
+      })
     );
   }
 
-  private getRefreshToken(): string {
-    return localStorage.getItem('refresh_token');
+  private getRefreshToken(): string | null {
+    return this.cookieService.get('refresh_token') || localStorage.getItem('refresh_token');
   }
 
-  private storeTokens(token: TokenResponse): void {
-    localStorage.setItem('access_token', token.access_token);
-    localStorage.setItem('refresh_token', token.refresh_token);
-    localStorage.setItem(
-      'expires_in',
-      new Date().getTime() + token.expires_in * 1000 + ''
-    );
+  private storeTokens(token: TokenResponse, isRemember: boolean): void {
+    const accessTokenExpiration = ((token.expires_in / 60) / 60) / 24; // Convert seconds to days
+    if (isRemember) {
+      this.cookieService.set('access_token', token.access_token, accessTokenExpiration);
+      this.cookieService.set('refresh_token', token.refresh_token);
+    } else {
+      sessionStorage.setItem('access_token', token.access_token);
+      localStorage.setItem('refresh_token', token.refresh_token);
+    }
   }
 
-  getAccessToken(): string {
-    return localStorage.getItem('access_token');
+  getAccessToken(): string | null {
+    return this.cookieService.get('access_token') || sessionStorage.getItem('access_token');
   }
 
   logout(): void {
-    this.cookieService.delete('authToken');
-    sessionStorage.removeItem('authToken');
-    localStorage.removeItem('access_token');
+    this.cookieService.delete('access_token');
+    sessionStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    localStorage.removeItem('expires_in');
     localStorage.removeItem('user_name');
     this.updateAuthStatus(false);
   }
@@ -163,11 +163,11 @@ export class IdentityService {
   }
 
   private getBearerToken(): string {
-    return localStorage.getItem('access_token') || '';
+    return this.cookieService.get('access_token') || sessionStorage.getItem('access_token') || '';
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('access_token');
+    return !!this.cookieService.get('access_token') || !!sessionStorage.getItem('access_token');
   }
 
   getUserName(): string {

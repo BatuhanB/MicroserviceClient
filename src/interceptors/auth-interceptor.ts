@@ -7,23 +7,18 @@ import {
     HttpErrorResponse,
 } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
-import { catchError, switchMap, filter, take } from 'rxjs/operators';
+import { catchError, switchMap, filter, take, mergeMap } from 'rxjs/operators';
 import { IdentityService } from '../app/services/identity-service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
     private isRefreshing = false;
-    private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
-        null
-    );
+    private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
-    constructor(private identityService: IdentityService) { }
+    constructor(private identityService: IdentityService) {}
 
-    intercept(
-        req: HttpRequest<any>,
-        next: HttpHandler
-    ): Observable<HttpEvent<any>> {
-        if (req.url.includes(':5004') || req.url.includes('/basket') || req.url.includes('/discount') || req.url.includes('/order') || req.url.includes('/fakepayment')) {
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        if (this.isApiUrl(req.url)) {
             const accessToken = this.identityService.getAccessToken();
             if (accessToken) {
                 req = this.addToken(req, accessToken);
@@ -38,8 +33,36 @@ export class AuthInterceptor implements HttpInterceptor {
                     }
                 })
             );
+        } else if (this.isClientCredentialUrl(req.url)) {
+            return this.identityService.getClientCredentialToken().pipe(
+                mergeMap(token => {
+                    const cloned = req.clone({
+                        setHeaders: {
+                            Authorization: `Bearer ${token.access_token}`
+                        }
+                    });
+                    return next.handle(cloned);
+                })
+            );
         }
         return next.handle(req);
+    }
+
+    private isApiUrl(url: string): boolean {
+        return (
+            url.includes(':5004') ||
+            url.includes('/basket') ||
+            url.includes('/discount') ||
+            url.includes('/order') ||
+            url.includes('/fakepayment')
+        );
+    }
+
+    private isClientCredentialUrl(url: string): boolean {
+        return (
+            url.includes('/catalog') ||
+            url.includes('/photostock')
+        );
     }
 
     private addToken(request: HttpRequest<any>, token: string): HttpRequest<any> {
@@ -50,7 +73,7 @@ export class AuthInterceptor implements HttpInterceptor {
         });
     }
 
-    private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+    private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         if (!this.isRefreshing) {
             this.isRefreshing = true;
             this.refreshTokenSubject.next(null);

@@ -22,7 +22,8 @@ export class AuthGuard implements CanActivate {
                     return this.identityService.getAccessTokenByRefreshToken().pipe(
                         map(token => {
                             if (token) {
-                                this.identityService.storeTokens(token,true);
+                                this.identityService.storeTokens(token, false);
+                                this.identityService.getUserProfile().subscribe(resp => localStorage.setItem('user_name', resp.name));
                                 return true;
                             } else {
                                 this.router.navigate(['/sign-in']);

@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
@@ -29,6 +30,7 @@ export interface UserInfo {
   providedIn: 'root',
 })
 export class IdentityService {
+  public accessToken: string;
   private identityUrl = 'https://localhost:5004'; // replace with your identity server URL
   private clientId = 'FrontEndClientWithResource';
   private clientSecret = 'secret';
@@ -38,13 +40,14 @@ export class IdentityService {
   constructor(
     private http: HttpClient,
     private cookieService: CookieService,
-    private jwtHelper: JwtHelperService
+    private jwtHelper: JwtHelperService,
+    private router:Router
   ) {
     this.checkAuthToken();
   }
 
   getUserId(): string | null {
-    const token = this.cookieService.get('access_token');
+    const token = this.getAccessToken();
     if (!token) return null;
     const decodedToken = this.jwtHelper.decodeToken(token);
     return decodedToken ? decodedToken.sub : null;
@@ -55,9 +58,7 @@ export class IdentityService {
   }
 
   private checkAuthToken(): void {
-    const authToken =
-      this.cookieService.get('access_token') ||
-      sessionStorage.getItem('access_token');
+    const authToken = this.getAccessToken();
     const isAuthenticated = !!authToken;
     this.authStatus.next(isAuthenticated);
   }
@@ -78,7 +79,7 @@ export class IdentityService {
       .post<TokenResponse>(`${this.identityUrl}/connect/token`, body)
       .pipe(
         map((token) => {
-          this.storeTokens(token, true);
+          this.storeTokens(token, false);
           return token;
         })
       );
@@ -126,38 +127,45 @@ export class IdentityService {
   }
 
   private getRefreshToken(): string | null {
-    return this.cookieService.get('refresh_token') || localStorage.getItem('refresh_token');
+    return this.cookieService.get('refresh_token');
   }
 
   public storeTokens(token: TokenResponse, isRemember: boolean): void {
-    const expDate = new Date(new Date().getTime() + 10000);
-    console.log(expDate);
+    const cookieOptions = {
+      path:'/',
+      httpOnly: true,
+      secure: true,
+      expires: isRemember ? new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000) : undefined
+    };
+    // if isRemember true set expDate to refresh token
+    this.cookieService.delete('refresh_token');
+    this.cookieService.set('refresh_token', token.refresh_token, cookieOptions);
+    this.setAccessToken(token.access_token);
+  }
 
-    const accessTokenExpiration = ((token.expires_in / 60) / 60) / 24; // Convert seconds to days
-    if (isRemember) {
-      this.cookieService.set('access_token', token.access_token, expDate);
-      this.cookieService.set('refresh_token', token.refresh_token);
-    } else {
-      sessionStorage.setItem('access_token', token.access_token);
-      localStorage.setItem('refresh_token', token.refresh_token);
-    }
+  setAccessToken(token: string) {
+    this.accessToken = token;
   }
 
   getAccessToken(): string | null {
-    return this.cookieService.get('access_token') || sessionStorage.getItem('access_token');
+    return this.accessToken;
   }
 
   logout(): void {
-    this.cookieService.delete('access_token');
-    this.cookieService.delete('refresh_token');
-    sessionStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    const cookieOptions = {
+      path:'/',
+      httpOnly: true,
+      secure: true,
+    };
+    this.cookieService.delete('refresh_token',cookieOptions['path']);
+    this.setAccessToken('');
     localStorage.removeItem('user_name');
     this.updateAuthStatus(false);
+    this.router.navigateByUrl['/sign-in'];
   }
 
   getUserProfile(): Observable<UserInfo> {
-    const token = this.getBearerToken();
+    const token = this.getAccessToken();
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
@@ -165,17 +173,12 @@ export class IdentityService {
       headers,
     });
   }
-
-  private getBearerToken(): string {
-    return this.cookieService.get('access_token') || sessionStorage.getItem('access_token') || '';
-  }
-
   isAuthenticated(): boolean {
-    return !!this.cookieService.get('access_token') || !!sessionStorage.getItem('access_token');
+    return !!this.getAccessToken();
   }
 
   isAuthenticatedAsync(): Observable<boolean> {
-    const token = this.cookieService.get('access_token');
+    const token = this.getAccessToken();
     if (token && !this.jwtHelper.isTokenExpired(token)) {
       return of(true);
     } else {

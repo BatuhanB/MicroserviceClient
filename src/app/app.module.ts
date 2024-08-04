@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Inject, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { JwtModule } from '@auth0/angular-jwt';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -40,6 +40,12 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatListModule} from '@angular/material/list';
 import { CheckoutResultComponent } from './components/checkout-result/checkout-result.component';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
+import { IdentityService } from './services/identity-service';
+
+
+export function tokenGetter(identityService: IdentityService) {
+  return identityService.getAccessToken();
+}
 
 @NgModule({
   declarations: [
@@ -83,15 +89,14 @@ import { OrderHistoryComponent } from './components/order-history/order-history.
     MatTabsModule,
     MatListModule,
     JwtModule.forRoot({
-      config: {
-        tokenGetter: () => {
-          return localStorage.getItem('access_token');
-        },
-      },
+      config:{
+        tokenGetter: ()=> tokenGetter(Inject(IdentityService))
+      }
     }),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    IdentityService
   ],
   bootstrap: [AppComponent],
 })

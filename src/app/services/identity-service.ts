@@ -1,7 +1,7 @@
 import { CookieService } from 'ngx-cookie-service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
@@ -78,7 +78,7 @@ export class IdentityService {
       .post<TokenResponse>(`${this.identityUrl}/connect/token`, body)
       .pipe(
         map((token) => {
-          this.storeTokens(token, true); // Assuming isRemember is true here
+          this.storeTokens(token, true);
           return token;
         })
       );
@@ -129,10 +129,13 @@ export class IdentityService {
     return this.cookieService.get('refresh_token') || localStorage.getItem('refresh_token');
   }
 
-  private storeTokens(token: TokenResponse, isRemember: boolean): void {
+  public storeTokens(token: TokenResponse, isRemember: boolean): void {
+    const expDate = new Date(new Date().getTime() + 10000);
+    console.log(expDate);
+
     const accessTokenExpiration = ((token.expires_in / 60) / 60) / 24; // Convert seconds to days
     if (isRemember) {
-      this.cookieService.set('access_token', token.access_token, accessTokenExpiration);
+      this.cookieService.set('access_token', token.access_token, expDate);
       this.cookieService.set('refresh_token', token.refresh_token);
     } else {
       sessionStorage.setItem('access_token', token.access_token);
@@ -146,6 +149,7 @@ export class IdentityService {
 
   logout(): void {
     this.cookieService.delete('access_token');
+    this.cookieService.delete('refresh_token');
     sessionStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user_name');
@@ -168,6 +172,15 @@ export class IdentityService {
 
   isAuthenticated(): boolean {
     return !!this.cookieService.get('access_token') || !!sessionStorage.getItem('access_token');
+  }
+
+  isAuthenticatedAsync(): Observable<boolean> {
+    const token = this.cookieService.get('access_token');
+    if (token && !this.jwtHelper.isTokenExpired(token)) {
+      return of(true);
+    } else {
+      return of(false);
+    }
   }
 
   getUserName(): string {

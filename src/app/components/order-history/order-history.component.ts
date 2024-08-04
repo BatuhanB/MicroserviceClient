@@ -39,6 +39,10 @@ export class OrderHistoryComponent implements OnInit {
     this.getAllOrders();
   }
 
+  ngAfterViewInit() {
+    this.orderDataSource.sort = this.sort;
+  }
+
   getAllOrders() {
     var pageRequest = new PageRequest();
     let pageNumber = this.paginator ? this.paginator.pageIndex : 0;
@@ -48,17 +52,11 @@ export class OrderHistoryComponent implements OnInit {
     this.orderService.getAll(pageRequest).subscribe({
       next: orderRes => {
         if (orderRes.isSuccessful) {
-          console.log(orderRes);
-          
           this.paginator.length = orderRes.data.count;
           this.orderDataSource.data = orderRes.data.items;
         }
       }
     })
-  }
-
-  ngAfterViewInit() {
-    this.orderDataSource.sort = this.sort;
   }
 
   announceSortChange(sortState: Sort) {

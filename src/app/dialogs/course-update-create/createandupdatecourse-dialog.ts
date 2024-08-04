@@ -16,16 +16,15 @@ import { MatSelectModule } from "@angular/material/select";
 import { CategoryModel } from '../../models/Catalog/Category/CategoryModel';
 import { CourseCreateModel } from '../../models/Catalog/Course/CourseCreateModel';
 import { CourseUpdateModel } from '../../models/Catalog/Course/CourseUpdateModel';
-import { FeatureViewModel } from '../../models/Catalog/Course/FeatureViewModel';
 import { CategoryService } from '../../services/catalog/category.service';
 import { CourseService } from '../../services/catalog/course.service';
 import { UserInfo, IdentityService } from '../../services/identity-service';
 import { UserCourseDialog } from '../course-list/usercourse-dialog';
-import { PhotostockModel } from '../../models/photostock/photostockmodel';
-import { throwError } from 'rxjs';
-import { CourseViewModel } from '../../models/Catalog/Course/CourseViewModel';
+import { Observable, of, throwError } from 'rxjs';
 import { CourseGetByIdModel } from '../../models/Catalog/Course/CourseGetByIdModel';
 import { PhotoHelperPipe } from '../../pipes/photo-helper.pipe';
+import { PhotostockModel } from '../../models/photostock/photostockmodel';
+import { Response } from '../../models/response';
 
 
 
@@ -133,7 +132,8 @@ export class CreateAndUpdateCourseDialog implements OnInit {
 
     submitForm(): void {
         if (this.createForm.valid) {
-            this.uploadPhoto().pipe(
+            const uploadPhoto$ = this.selectedCourseId ? of(null) : this.uploadPhoto();
+            uploadPhoto$.pipe(
                 switchMap(() => {
                     if (this.selectedCourseId != null) {
                         this.mapFormDataToUpdateModel();
@@ -146,13 +146,13 @@ export class CreateAndUpdateCourseDialog implements OnInit {
             ).subscribe({
                 next: (response) => {
                     if (this.selectedCourseId != null) {
-                        this._snackBar.open(`Updated successfully`, 'Okey',{
-                            duration:2000
+                        this._snackBar.open(`Updated successfully`, 'Okey', {
+                            duration: 2000
                         });
                     } else {
                         if (response.isSuccessful) {
-                            this._snackBar.open(`${response.data.name} created successfully`, 'Okey',{
-                                duration:2000
+                            this._snackBar.open(`${response.data.name} created successfully`, 'Okey', {
+                                duration: 2000
                             });
                         } else {
                             console.error('error', response.errors);

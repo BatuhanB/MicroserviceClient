@@ -1,8 +1,3 @@
-.login-card {
-  height: 45vh;
-  max-width: 800px;
-  margin: 0 auto;
-}
-mat-grid-tile {
-  background: rgb(160, 233, 252);
-}
+@import '../../../../node_modules/bootstrap/dist/css/bootstrap-grid.min.css';
+@import '../../../../node_modules/bootstrap/dist/css/bootstrap-utilities.min.css';
+

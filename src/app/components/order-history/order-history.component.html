@@ -1,93 +1,96 @@
-<mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" #input />
-</mat-form-field>
-<table mat-table
-    [dataSource]="orderDataSource" 
-    matSort
-    (matSortChange)="announceSortChange($event)"
-    multiTemplateDataRows
-    class="mat-elevation-z8">
-    
-    <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header
-            sortActionDescription="Sort by id">Name</th>
-        <td mat-cell *matCellDef="let element">{{ element.id }}</td>
-    </ng-container>
+<div class="container d-flex justify-content-center">
+    <div class="col-md-10">
+        <div class="d-flex mb-5">
+            <h1 class="fw-bold" style="margin: 0 auto;">Order History</h1>
+        </div>
+        <!-- <mat-form-field>
+            <mat-label>Filter</mat-label>
+            <input matInput (keyup)="applyFilter($event)" #input />
+        </mat-form-field> -->
+        <table mat-table
+            [dataSource]="orderDataSource"
+            matSort
+            (matSortChange)="announceSortChange($event)"
+            class="mat-elevation-z8">
 
-    <ng-container matColumnDef="address">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header
-            sortActionDescription="Sort by address">Address</th>
-        <td mat-cell *matCellDef="let element">{{ element.address }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="buyerId">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header
-            sortActionDescription="Sort by buyerId">Buyer Id</th>
-        <td mat-cell *matCellDef="let element">{{ element.buyerId }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="createdDate">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header
-            sortActionDescription="Sort by createdDate">Order Date</th>
-        <td mat-cell *matCellDef="let element">{{ element.createdDate | date}}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="orderItems">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header
-            sortActionDescription="Sort by orderItems">Order Items</th>
-        <td mat-cell *matCellDef="let element">{{ element.orderItems }}</td>
-    </ng-container>
-
-
-    <ng-container matColumnDef="expand">
-        <th mat-header-cell *matHeaderCellDef
-            aria-label="row actions">&nbsp;</th>
-        <td mat-cell *matCellDef="let element">
-            <button mat-icon-button aria-label="expand row"
-                (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
-                @if (expandedElement === element) {
-                <mat-icon>keyboard_arrow_up</mat-icon>
-                } @else {
-                <mat-icon>keyboard_arrow_down</mat-icon>
-                }
-            </button>
-        </td>
-    </ng-container>
-
-    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-    <ng-container matColumnDef="expandedDetail">
-        <td mat-cell *matCellDef="let element"
-            [attr.colspan]="columnsToDisplayWithExpand.length">
-            <div class="example-element-detail"
-                [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                <div class="example-element-diagram">
-                    <div class="example-element-position"> {{element.position}}
+            <ng-container matColumnDef="address">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header
+                    sortActionDescription="Sort by address">Address</th>
+                <td mat-cell *matCellDef="let element">
+                    <div class="d-flex">
+                        <mat-list class="d-flex"
+                            style="flex-direction: column;">
+                            <mat-list-item>
+                                <mat-icon matListItemIcon></mat-icon>
+                                <span matListItemTitle><strong>Street: </strong>
+                                    <span>{{element.address.street}}</span></span>
+                            </mat-list-item>
+                            <mat-list-item>
+                                <mat-icon matListItemIcon></mat-icon>
+                                <span matListItemTitle><strong>ZipCode:
+                                    </strong>
+                                    <span>{{element.address.zipCode}}</span></span>
+                            </mat-list-item>
+                            <mat-list-item>
+                                <mat-icon matListItemIcon></mat-icon>
+                                <span matListItemTitle><strong>Line: </strong>
+                                    <span>{{element.address.line}}</span></span>
+                            </mat-list-item>
+                        </mat-list>
+                        <mat-list class="d-flex"
+                            style="flex-direction: column;">
+                            <mat-list-item>
+                                <mat-icon matListItemIcon></mat-icon>
+                                <span matListItemTitle><strong>Province:
+                                    </strong>
+                                    <span>{{element.address.province}}</span></span>
+                            </mat-list-item>
+                            <mat-list-item>
+                                <mat-icon matListItemIcon></mat-icon>
+                                <span matListItemTitle><strong>District:
+                                    </strong>
+                                    <span>{{element.address.district}}</span></span>
+                            </mat-list-item>
+                        </mat-list>
                     </div>
-                    <div class="example-element-symbol"> {{element.symbol}}
-                    </div>
-                    <div class="example-element-name"> {{element.name}} </div>
-                    <div class="example-element-weight"> {{element.weight}}
-                    </div>
-                </div>
-                <div class="example-element-description">
-                    {{element.description}}
-                    <span class="example-element-description-attribution"> --
-                        Wikipedia </span>
-                </div>
-            </div>
-        </td>
-    </ng-container>
+                </td>
+            </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
-    <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
-        class="example-element-row"
-        [class.example-expanded-row]="expandedElement === element"
-        (click)="expandedElement = expandedElement === element ? null : element">
-    </tr>
-    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']"
-        class="example-detail-row"></tr>
-</table>
-<mat-paginator (page)="handlePageEvent($event)"
-    [pageSizeOptions]="[4, 8, 12]" showFirstLastButtons>
-</mat-paginator>
+            <ng-container matColumnDef="orderItems">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header
+                    sortActionDescription="Sort by orderItems">Order Items</th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-list>
+                        @for (orderItem of element.orderItems; track $index) {
+                        <mat-list-item>
+                            <img src={{orderItem.imageUrl}} matListItemIcon>
+                            <span
+                                matListItemTitle>{{orderItem.productName}}</span>
+                            <span matListItemLine>{{orderItem.price |
+                                currency}}</span>
+                        </mat-list-item>
+                        }
+                    </mat-list>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header
+                    sortActionDescription="Sort by createdDate">Order Date</th>
+                <td mat-cell *matCellDef="let element">{{ element.createdDate |
+                    date}}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+        </table>
+        <div class="d-flex justify-content-center">
+            <mat-paginator
+            class="mt-4"
+            (page)="handlePageEvent($event)"
+            [pageSizeOptions]="[4, 8, 12]" 
+            showFirstLastButtons>
+        </mat-paginator>
+    </div>
+    </div>
+</div>

@@ -64,13 +64,13 @@ export class CheckoutComponent implements OnInit {
       let checkout: CheckoutModel = new CheckoutModel();
       checkout = this.mapAddressModel(checkout);
       checkout = this.mapPaymentModel(checkout);
-      this.orderService.create(checkout,()=>{}).subscribe({
-        next:response=>{
-          if(response.isSuccessful){
+      this.orderService.create(checkout, () => { }).subscribe({
+        next: response => {
+          if (response.isSuccessful) {
             this.addressFormGroup.reset();
             this.paymentInfoFormGroup.reset();
-            this.basketService.delete().subscribe({next:res=>res});
-            if(response.data){
+            this.basketService.delete().subscribe({ next: res => res });
+            if (response.data) {
               this.router.navigateByUrl(`/checkout/result/${response.data.orderId}`);
             }
           }
@@ -90,9 +90,7 @@ export class CheckoutComponent implements OnInit {
             this.addressFormGroup.reset();
             this.paymentInfoFormGroup.reset();
             this.basketService.delete().subscribe({ next: res => res });
-            if(response.data){
-              this.router.navigateByUrl(`/checkout/result/`);
-            }
+            this.router.navigateByUrl(`/checkout/result/`);
           }
         }
       })

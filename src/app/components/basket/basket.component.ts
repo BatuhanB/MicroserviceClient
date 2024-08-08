@@ -36,6 +36,7 @@ export class BasketComponent implements OnInit {
 
   ngOnInit(): void {
     this.couponCodeAppliedText = "% discount has applied.";
+    console.log(this.couponCode.value);
     if (this.identity.isAuthenticated()) {
       this.loadBasket();
     }
@@ -46,7 +47,7 @@ export class BasketComponent implements OnInit {
       next: response => {
         if (response.isSuccessful) {
           this.basket = response.data;
-          if (this.basket.discountCode) this.couponCode.setValue(this.basket.discountCode);
+          this.basket.discountCode ? this.couponCode.setValue(this.basket.discountCode) : this.couponCode.setValue('Aa78hdJsul34kLM');
           this.basketWithCourses = this.basketService.mapBasketItemsToCourses(this.basketWithCourses, this.basket.basketItems);
         }
       }

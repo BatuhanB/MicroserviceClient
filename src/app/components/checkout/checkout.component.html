@@ -279,11 +279,10 @@
                                             <img src="{{basketItem.image | photoHelperNotSt}}" matListItemIcon
                                                 class="list-img">
                                             <div matListItemTitle><strong>{{basketItem.name}}</strong></div>
-                                            <div matListItemTitle>{{basketItem.feature.duration
+                                            <div >{{basketItem.feature.duration
                                                 | durationFormatter}}</div>
-                                            <div matListItemTitle><strong>{{basketItem.name}}</strong></div>
-                                            <div class="d-flex" matListItemTitle>
-                                                <div matListItemTitle
+                                            <div class="d-flex">
+                                                <div
                                                     class="{{basket?.discountCode ? 'cut-text' : ''}}">
                                                     {{basketItem.price
                                                     | currency}}</div>

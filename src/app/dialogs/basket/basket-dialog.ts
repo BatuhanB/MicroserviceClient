@@ -50,7 +50,7 @@ import { of, switchMap } from 'rxjs';
   ],
 })
 export class BasketDialog implements OnInit {
-  basket: BasketModel;
+  basket: BasketModel = new BasketModel();
   basketWithCourses: BasketWithCourseModel[] = [];
   discount: DiscountGetByCode;
   couponCode = new FormControl();

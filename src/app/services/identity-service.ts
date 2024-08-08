@@ -30,8 +30,7 @@ export interface UserInfo {
   providedIn: 'root',
 })
 export class IdentityService {
-  public accessToken: string;
-  private identityUrl = 'https://localhost:5004'; // replace with your identity server URL
+  private identityUrl = 'http://localhost:5004'; // replace with your identity server URL
   private clientId = 'FrontEndClientWithResource';
   private clientSecret = 'secret';
   private clientCredentialId = 'FrontEndClient';
@@ -41,7 +40,7 @@ export class IdentityService {
     private http: HttpClient,
     private cookieService: CookieService,
     private jwtHelper: JwtHelperService,
-    private router:Router
+    private router: Router
   ) {
     this.checkAuthToken();
   }
@@ -131,34 +130,45 @@ export class IdentityService {
   }
 
   public storeTokens(token: TokenResponse, isRemember: boolean): void {
+    const refreshTokenDate = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
+    console.log(refreshTokenDate);
     const cookieOptions = {
-      path:'/',
+      path: '/',
       httpOnly: true,
       secure: true,
-      expires: isRemember ? new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000) : undefined
+      expires: refreshTokenDate
     };
     // if isRemember true set expDate to refresh token
     this.cookieService.delete('refresh_token');
     this.cookieService.set('refresh_token', token.refresh_token, cookieOptions);
-    this.setAccessToken(token.access_token);
+    this.setAccessToken(token.access_token, token.expires_in,isRemember);
   }
 
-  setAccessToken(token: string) {
-    this.accessToken = token;
+  setAccessToken(token: string, expiresIn: number = 0, isRemember: boolean = false) {
+    const accessTokenDate = new Date(new Date().getTime() + expiresIn * 1000);
+    console.log(accessTokenDate);
+    const cookieOptions = {
+      path: '/',
+      httpOnly: true,
+      secure: true,
+      expires: isRemember ? accessTokenDate : undefined
+    };
+    this.cookieService.set("access_token", token, cookieOptions);
   }
 
   getAccessToken(): string | null {
-    return this.accessToken;
+    var token = this.cookieService.get("access_token");
+    return token ? token : null;
   }
 
   logout(): void {
     const cookieOptions = {
-      path:'/',
+      path: '/',
       httpOnly: true,
       secure: true,
     };
-    this.cookieService.delete('refresh_token',cookieOptions['path']);
-    this.setAccessToken('');
+    this.cookieService.delete('refresh_token', cookieOptions['path']);
+    this.cookieService.delete('access_token', cookieOptions['path']);
     localStorage.removeItem('user_name');
     this.updateAuthStatus(false);
     this.router.navigateByUrl['/sign-in'];

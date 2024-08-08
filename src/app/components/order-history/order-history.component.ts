@@ -3,7 +3,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { OrderItemsModel } from '../../models/Order/orderitemsmodel';
 import { OrderListModel } from '../../models/Order/orderlistmodel';
 import { PageRequest } from '../../models/pagerequest';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -13,20 +12,13 @@ import { MatTableDataSource } from '@angular/material/table';
   selector: 'app-order-history',
   templateUrl: './order-history.component.html',
   styleUrl: './order-history.component.css',
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed,void', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
 })
 export class OrderHistoryComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  orderDataSource = new MatTableDataSource();
-  columnsToDisplay = ['id', 'address', 'buyerId', 'createdDate', 'orderItems'];
+  orderDataSource = new MatTableDataSource<OrderListModel>();
+  columnsToDisplay = ['address', 'orderItems', 'createdDate'];
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
   expandedElement: OrderItemsModel | null;
 

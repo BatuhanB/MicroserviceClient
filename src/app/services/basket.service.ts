@@ -1,7 +1,7 @@
 import { CourseService } from './catalog/course.service';
 import { IdentityService } from './identity-service';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { catchError, EMPTY, Observable, of, switchMap, throwError } from 'rxjs';
 import { Response } from '../models/response';
 import { BasketItemModel, BasketModel } from '../models/Basket/basketmodel';
@@ -16,12 +16,12 @@ export class BasketService {
 
   constructor(
     private httpClient: HttpClient,
-    private identityService:IdentityService,
-    private courseService:CourseService) { }
+    private identityService: IdentityService,
+    private courseService: CourseService) { }
 
   get(): Observable<Response<BasketModel>> {
     return this.httpClient.get<Response<BasketModel>>(`${this.baseUrl}/get`).pipe(
-      catchError((error)=>this.handleError(error))
+      catchError((error) => this.handleError(error))
     );
   }
 
@@ -59,7 +59,7 @@ export class BasketService {
       switchMap(res => {
         let basket: BasketModel = res.data;
         if (basket) {
-          if(basket.basketItems.length == 1){
+          if (basket.basketItems.length == 1) {
             basket.discountCode = '';
             basket.discountRate = null;
           }
@@ -73,14 +73,14 @@ export class BasketService {
     );
   }
 
-  
-  mapBasketItemsToCourses(basketWithCourses:BasketWithCourseModel[],basketItems: BasketItemModel[]) : BasketWithCourseModel[] {
+
+  mapBasketItemsToCourses(basketWithCourses: BasketWithCourseModel[], basketItems: BasketItemModel[]): BasketWithCourseModel[] {
     basketWithCourses = [];
     basketItems.forEach(item => {
       this.courseService.getById(item.courseId).subscribe({
         next: response => {
           if (response.isSuccessful) {
-            this.mapCoursesToBasketCourseModel(basketWithCourses,response.data);
+            this.mapCoursesToBasketCourseModel(basketWithCourses, response.data);
           } else {
             response.errors.forEach(err => console.error(err));
           }
@@ -92,8 +92,8 @@ export class BasketService {
     return basketWithCourses;
   }
 
-  
-  mapCoursesToBasketCourseModel(basketWithCourses:BasketWithCourseModel[],course: CourseGetByIdModel) {
+
+  mapCoursesToBasketCourseModel(basketWithCourses: BasketWithCourseModel[], course: CourseGetByIdModel) {
     this.get().subscribe({
       next: response => {
         if (response.isSuccessful) {
@@ -117,7 +117,7 @@ export class BasketService {
   }
 
 
-  private handleError(error: HttpErrorResponse) : Observable<any> {
+  private handleError(error: HttpErrorResponse): Observable<any> {
     let errorMessage = 'An unknown error occurred!';
     if (error.status === 404) {
       errorMessage = 'Resource not found';

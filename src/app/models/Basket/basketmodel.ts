@@ -15,6 +15,7 @@ export class BasketItemModel {
     quantity: number;
     courseId: string;
     courseName: string;
+    courseOwnerId: string;
     price: number;
     priceWithDiscount: number;
 

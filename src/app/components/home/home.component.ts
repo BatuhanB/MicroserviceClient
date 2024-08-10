@@ -62,6 +62,7 @@ export class HomeComponent implements OnInit {
   mapToBasketItem(course:CourseViewModel):BasketItemModel{
     let basketItem:BasketItemModel = new BasketItemModel();
     basketItem.courseId = course.id;
+    basketItem.courseOwnerId = course.userId;
     basketItem.courseName = course.name;
     basketItem.price = course.price;
     basketItem.priceWithDiscount = 0;

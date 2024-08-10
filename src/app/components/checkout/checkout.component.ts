@@ -58,7 +58,6 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  //
   onSubmit(): void {
     if (this.addressFormGroup.valid && this.paymentInfoFormGroup.valid) {
       let checkout: CheckoutModel = new CheckoutModel();

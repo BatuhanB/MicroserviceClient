@@ -78,6 +78,7 @@ export class OrderService {
       orderItem.price = innerBasketItem.getPrice();
       orderItem.productId = innerBasketItem.courseId;
       orderItem.productName = innerBasketItem.courseName;
+      orderItem.productOwnerId = innerBasketItem.courseOwnerId;
 
       return this.courseService.getById(innerBasketItem.courseId).pipe(
         map(res => {

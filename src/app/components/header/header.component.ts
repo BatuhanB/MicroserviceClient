@@ -1,3 +1,4 @@
+import { NotificationService } from './../../services/notification.service';
 import { BasketService } from './../../services/basket.service';
 import { Component, OnInit, signal } from '@angular/core';
 import { IdentityService } from '../../services/identity-service';
@@ -15,11 +16,13 @@ export class HeaderComponent implements OnInit {
   constructor(
     private identityService: IdentityService,
     private dialog: MatDialog,
-    private basketService: BasketService
+    private basketService: BasketService,
+    private notificationService:NotificationService
   ) { }
 
   ngOnInit(): void {
     this.getAuthStatus();
+    this.notificationService.startConnection();
   }
 
   private getAuthStatus() {

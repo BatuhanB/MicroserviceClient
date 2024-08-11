@@ -1,8 +1,9 @@
 import { BasketService } from './../../services/basket.service';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { IdentityService } from '../../services/identity-service';
 import { MatDialog } from '@angular/material/dialog';
 import { BasketDialog } from '../../dialogs/basket/basket-dialog';
+import { NotificationComponent } from '../notification/notification.component';
 
 @Component({
   selector: 'app-header',
@@ -10,6 +11,8 @@ import { BasketDialog } from '../../dialogs/basket/basket-dialog';
   styleUrl: './header.component.css',
 })
 export class HeaderComponent implements OnInit {
+  @ViewChild(NotificationComponent) notificationComponent: NotificationComponent;
+
   isBasketEmpty = signal(false);
   isAuth = signal(false);
   constructor(
@@ -21,6 +24,10 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.getAuthStatus();
   }
+
+    markAllNotificationsAsRead() {
+      this.notificationComponent.markAllAsRead();
+    }
 
   private getAuthStatus() {
     this.identityService.getAuthStatus()

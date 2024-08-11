@@ -42,6 +42,7 @@ import { CheckoutResultComponent } from './components/checkout-result/checkout-r
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
 import { IdentityService } from './services/identity-service';
 import { NotificationComponent } from './components/notification/notification.component';
+import {MatBadgeModule} from '@angular/material/badge';
 
 
 export function tokenGetter(identityService: IdentityService) {
@@ -90,6 +91,7 @@ export function tokenGetter(identityService: IdentityService) {
     MatProgressSpinnerModule,
     MatTabsModule,
     MatListModule,
+    MatBadgeModule,
     JwtModule.forRoot({
       config:{
         tokenGetter: ()=> tokenGetter(Inject(IdentityService))

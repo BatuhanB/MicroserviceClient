@@ -1,5 +1,11 @@
 <button mat-icon-button>
-    <mat-icon>notifications</mat-icon>
+    <mat-icon matBadge="{{count}}">notifications</mat-icon>
     <!-- <mat-icon>notifications_active</mat-icon>
     <mat-icon>notifications_none</mat-icon> -->
 </button>
+
+<div>
+    @for (item of notifications; track $index) {
+        <p [style]="!item.status ? 'font-weight:bold;' : 'font-weight:400;'">{{item.title}}</p>
+    }
+</div>

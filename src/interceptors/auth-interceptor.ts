@@ -54,7 +54,8 @@ export class AuthInterceptor implements HttpInterceptor {
             url.includes('/basket') ||
             url.includes('/discount') ||
             url.includes('/order') ||
-            url.includes('/fakepayment')
+            url.includes('/fakepayment') ||
+            url.includes('/notification')
         );
     }
 

@@ -41,6 +41,7 @@ import {MatListModule} from '@angular/material/list';
 import { CheckoutResultComponent } from './components/checkout-result/checkout-result.component';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
 import { IdentityService } from './services/identity-service';
+import { NotificationComponent } from './components/notification/notification.component';
 
 
 export function tokenGetter(identityService: IdentityService) {
@@ -63,7 +64,8 @@ export function tokenGetter(identityService: IdentityService) {
     ExpirationDateDirective,
     CardNumberDirective,
     CheckoutResultComponent,
-    OrderHistoryComponent
+    OrderHistoryComponent,
+    NotificationComponent
   ],
   imports: [
     BrowserAnimationsModule,

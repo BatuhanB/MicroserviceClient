@@ -131,26 +131,26 @@ export class IdentityService {
 
   public storeTokens(token: TokenResponse, isRemember: boolean): void {
     const refreshTokenDate = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
-    console.log(refreshTokenDate);
     const cookieOptions = {
       path: '/',
       httpOnly: true,
       secure: true,
-      expires: refreshTokenDate
+      expires: refreshTokenDate,
+      sameSite: 'Lax' as 'Lax' | 'Strict' | 'None',
     };
     // if isRemember true set expDate to refresh token
     this.cookieService.delete('refresh_token');
-    this.cookieService.set('refresh_token', token.refresh_token, cookieOptions);
+    this.cookieService.set('refresh_token', token.refresh_token,cookieOptions);
     this.setAccessToken(token.access_token, token.expires_in,isRemember);
   }
 
   setAccessToken(token: string, expiresIn: number = 0, isRemember: boolean = false) {
     const accessTokenDate = new Date(new Date().getTime() + expiresIn * 1000);
-    console.log(accessTokenDate);
     const cookieOptions = {
       path: '/',
       httpOnly: true,
       secure: true,
+      sameSite: 'Lax' as 'Lax' | 'Strict' | 'None',
       expires: isRemember ? accessTokenDate : undefined
     };
     this.cookieService.set("access_token", token, cookieOptions);

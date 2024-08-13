@@ -2,7 +2,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { IdentityService } from './identity-service';
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { Observable, catchError, of } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, of } from 'rxjs';
 import { Response } from '../models/response';
 import { NotificationModel } from '../models/Notifications/notificationmodel';
 
@@ -10,35 +10,42 @@ import { NotificationModel } from '../models/Notifications/notificationmodel';
   providedIn: 'root'
 })
 export class NotificationService {
-  private baseUrl: string = "http://localhost:5025";
+  private hubUrl: string = "http://localhost:5025";
+  private baseUrl: string = "http://localhost:5000";
   private hubConnection: signalR.HubConnection;
+  private notificationSubject = new BehaviorSubject<NotificationModel | null>(null);
 
   constructor(
     private identityService: IdentityService,
     private http: HttpClient
   ) {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.baseUrl}/notificationHub`, {
+      .withUrl(`${this.hubUrl}/notificationHub`, {
         accessTokenFactory: () => this.identityService.getAccessToken(),
       })
       .withAutomaticReconnect()
       .build();
+
+      this.startConnection();
+      this.addNotificationListener();
   }
 
-  public startConnection(): void {
+  private startConnection(): void {
     this.hubConnection
       .start()
-      .then(() => {
-        console.log('Connection started');
-      })
       .catch(err => {
         console.error('Error while starting connection: ', err);
       });
   }
 
   public addNotificationListener(): void {
-    this.hubConnection.on('ReceiveMessage', (messages: NotificationModel[]) => {
+    this.hubConnection.on('ReceiveMessage', (message: NotificationModel) => {
+      this.notificationSubject.next(message);
     });
+  }
+
+  public getNotificationObservable(): Observable<NotificationModel | null> {
+    return this.notificationSubject.asObservable();
   }
 
   // Delete a single notification

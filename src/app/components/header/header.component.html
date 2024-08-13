@@ -16,8 +16,12 @@
                     <button mat-menu-item (click)="signOut()">Sign Out</button>
                 </mat-menu>
         </ng-template>
-        <app-notification (click)="markAllNotificationsAsRead()"></app-notification>
         @if(isBasketEmpty()){
+            <button mat-icon-button (click)="redirectNotifications()">
+                <mat-icon matBadge="{{1}}">notifications</mat-icon>
+                <!-- <mat-icon>notifications_active</mat-icon>
+                <mat-icon>notifications_none</mat-icon> -->
+            </button>
             <button mat-mini-fab routerLink="/"
             class="basket-btn" (click)="openBasketDialog()">
             <mat-icon>shopping_basket</mat-icon>

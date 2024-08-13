@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { BasketService } from './../../services/basket.service';
 import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { IdentityService } from '../../services/identity-service';
@@ -11,23 +12,22 @@ import { NotificationComponent } from '../notification/notification.component';
   styleUrl: './header.component.css',
 })
 export class HeaderComponent implements OnInit {
-  @ViewChild(NotificationComponent) notificationComponent: NotificationComponent;
-
   isBasketEmpty = signal(false);
   isAuth = signal(false);
   constructor(
     private identityService: IdentityService,
     private dialog: MatDialog,
     private basketService: BasketService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.getAuthStatus();
   }
 
-    markAllNotificationsAsRead() {
-      this.notificationComponent.markAllAsRead();
-    }
+  redirectNotifications() {
+    this.router.navigateByUrl("/notifications");
+  }
 
   private getAuthStatus() {
     this.identityService.getAuthStatus()
@@ -35,7 +35,6 @@ export class HeaderComponent implements OnInit {
         this.isAuth.set(isAuthenticated);
         this.getBasket(this.isAuth());
       });
-      
   }
 
   private getBasket(isAuthenticated: boolean) {
@@ -44,7 +43,7 @@ export class HeaderComponent implements OnInit {
         .subscribe(res => {
           this.isBasketEmpty.set(((res.data && !isAuthenticated) ? false : true));
         });
-    }else{
+    } else {
       this.isBasketEmpty.set(false);
     }
   }

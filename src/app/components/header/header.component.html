@@ -1,6 +1,7 @@
 <div style="display: flex;justify-content: space-between;margin: 20px;">
     <!-- <a class="logo" routerLink="/">Course.Web</a> -->
-    <img src="../../../assets/logo.png" alt="" class="img-logo" width="60" height="50">
+    <img src="../../../assets/logo.png" alt class="img-logo" width="60"
+        height="50">
     <div style="display: flex;">
         <button mat-raised-button routerLink="/"
             style="margin-right:10px;">Home</button>
@@ -8,21 +9,26 @@
             <button mat-raised-button routerLink="/sign-in">Sign In</button>
         </div>
         <ng-template #loggedIn>
-                <button mat-raised-button [matMenuTriggerFor]="afterSignIn">
-                    <strong>{{userName}}</strong>
-                </button>
-                <mat-menu #afterSignIn="matMenu" yPosition="below">
-                    <button mat-menu-item routerLink="/user/profile">Profile</button>
-                    <button mat-menu-item (click)="signOut()">Sign Out</button>
-                </mat-menu>
+            <button mat-raised-button [matMenuTriggerFor]="afterSignIn">
+                <strong>{{userName}}</strong>
+            </button>
+            <mat-menu #afterSignIn="matMenu" yPosition="below">
+                <button mat-menu-item
+                    routerLink="/user/profile">Profile</button>
+                <button mat-menu-item (click)="signOut()">Sign Out</button>
+            </mat-menu>
         </ng-template>
         @if(isBasketEmpty()){
-            <button mat-icon-button (click)="redirectNotifications()">
-                <mat-icon matBadge="{{1}}">notifications</mat-icon>
-                <!-- <mat-icon>notifications_active</mat-icon>
-                <mat-icon>notifications_none</mat-icon> -->
-            </button>
-            <button mat-mini-fab routerLink="/"
+        <button mat-icon-button (click)="redirectNotifications()">
+            <mat-icon
+                matBadge="{{notificationCount}}"
+                matBadgeHidden="{{notificationCount <= 0}}"
+                aria-hidden="false">
+                {{ notificationCount > 0 ? 'notifications_active' :
+                'notifications_none' }}
+            </mat-icon>
+        </button>
+        <button mat-mini-fab routerLink="/"
             class="basket-btn" (click)="openBasketDialog()">
             <mat-icon>shopping_basket</mat-icon>
         </button>

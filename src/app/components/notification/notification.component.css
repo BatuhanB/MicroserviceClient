@@ -18,6 +18,10 @@
     border-radius: 12px 12px 0 0 !important;
 }
 
+.notification-item:last-child {
+    margin-bottom: -8px !important;
+}
+
 .unread-notification-dot {
     width: 8px !important;
     height: 8px !important;

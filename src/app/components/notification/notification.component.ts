@@ -1,4 +1,3 @@
-import { of } from 'rxjs';
 import { NotificationModel } from '../../models/Notifications/notificationmodel';
 import { IdentityService } from '../../services/identity-service';
 import { NotificationService } from '../../services/notification.service';
@@ -10,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './notification.component.css'
 })
 export class NotificationComponent implements OnInit {
-  count: number = 0;
+  count: number;
   notifications: NotificationModel[] = [];
 
   constructor(
@@ -45,16 +44,19 @@ export class NotificationComponent implements OnInit {
 
   private getCount() {
     this.count = this.notifications.filter(x => !x.status).length;
+    this.notificationService.updateCount(this.count);
   }
 
   getNotifications() {
     const userId = this.identityService.getUserId();
     this.notificationService.getAllNotifications(userId).subscribe({
       next: response => {
-        if (response.isSuccessful) {
-          this.notifications = response.data;
+        if(response){
+          if (response.isSuccessful) {
+            this.notifications = response.data;
+          }
+          this.getCount();
         }
-        this.getCount();
       }
     });
   }

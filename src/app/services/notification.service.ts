@@ -14,6 +14,7 @@ export class NotificationService {
   private baseUrl: string = "http://localhost:5000";
   private hubConnection: signalR.HubConnection;
   private notificationSubject = new BehaviorSubject<NotificationModel | null>(null);
+  private countSubject = new BehaviorSubject<number>(null);
 
   constructor(
     private identityService: IdentityService,
@@ -46,6 +47,14 @@ export class NotificationService {
 
   public getNotificationObservable(): Observable<NotificationModel | null> {
     return this.notificationSubject.asObservable();
+  }
+
+  public getCountObservable(): Observable<number> {
+    return this.countSubject.asObservable();
+  }
+
+  public updateCount(count: number): void {
+    this.countSubject.next(count);
   }
 
   // Delete a single notification

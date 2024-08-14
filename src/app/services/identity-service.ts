@@ -30,7 +30,7 @@ export interface UserInfo {
   providedIn: 'root',
 })
 export class IdentityService {
-  private identityUrl = 'http://localhost:5004'; // replace with your identity server URL
+  private identityUrl = 'http://localhost:5004';
   private clientId = 'FrontEndClientWithResource';
   private clientSecret = 'secret';
   private clientCredentialId = 'FrontEndClient';

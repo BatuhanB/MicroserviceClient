@@ -4,74 +4,86 @@
             <div class="row">
                 <form [formGroup]="addressFormGroup">
                     <ng-template matStepLabel>address</ng-template>
-                    <div class="col-12">
-                        <div class="col-10 d-flex">
-                            <mat-form-field class="col-md-4">
-                                <mat-label>Province</mat-label>
-                                <input matInput placeholder
-                                    formControlName="province" required>
-                                <mat-error
-                                    *ngIf="addressFormGroup.get('province').hasError('required')">Province
-                                    is required.</mat-error>
-                                <mat-error
-                                    *ngIf="addressFormGroup.get('province').hasError('minlength')">Province
-                                    must be greater than 2.</mat-error>
-                            </mat-form-field>
-                            <mat-form-field class="col-md-4 mx-4">
-                                <mat-label>District</mat-label>
-                                <input matInput placeholder
-                                    formControlName="district" required>
-                                <mat-error
-                                    *ngIf="addressFormGroup.get('district').hasError('required')">District
-                                    is required.</mat-error>
-                                <mat-error
-                                    *ngIf="addressFormGroup.get('district').hasError('minlength')">District
-                                    must be greater than 3.</mat-error>
-                            </mat-form-field>
+                    <div class="col-12 d-flex top-col">
+                        <div class="col-xxl-8 col-xl-8 col-md-12">
+                            <div class="col-xxl-11 col-xl-11 col-md-12 d-flex">
+                                <mat-form-field class="col-md-6 col-sm-6">
+                                    <mat-label>Province</mat-label>
+                                    <input matInput placeholder
+                                        formControlName="province" required>
+                                    <mat-error
+                                        *ngIf="addressFormGroup.get('province').hasError('required')">Province
+                                        is required.</mat-error>
+                                    <mat-error
+                                        *ngIf="addressFormGroup.get('province').hasError('minlength')">Province
+                                        must be greater than 2.</mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="col-md-6 col-sm-6 mx-2">
+                                    <mat-label>District</mat-label>
+                                    <input matInput placeholder
+                                        formControlName="district" required>
+                                    <mat-error
+                                        *ngIf="addressFormGroup.get('district').hasError('required')">District
+                                        is required.</mat-error>
+                                    <mat-error
+                                        *ngIf="addressFormGroup.get('district').hasError('minlength')">District
+                                        must be greater than 3.</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xxl-11 col-xl-11 col-md-12 d-flex">
+                                <mat-form-field class="col-md-6 col-sm-6">
+                                    <mat-label>Street</mat-label>
+                                    <input matInput placeholder
+                                        formControlName="street" required>
+                                    <mat-error
+                                        *ngIf="addressFormGroup.get('street').hasError('required')">Street
+                                        is required.</mat-error>
+                                    <mat-error
+                                        *ngIf="addressFormGroup.get('street').hasError('minlength')">Street
+                                        must be greater than 3.</mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="col-md-6 col-sm-6 mx-2">
+                                    <mat-label>ZipCode</mat-label>
+                                    <input matInput placeholder
+                                        formControlName="zipCode" required
+                                        maxlength="5">
+                                    <mat-error
+                                        *ngIf="addressFormGroup.get('zipCode').hasError('required')">ZipCode
+                                        is required.</mat-error>
+                                    <mat-error
+                                        *ngIf="addressFormGroup.get('zipCode').hasError('minlength')">ZipCode
+                                        must be 5.</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xxl-11 col-xl-11 col-md-12 d-flex">
+                                <mat-form-field class="col-md-8 col-sm-12">
+                                    <mat-label>Line</mat-label>
+                                    <input matInput placeholder
+                                        formControlName="line" required>
+                                    <mat-error
+                                        *ngIf="addressFormGroup.get('line').hasError('required')">Line
+                                        is required.</mat-error>
+                                    <mat-error
+                                        *ngIf="addressFormGroup.get('line').hasError('minlength')">Line
+                                        must be greater than 3.</mat-error>
+                                </mat-form-field>
+                            </div>
                         </div>
-                        <div class="col-10 d-flex">
-                            <mat-form-field class="col-md-4">
-                                <mat-label>Street</mat-label>
-                                <input matInput placeholder
-                                    formControlName="street" required>
-                                <mat-error
-                                    *ngIf="addressFormGroup.get('street').hasError('required')">Street
-                                    is required.</mat-error>
-                                <mat-error
-                                    *ngIf="addressFormGroup.get('street').hasError('minlength')">Street
-                                    must be greater than 3.</mat-error>
-                            </mat-form-field>
-                            <mat-form-field class="col-md-4 mx-4">
-                                <mat-label>ZipCode</mat-label>
-                                <input matInput placeholder
-                                    formControlName="zipCode" required
-                                    maxlength="5">
-                                <mat-error
-                                    *ngIf="addressFormGroup.get('zipCode').hasError('required')">ZipCode
-                                    is required.</mat-error>
-                                <mat-error
-                                    *ngIf="addressFormGroup.get('zipCode').hasError('minlength')">ZipCode
-                                    must be 5.</mat-error>
-                            </mat-form-field>
+                        <div class="col-xxl-4 col-xl-4 col-md-12">
+                            <div class="col-md-12">
+                                <h2>My Addresses</h2>
+                                <mat-selection-list [multiple]="false" >
+                                    @for (address of addresses; track $index) {
+                                        <mat-list-option class="my-2 select-address" (click)="mapSelectedAddressToAddressForm(address)">{{address.district}} / {{address.province}} / {{address.street}}</mat-list-option>
+                                    }
+                                </mat-selection-list>
+                            </div>
                         </div>
-                        <div class="col-10 d-flex">
-                            <mat-form-field class="col-md-4">
-                                <mat-label>Line</mat-label>
-                                <input matInput placeholder
-                                    formControlName="line" required>
-                                <mat-error
-                                    *ngIf="addressFormGroup.get('line').hasError('required')">Line
-                                    is required.</mat-error>
-                                <mat-error
-                                    *ngIf="addressFormGroup.get('line').hasError('minlength')">Line
-                                    must be greater than 3.</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div>
-                            <button mat-raised-button color="primary"
-                                matStepperNext
-                                [disabled]="!addressFormGroup.valid">Next</button>
-                        </div>
+                    </div>
+                    <div class="d-flex my-5" style="justify-content:flex-end;">
+                        <button mat-raised-button color="primary"
+                            matStepperNext
+                            [disabled]="!addressFormGroup.valid">Next</button>
                     </div>
                 </form>
             </div>
@@ -243,28 +255,37 @@
                     <mat-tab-group dynamicHeight class="col-12">
                         <mat-tab label="Address">
                             <div class="col-12">
-                                <h2>Province: {{addressFormGroup.get('province').value ??
+                                <h2>Province:
+                                    {{addressFormGroup.get('province').value ??
                                     ''}}</h2>
-                                <h2>Disctrict: {{addressFormGroup.get('district').value ??
+                                <h2>Disctrict:
+                                    {{addressFormGroup.get('district').value ??
                                     ''}}</h2>
-                                <h2>Street: {{addressFormGroup.get('street').value ??
+                                <h2>Street:
+                                    {{addressFormGroup.get('street').value ??
                                     ''}}</h2>
-                                <h2>ZipCode: {{addressFormGroup.get('zipCode').value ??
+                                <h2>ZipCode:
+                                    {{addressFormGroup.get('zipCode').value ??
                                     ''}}</h2>
-                                <h2>Line: {{addressFormGroup.get('line').value ??
+                                <h2>Line: {{addressFormGroup.get('line').value
+                                    ??
                                     ''}}</h2>
                             </div>
                         </mat-tab>
                         <mat-tab label="Card Information">
                             <div class="col-12">
-                                <h2>Carh Holder: {{paymentInfoFormGroup.get('cardName').value
+                                <h2>Carh Holder:
+                                    {{paymentInfoFormGroup.get('cardName').value
                                     ??
                                     ''}}</h2>
-                                <h2>Card Number: {{paymentInfoFormGroup.get('cardNumber').value
+                                <h2>Card Number:
+                                    {{paymentInfoFormGroup.get('cardNumber').value
                                     ?? ''}}</h2>
-                                <h2>Expiration: {{paymentInfoFormGroup.get('expiration').value
+                                <h2>Expiration:
+                                    {{paymentInfoFormGroup.get('expiration').value
                                     ?? ''}}</h2>
-                                <h2>CVV: {{paymentInfoFormGroup.get('cvv').value ??
+                                <h2>CVV: {{paymentInfoFormGroup.get('cvv').value
+                                    ??
                                     ''}}</h2>
                             </div>
                         </mat-tab>
@@ -276,10 +297,13 @@
                                         @for (basketItem of basketWithCourses;
                                         track basketItem) {
                                         <mat-list-item>
-                                            <img src="{{basketItem.image | photoHelperNotSt}}" matListItemIcon
+                                            <img
+                                                src="{{basketItem.image | photoHelperNotSt}}"
+                                                matListItemIcon
                                                 class="list-img">
-                                            <div matListItemTitle><strong>{{basketItem.name}}</strong></div>
-                                            <div >{{basketItem.feature.duration
+                                            <div
+                                                matListItemTitle><strong>{{basketItem.name}}</strong></div>
+                                            <div>{{basketItem.feature.duration
                                                 | durationFormatter}}</div>
                                             <div class="d-flex">
                                                 <div
@@ -304,7 +328,8 @@
                                         </h3>
                                         }
                                         <div class="d-flex">
-                                            <h1 class="{{basket?.discountCode ? 'cut-text' : ''}}">{{basket.totalPrice
+                                            <h1
+                                                class="{{basket?.discountCode ? 'cut-text' : ''}}">{{basket.totalPrice
                                                 |
                                                 currency}}</h1>
                                             @if(basket.totalPriceWithDiscount){
@@ -322,7 +347,8 @@
         </div>
         <div class="next-prev-btn">
             <button mat-raised-button matStepperPrevious>Back</button>
-            <button mat-raised-button color="primary" (click)="onSubmitAsync()">Complete</button>
+            <button mat-raised-button color="primary"
+                (click)="onSubmitAsync()">Complete</button>
             <!-- <button mat-raised-button (click)="stepper.reset()">Reset</button> -->
         </div>
     </mat-step>

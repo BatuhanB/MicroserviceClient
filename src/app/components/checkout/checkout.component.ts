@@ -1,3 +1,6 @@
+import { AddressModel } from './../../models/User/AddressModel';
+import { AddressService } from './../../services/address.service';
+import { IdentityService } from './../../services/identity-service';
 import { Router } from '@angular/router';
 import { CheckoutModel, CheckoutModelAsync } from './../../models/Order/checkoutmodel';
 import { OrderService } from './../../services/order.service';
@@ -19,17 +22,21 @@ export class CheckoutComponent implements OnInit {
   expirationRegex = new RegExp(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/);
   basket: BasketModel;
   basketWithCourses: BasketWithCourseModel[];
+  addresses: AddressModel[] = [];
 
   constructor(
     private fb: FormBuilder,
     private basketService: BasketService,
     private orderService: OrderService,
-    private router: Router
+    private router: Router,
+    private identityService: IdentityService,
+    private addressService: AddressService
   ) {
     this.basket = new BasketModel();
   }
 
   ngOnInit(): void {
+    this.getUserAdresses();
   }
 
   addressFormGroup = this.fb.group({
@@ -46,6 +53,15 @@ export class CheckoutComponent implements OnInit {
     expiration: ['', [Validators.required, Validators.pattern(this.expirationRegex)]],
     cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]],
   });
+
+  getUserAdresses() {
+    const userId = this.identityService.getUserId();
+    this.addressService.getByUserId(userId).subscribe({
+      next: response => {
+        this.addresses = response.data
+      }
+    })
+  }
 
   loadBasket() {
     this.basketService.get().subscribe({
@@ -129,6 +145,16 @@ export class CheckoutComponent implements OnInit {
       zipCode: this.addressFormGroup.get('zipCode').value
     };
     return checkout;
+  }
+
+  mapSelectedAddressToAddressForm(address: AddressModel) {
+      this.addressFormGroup.setValue({
+        district:address.district,
+        province:address.province,
+        line:address.line,
+        street:address.street,
+        zipCode:address.zipCode,
+      });
   }
 
   mapPaymentModel(checkout: CheckoutModel): CheckoutModel {

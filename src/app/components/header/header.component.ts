@@ -1,3 +1,4 @@
+import { switchMap } from 'rxjs';
 import { NotificationService } from './../../services/notification.service';
 import { Router } from '@angular/router';
 import { BasketService } from './../../services/basket.service';
@@ -14,7 +15,7 @@ import { NotificationModel } from '../../models/Notifications/notificationmodel'
   styleUrl: './header.component.css',
 })
 export class HeaderComponent implements OnInit {
-  notificationCount:number = 0;
+  notificationCount: number = 0;
   isBasketEmpty = signal(false);
   isAuth = signal(false);
   constructor(
@@ -22,16 +23,13 @@ export class HeaderComponent implements OnInit {
     private dialog: MatDialog,
     private basketService: BasketService,
     private router: Router,
-    private notificationService:NotificationService
-  ) { 
+    private notificationService: NotificationService
+  ) {
   }
 
   ngOnInit(): void {
     this.getAuthStatus();
     this.getNotifications();
-    this.notificationService.getCountObservable().subscribe(count =>{
-      this.notificationCount = count;
-    })
   }
 
   redirectNotifications() {
@@ -40,18 +38,24 @@ export class HeaderComponent implements OnInit {
 
   getNotifications() {
     const userId = this.identityService.getUserId();
-    this.notificationService.getAllNotifications(userId).subscribe({
-      next: response => {
-        if(response){
+    this.notificationService.getAllNotifications(userId).pipe(
+      switchMap(response => {
+        if (response) {
           if (response.isSuccessful) {
             this.getCount(response.data);
           }
         }
-      }
-    });
+        return this.notificationService.getCountObservable();
+      })
+    )
+      .subscribe({
+        next: count => {
+          this.notificationCount = count;
+        }
+      });
   }
 
-  private getCount(notifications:NotificationModel[]) {
+  private getCount(notifications: NotificationModel[]) {
     this.notificationCount = notifications.filter(x => !x.status).length;
     this.notificationService.updateCount(this.notificationCount);
   }

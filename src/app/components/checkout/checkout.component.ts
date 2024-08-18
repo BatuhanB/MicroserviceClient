@@ -1,3 +1,5 @@
+import { CardInformationService } from './../../services/card-information.service';
+import { CardInformation } from './../../models/User/CardInformation';
 import { AddressModel } from './../../models/User/AddressModel';
 import { AddressService } from './../../services/address.service';
 import { IdentityService } from './../../services/identity-service';
@@ -23,6 +25,7 @@ export class CheckoutComponent implements OnInit {
   basket: BasketModel;
   basketWithCourses: BasketWithCourseModel[];
   addresses: AddressModel[] = [];
+  cardInformations: CardInformation[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -30,13 +33,15 @@ export class CheckoutComponent implements OnInit {
     private orderService: OrderService,
     private router: Router,
     private identityService: IdentityService,
-    private addressService: AddressService
+    private addressService: AddressService,
+    private cardInformationService:CardInformationService
   ) {
     this.basket = new BasketModel();
   }
 
   ngOnInit(): void {
     this.getUserAdresses();
+    this.getUserCardInformations();
   }
 
   addressFormGroup = this.fb.group({
@@ -53,6 +58,15 @@ export class CheckoutComponent implements OnInit {
     expiration: ['', [Validators.required, Validators.pattern(this.expirationRegex)]],
     cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]],
   });
+
+  getUserCardInformations() {
+    const userId = this.identityService.getUserId();
+    this.cardInformationService.getByUserId(userId).subscribe({
+      next: response => {
+        this.cardInformations = response.data
+      }
+    })
+  }
 
   getUserAdresses() {
     const userId = this.identityService.getUserId();
@@ -154,6 +168,15 @@ export class CheckoutComponent implements OnInit {
         line:address.line,
         street:address.street,
         zipCode:address.zipCode,
+      });
+  }
+
+  mapSelectedCardInformationToCardInformationForm(cardInformation: CardInformation) {
+      this.paymentInfoFormGroup.setValue({
+        cardName:cardInformation.cardName,
+        cardNumber:cardInformation.cardNumber,
+        expiration:cardInformation.expiration,
+        cvv:null
       });
   }
 

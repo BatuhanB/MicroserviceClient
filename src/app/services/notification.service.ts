@@ -10,7 +10,7 @@ import { NotificationModel } from '../models/Notifications/notificationmodel';
   providedIn: 'root'
 })
 export class NotificationService {
-  private hubUrl: string = "http://localhost:5025";
+  private hubUrl: string = "http://localhost:5000/hub";
   private baseUrl: string = "http://localhost:5000";
   private hubConnection: signalR.HubConnection;
   private notificationSubject = new BehaviorSubject<NotificationModel | null>(null);
@@ -20,6 +20,7 @@ export class NotificationService {
     private identityService: IdentityService,
     private http: HttpClient
   ) {
+
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.hubUrl}/notificationHub`, {
         accessTokenFactory: () => this.identityService.getAccessToken(),
@@ -27,8 +28,8 @@ export class NotificationService {
       .withAutomaticReconnect()
       .build();
 
-      this.startConnection();
-      this.addNotificationListener();
+    this.startConnection();
+    this.addNotificationListener();
   }
 
   private startConnection(): void {
@@ -82,7 +83,7 @@ export class NotificationService {
   }
 
   // Mark All As Read
-  markAllAsRead(userId:string): Observable<Response<boolean>> {
+  markAllAsRead(userId: string): Observable<Response<boolean>> {
     return this.http.get<Response<boolean>>(`${this.baseUrl}/services/notifications/m/${userId}`, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     }).pipe(catchError(this.handleError<Response<boolean>>('markAllAsReadNotifications')));

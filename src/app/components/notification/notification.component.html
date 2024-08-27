@@ -1,7 +1,7 @@
 @if(notifications || notifications != undefined ||  notifications != null){
     <div class="container">
         <div class="row d-flex justify-content-center">
-            <div class="col-6 notification-col">
+            <div class="col-6 notification-col" >
                 <mat-list class="notification-container">
                     @for (item of notifications; track $index) {
                         <mat-list-item

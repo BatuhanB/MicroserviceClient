@@ -75,6 +75,12 @@ export class NotificationService {
       .pipe(catchError(this.handleError<Response<NotificationModel[]>>('getAllNotifications')));
   }
 
+  // Get all notifications with cursor pagination by userId
+  getAllNotificationsCursorPagination(userId: string, latestId: string): Observable<Response<NotificationModel[]>> {
+    return this.http.get<Response<NotificationModel[]>>(`${this.baseUrl}/services/notifications/go/${userId}/${latestId}`)
+      .pipe(catchError(this.handleError<Response<NotificationModel[]>>('getAllNotificationsCursorPagination')));
+  }
+
   // Save or update multiple notifications
   save(notifications: NotificationModel[]): Observable<Response<boolean>> {
     return this.http.post<Response<boolean>>(`${this.baseUrl}/services/notification/u/`, notifications, {

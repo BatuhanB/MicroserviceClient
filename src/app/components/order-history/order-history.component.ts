@@ -1,12 +1,14 @@
+import { InvoiceService } from './../../services/invoice.service';
 import { OrderService } from './../../services/order.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { OrderItemsModel } from '../../models/Order/orderitemsmodel';
-import { OrderListModel } from '../../models/Order/orderlistmodel';
+import { OrderListModel, OrderListModelForOrderHistoryPage } from '../../models/Order/orderlistmodel';
 import { PageRequest } from '../../models/pagerequest';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatTableDataSource } from '@angular/material/table';
+import { forkJoin, map, merge, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-order-history',
@@ -17,14 +19,14 @@ export class OrderHistoryComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  orderDataSource = new MatTableDataSource<OrderListModel>();
-  columnsToDisplay = ['address', 'orderItems', 'createdDate'];
-  columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
+  orderDataSource = new MatTableDataSource<OrderListModelForOrderHistoryPage>();
+  columnsToDisplay = ['address', 'orderItems', 'invoiceFileUrl', 'createdDate'];
   expandedElement: OrderItemsModel | null;
 
   constructor(
     private orderService: OrderService,
-    private _liveAnnouncer: LiveAnnouncer
+    private _liveAnnouncer: LiveAnnouncer,
+    private invoiceService: InvoiceService
   ) { }
 
   ngOnInit(): void {
@@ -45,10 +47,36 @@ export class OrderHistoryComponent implements OnInit {
       next: orderRes => {
         if (orderRes.isSuccessful) {
           this.paginator.length = orderRes.data.count;
-          this.orderDataSource.data = orderRes.data.items;
+          this.mapOrdersByInvoiceFileUrl(orderRes.data.items);
         }
       }
-    })
+    });
+  }
+
+  mapOrdersByInvoiceFileUrl(orders: OrderListModel[]) {
+    const orderListObservables = orders.map(order => {
+      return this.invoiceService.getInvoiceFileUrl(order.id, order.buyerId).pipe(
+        map(response => {
+          let orderListModelForOrderHistoryPage = new OrderListModelForOrderHistoryPage();
+          orderListModelForOrderHistoryPage.address = order.address;
+          orderListModelForOrderHistoryPage.buyerId = order.buyerId;
+          orderListModelForOrderHistoryPage.createdDate = order.createdDate;
+          orderListModelForOrderHistoryPage.id = order.id;
+          orderListModelForOrderHistoryPage.orderItems = order.orderItems;
+          orderListModelForOrderHistoryPage.invoiceFileUrl = response.isSuccessful ? response.data.fileUrl : "";
+          return orderListModelForOrderHistoryPage;
+        })
+      );
+    });
+
+    forkJoin(orderListObservables).subscribe({
+      next: orderListModels => {
+        this.orderDataSource.data = orderListModels;
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
   }
 
   announceSortChange(sortState: Sort) {

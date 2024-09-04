@@ -74,6 +74,21 @@
                 </td>
             </ng-container>
 
+            <ng-container matColumnDef="invoiceFileUrl">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header
+                    sortActionDescription="Sort by invoiceFileUrl">Invoice File</th>
+                <td mat-cell *matCellDef="let element">
+                    @if(element.invoiceFileUrl != ""){
+                        <a [href]="element.invoiceFileUrl | invoiceUrlHelper" target="_blank">
+                            <img src="../../../assets/pdf.svg" width="50" height="50">
+                        </a> 
+                    }@else{
+                        <img src="../../../assets/none.png"
+                            alt="No Invoice Has Found" width="50" height="50">
+                    }
+                </td>
+            </ng-container>
+
             <ng-container matColumnDef="createdDate">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header
                     sortActionDescription="Sort by createdDate">Order Date</th>
@@ -86,11 +101,11 @@
         </table>
         <div class="d-flex justify-content-center">
             <mat-paginator
-            class="mt-4"
-            (page)="handlePageEvent($event)"
-            [pageSizeOptions]="[4, 8, 12]" 
-            showFirstLastButtons>
-        </mat-paginator>
-    </div>
+                class="mt-4"
+                (page)="handlePageEvent($event)"
+                [pageSizeOptions]="[4, 8, 12]"
+                showFirstLastButtons>
+            </mat-paginator>
+        </div>
     </div>
 </div>

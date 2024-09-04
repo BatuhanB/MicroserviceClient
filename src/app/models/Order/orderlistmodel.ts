@@ -8,3 +8,12 @@ export class OrderListModel{
     buyerId:string; 
     orderItems:OrderItemsModel[];
 }
+
+export class OrderListModelForOrderHistoryPage{
+    id:number; 
+    createdDate:Date; 
+    address:AddressModel; 
+    buyerId:string; 
+    invoiceFileUrl:string; 
+    orderItems:OrderItemsModel[];
+}

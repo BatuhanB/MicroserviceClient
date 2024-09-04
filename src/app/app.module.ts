@@ -44,6 +44,7 @@ import { IdentityService } from './services/identity-service';
 import { NotificationComponent } from './components/notification/notification.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import { TimeComparisonPipe } from './pipes/time-comparison-pipe';
+import { InvoiceUrlHelperPipe } from './pipes/invoice-url-helper.pipe';
 
 
 export function tokenGetter(identityService: IdentityService) {
@@ -68,7 +69,8 @@ export function tokenGetter(identityService: IdentityService) {
     CardNumberDirective,
     CheckoutResultComponent,
     OrderHistoryComponent,
-    NotificationComponent
+    NotificationComponent,
+    InvoiceUrlHelperPipe
   ],
   imports: [
     BrowserAnimationsModule,
